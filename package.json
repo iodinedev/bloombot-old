@@ -1,21 +1,15 @@
 {
-  "name": "finriq",
-  "version": "2.0.0",
-  "description": "Bot designed for the Black Cat Reading Corner.",
+  "name": "bloombot",
+  "version": "1.0.0",
+  "description": "Bot designed for the Meditation Mind Discord.",
   "main": "node bot.js",
   "engines": {
     "node": "14.15.3"
   },
   "author": {
-    "name": "Benjamin Hollon",
-    "url": "https://seewitheyesclosed.com/"
+    "name": "Zachary Montgomery",
+    "url": "https://codingprojects.org/"
   },
-  "contributors": [
-    {
-      "name": "Zachary Montgomery",
-      "url": "https://codingprojects.org/"
-    }
-  ],
   "dependencies": {
     "cron": "^1.8.2",
     "data-store": "^4.0.3",
