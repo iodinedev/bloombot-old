@@ -1,0 +1,40 @@
+{
+  "name": "finriq",
+  "version": "2.0.0",
+  "description": "Bot designed for the Black Cat Reading Corner.",
+  "main": "node bot.js",
+  "engines": {
+    "node": "14.15.3"
+  },
+  "author": {
+    "name": "Benjamin Hollon",
+    "url": "https://seewitheyesclosed.com/"
+  },
+  "contributors": [
+    {
+      "name": "Zachary Montgomery",
+      "url": "https://codingprojects.org/"
+    }
+  ],
+  "dependencies": {
+    "cron": "^1.8.2",
+    "data-store": "^4.0.3",
+    "discord.js": "^12.5.1",
+    "eslint-plugin-jest": "^22.17.0",
+    "moment": "^2.26.0",
+    "mongodb": "^3.6.4",
+    "mysql2": "^2.0.2",
+    "prettier": "^2.0.5",
+    "rss-parser": "^3.7.2",
+    "sequelize": "^5.21.3",
+    "fastest-levenshtein": "^1.0.12"
+  },
+  "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  }
+}
