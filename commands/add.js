@@ -1,5 +1,6 @@
 var MeditationModel = require('../databaseFiles/connect').MeditationModel;
 var GuildModel = require('../databaseFiles/connect').GuildModel;
+var Meditations = require('../databaseFiles/connect').Meditations;
 var config = require('../config.json');
 
 module.exports.execute = async (client, message) => {
@@ -9,6 +10,7 @@ module.exports.execute = async (client, message) => {
     if (parseInt(time) && time <= 600) {
         var member = message.member;
         var time = int(time);
+        var now = Date.now();
 
         var usr = MeditationModel.findOne({usr: message.author.id});
         var all_time = 0;
@@ -29,6 +31,19 @@ module.exports.execute = async (client, message) => {
                 upsert: true
             }
         );
+
+        Meditations.updateOne(
+            { usr: message.author.id },
+            { $set: {
+                usr: message.author.id,
+                date: now,
+                time: time
+                }
+            },
+            {
+                upsert: true
+            }
+        )
         
         var mettime = GuildModel.findOne({guild: message.guild.id});
         var meditation_time = 0;
@@ -39,6 +54,9 @@ module.exports.execute = async (client, message) => {
             meditation_count = mettime.meditation_count;
         }
 
+        meditation_time = meditation_time + time;
+        meditation_count = meditation_count + 1;
+
         try {
             var role = member.guild.roles.cache.find(role => role.id === config.roles.meditation);
 
@@ -47,14 +65,11 @@ module.exports.execute = async (client, message) => {
             console.error("Role not found: " + err);
         }
 
-        if (mettime.meditation_count !== 10) {
-            meditation_count = mettime.meditation_count + 1
-        } else {
-            var time_in_hours = int(Math.round(mettime.meditation_time / 60, 1))
+        if (meditation_count % 10 === 0) {
+            var time_in_hours = int(Math.round(meditation_time / 60, 1));
+
             await client.channels.cache.get(config.channel.meditation)
                 .send(`Awesome sauce! This server has collectively generated ${time_in_hours} hours of realmbreaking meditation!`);
-
-            mettime.meditation_count = 0
         }
 
         GuildModel.updateOne(
@@ -101,13 +116,13 @@ module.exports.execute = async (client, message) => {
         });
         
         if (lvl_role) return await member.roles.add(lvl_role);
-        else {
-        return await message.channel.send(":x: Whoa, easy there tiger... You can just add under 600 minutes at once!");
-        }
+
     } else {
-        return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}>.`);
+        return await message.channel.send(":x: Whoa, easy there tiger... You can just add under 600 minutes at once!");
     }
-  }
+} else {
+    return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}>.`);
+}
 };
 
 module.exports.config = {

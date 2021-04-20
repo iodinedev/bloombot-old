@@ -1,4 +1,5 @@
 const config = require('../config.json');
+const BotStats = require('../databaseFiles/connect').BotStats;
 
 module.exports = async (client, message) => {
   if (!message.guild || message.author.bot) return;
@@ -14,6 +15,31 @@ module.exports = async (client, message) => {
 
     if (commandfile) {
       message.channel.startTyping();
+
+      var total = 0;
+
+      var stats = BotStats.findOne({
+        guild: message.guild.id
+      });
+
+      if (stats) {
+        total = stats.total;
+      }
+
+      total = total + 1;
+
+      BotStats.updateOne(
+        { guild: message.guild.id },
+        { $set: {
+            guild: message.guild.id,
+            total: total,
+            }
+        },
+        {
+            upsert: true
+        }
+      );
+
       commandfile.execute(client, message, args); // Execute found command
       message.channel.stopTyping();
     }

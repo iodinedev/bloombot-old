@@ -1,10 +1,10 @@
 {
   "prefix": "$",
   "botToken": "123",
-  "modules": ["Utility", "Fun", "Games", "Writing", "Clubs"],
-  "version": "3.0.0",
-  "versioninfo": "Ready to $help.",
-  "playing": "updated to v3!",
+  "modules": ["Utility", "Fun", "Meditation"],
+  "version": "1.0.0",
+  "versioninfo": "Building...",
+  "playing": "ready to $help.",
   "channelReacts": [
   ],
   "mongodbURI": "mongodb://localhost:27017",
