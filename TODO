@@ -1,0 +1,10 @@
+commands/
+ - getstats
+ - getsuggestions
+ - listtags
+ - meditate
+ - rank
+ - remove
+ - resetstats
+ - settag
+
