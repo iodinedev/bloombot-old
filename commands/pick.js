@@ -10,13 +10,9 @@ module.exports.execute = async (client, message) => {
   await message.guild.members.fetch();
   
   let user = role.members.random().user;
-
-  console.log(user.id);
   
   var usr = await MeditationModel.findOne({usr: user.id});
   var all_time = 0;
-
-  console.log(usr)
 
   if (usr.all_time) {
     all_time = usr.all_time;

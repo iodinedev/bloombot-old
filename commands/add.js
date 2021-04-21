@@ -15,11 +15,9 @@ module.exports.execute = async (client, message, args) => {
         var usr = await MeditationModel.findOne({usr: message.author.id});
         var all_time = 0;
 
-        if (usr.all_time) {
+        if (usr && usr.all_time) {
             all_time = usr.all_time;
         }
-
-        console.log(usr)
 
         all_time = all_time + time;
 
