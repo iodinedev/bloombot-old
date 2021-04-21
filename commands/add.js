@@ -3,21 +3,25 @@ var GuildModel = require('../databaseFiles/connect').GuildModel;
 var Meditations = require('../databaseFiles/connect').Meditations;
 var config = require('../config.json');
 
-module.exports.execute = async (client, message) => {
+module.exports.execute = async (client, message, args) => {
   var time = args[0];
 
   if (message.channel.id == config.channels.meditation) {
     if (parseInt(time) && time <= 600) {
         var member = message.member;
-        var time = int(time);
+        var time = parseInt(time);
         var now = Date.now();
 
-        var usr = MeditationModel.findOne({usr: message.author.id});
+        var usr = await MeditationModel.findOne({usr: message.author.id});
         var all_time = 0;
 
-        if (usr) {
-            all_time = usr.all_time + time;
+        if (usr.all_time) {
+            all_time = usr.all_time;
         }
+
+        console.log(usr)
+
+        all_time = all_time + time;
 
         MeditationModel.updateOne(
             { usr: message.author.id },
@@ -32,16 +36,11 @@ module.exports.execute = async (client, message) => {
             }
         );
 
-        Meditations.updateOne(
-            { usr: message.author.id },
-            { $set: {
+        Meditations.insertOne(
+            {
                 usr: message.author.id,
                 date: now,
                 time: time
-                }
-            },
-            {
-                upsert: true
             }
         )
         
@@ -50,8 +49,8 @@ module.exports.execute = async (client, message) => {
         var meditation_count = 0;
 
         if (mettime) {
-            meditation_time = mettime.meditation_time;
-            meditation_count = mettime.meditation_count;
+            meditation_time = parseInt(mettime.meditation_time);
+            meditation_count = parseInt(mettime.meditation_count);
         }
 
         meditation_time = meditation_time + time;
@@ -85,24 +84,24 @@ module.exports.execute = async (client, message) => {
             }
         );
 
-        var motivation_message = motivation_messages[Math.random(motivation_message.length)]
+        var motivation_message = config.motivation_messages[Math.floor(Math.random() * config.motivation_messages.length)];
 
-        await message.channel.send(`You have meditated for ${time_of_mediation_minutes} minutes. Your total meditation time is ${all_time} minutes :tada:\n*${motivation_message}*`);
+        await message.channel.send(`You have meditated for ${time} minutes. Your total meditation time is ${all_time} minutes :tada:\n*${motivation_message}*`);
 
         var lvl_role;
 
-        if (new_all_time >= 50) lvl_role = 'I_Star';
-        if (new_all_time >= 100) lvl_role = 'II_Star';
-        if (new_all_time >= 150) lvl_role = 'III_Star';
-        if (new_all_time >= 250) lvl_role = 'I_S_Star';
-        if (new_all_time >= 500) lvl_role = 'II_S_Star';
-        if (new_all_time >= 1000) lvl_role = 'III_S_Star';
-        if (new_all_time >= 2000) lvl_role = 'I_M_Star';
-        if (new_all_time >= 5000) lvl_role = 'II_M_Star';
-        if (new_all_time >= 10000) lvl_role = 'III_M_Star';
-        if (new_all_time >= 20000) lvl_role = 'I_Star_S';
-        if (new_all_time >= 50000) lvl_role = 'II_Star_S';
-        if (new_all_time >= 100000) lvl_role = 'III_Star_S';
+        if (all_time >= 50) lvl_role = 'I_Star';
+        if (all_time >= 100) lvl_role = 'II_Star';
+        if (all_time >= 150) lvl_role = 'III_Star';
+        if (all_time >= 250) lvl_role = 'I_S_Star';
+        if (all_time >= 500) lvl_role = 'II_S_Star';
+        if (all_time >= 1000) lvl_role = 'III_S_Star';
+        if (all_time >= 2000) lvl_role = 'I_M_Star';
+        if (all_time >= 5000) lvl_role = 'II_M_Star';
+        if (all_time >= 10000) lvl_role = 'III_M_Star';
+        if (all_time >= 20000) lvl_role = 'I_Star_S';
+        if (all_time >= 50000) lvl_role = 'II_Star_S';
+        if (all_time >= 100000) lvl_role = 'III_Star_S';
 
         lvl_role = member.guild.roles.cache.find(role => role.id === config.roles.lvl_roles[lvl_role]);
 
@@ -111,7 +110,7 @@ module.exports.execute = async (client, message) => {
 
             if (member.roles.cache.has(check_role)) {
                 member.roles.remove(check_role);
-                break;
+                return;
             }
         });
         

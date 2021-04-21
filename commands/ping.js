@@ -1,6 +1,6 @@
 module.exports.execute = async (client, message) => {
     message.channel.send('Getting ping data...').then(async (msg) => {
-      message.channel.send(`🏓 Latency is \`${msg.createdTimestamp - message.createdTimestamp}ms\`. API Latency is \`${Math.round(client.ws.ping)}ms\`.`);
+      msg.edit(`🏓 Latency is \`${msg.createdTimestamp - message.createdTimestamp}ms\`. API Latency is \`${Math.round(client.ws.ping)}ms\`.`);
     });
   };
   

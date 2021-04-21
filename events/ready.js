@@ -9,9 +9,9 @@ module.exports = (client) => {
 	var now = Date.now();
 
 	BotStats.updateOne(
-		{ guild: message.guild.id },
+		{ bot: client.user.id },
 		{ $set: {
-				guild: message.guild.id,
+				bot: client.user.id,
 				upSince: now,
 			}
 		},

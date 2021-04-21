@@ -22,7 +22,7 @@ module.exports.execute = async (client, message, args) => {
         .setTitle('Tag Not Found')
         .addField('Did You Mean', closest(message, result))
       
-      return await message.channel.send(tagHelp);
+      return message.channel.send(tagHelp);
     }
   });
 

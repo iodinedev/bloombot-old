@@ -3,8 +3,6 @@ commands/
  - getsuggestions
  - listtags
  - meditate
- - rank
  - remove
  - resetstats
  - settag
-

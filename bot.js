@@ -24,7 +24,7 @@ Discord.Structures.extend('GuildMember', GuildMember => {
 const client = new Discord.Client({
   disableMentions: 'everyone',
   ws: {
-    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS', 'GUILD_MESSAGE_REACTIONS']
+    intents: [Discord.Intents.NON_PRIVILEGED, 'GUILD_MEMBERS']
   },
   partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });

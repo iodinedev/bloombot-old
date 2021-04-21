@@ -1,13 +1,24 @@
 const config = require('../config.json');
 const Discord = require('discord.js');
+const MeditationModel = require('../databaseFiles/connect').MeditationModel;
 
 module.exports.execute = async (client, message) => {
-  let member = message.guild.roles.get(config.roles.challengers).members.cache.random().user;
+  let role = message.guild.roles.cache.get(config.roles.challengers);
   
-  var usr = MeditationModel.findOne({usr: message.author.id});
+  if (!role) return await message.channel.send(':x: Role does not exist.');
+
+  await message.guild.members.fetch();
+  
+  let user = role.members.random().user;
+
+  console.log(user.id);
+  
+  var usr = await MeditationModel.findOne({usr: user.id});
   var all_time = 0;
 
-  if (usr) {
+  console.log(usr)
+
+  if (usr.all_time) {
     all_time = usr.all_time;
   }
 
@@ -21,11 +32,11 @@ module.exports.execute = async (client, message) => {
     .setTitle(':tada: This month\'s meditation challenger in the spotlight is... :tada:')
     .addField(
       `**Monthly hall-of-fame member**`,
-      `**${member.mention}** is our server member of the month, with a meditation time of **${all_time}** minutes!\nYou're doing great, keep at it!`
+      `**${user}** is our server member of the month, with a meditation time of **${all_time}** minutes!\nYou're doing great, keep at it!`
     )
-    .setFooter(`${day}.${month}.${year}`);
+    .setFooter(`Chosen on ${day}/${month}/${year}`);
 
-  var channel = client.channels.cache.get(config.channels.announce_channel);
+  var channel = client.channels.cache.get(config.channels.announce);
 
   return await channel.send(announceEmbed);
 };

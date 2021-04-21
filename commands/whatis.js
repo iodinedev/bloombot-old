@@ -2,9 +2,11 @@ const Tags = require('../databaseFiles/connect').Tags;
 const config = require('../config.json');
 const {distance, closest} = require('fastest-levenshtein');
 
-module.exports.execute = async (client, message) => {
+module.exports.execute = async (client, message, args) => {
+  if (!args[0]) return await message.channel.send(':x: You must include a tag!');
+
   const tag = await Tags.findOne({
-    tag: message
+    tag: args[0]
   });
 
   if (tag) {
@@ -17,13 +19,15 @@ module.exports.execute = async (client, message) => {
   }
   
   await Tags.find().toArray(function(err, result) {
-    if (distance(message, closest(message, result)) <= 5) {
-      const tagHelp = new Discord.MessageEmbed()
-        .setColor(config.colors.embedColor)
-        .setTitle('Tag Not Found')
-        .addField('Did You Mean', closest(message, result))
-      
-      return await message.channel.send(tagHelp);
+    if (result.length > 0) {
+      if (distance(args[0], closest(args[0], result)) <= 5) {
+        const tagHelp = new Discord.MessageEmbed()
+          .setColor(config.colors.embedColor)
+          .setTitle('Tag Not Found')
+          .addField('Did You Mean', closest(message, result))
+        
+        return message.channel.send(tagHelp);
+      }
     }
   });
 
@@ -34,6 +38,6 @@ module.exports.config = {
   name: 'whatis',
   aliases: ['define'],
   module: 'Utility',
-  description: 'Defines a preset tag.',
+  description: 'Shows you a description of a term in our glossary.',
   usage: ['whatis <tag>'],
 };

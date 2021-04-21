@@ -29,9 +29,9 @@ module.exports = async (client, message) => {
       total = total + 1;
 
       BotStats.updateOne(
-        { guild: message.guild.id },
+        { bot: client.user.id },
         { $set: {
-            guild: message.guild.id,
+            bot: client.user.id,
             total: total,
             }
         },
@@ -39,7 +39,7 @@ module.exports = async (client, message) => {
             upsert: true
         }
       );
-
+      
       commandfile.execute(client, message, args); // Execute found command
       message.channel.stopTyping();
     }
