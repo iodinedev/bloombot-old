@@ -8,3 +8,6 @@ commands/
 extra
  - Reaction for polls
  - Automatically send to staff-room for 10 upvotes
+
+config
+"meditation_sound": "https://youtu.be/iJUWRQ--hig"
