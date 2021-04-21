@@ -2,31 +2,46 @@ const Tags = require('../databaseFiles/connect').Tags;
 const config = require('../config.json');
 
 module.exports.execute = async (client, message, args) => {
+  var joined = args.join(' ');
+
+  var tag = joined.match(/'([^']+)'/)[1];
+  var def = joined.split(tag)[0].strip();
+
+  tag = tag.split('\'').join('').split('"').join(''); // Remove quotes
+
+  if (tag.split(" ").length > 1) return await message.channel.send(':x: Tags must not contain spaces.');
+
   const tag = await Tags.findOne({
-    tag: message
+    tag: tag
   });
 
-  if (tag) {
-		const tagHelp = new Discord.MessageEmbed()
-			.setColor(config.colors.embedColor)
-			.setTitle(tag.title)
-			.setDescription(tag.description)
-      .setFooter(`Tag id: ${tag.tag}`);
-    return await message.channel.send(tagHelp);
-  }
-  
-  await Tags.find().toArray(function(err, result) {
-    if (distance(message, closest(message, result)) <= 5) {
-      const tagHelp = new Discord.MessageEmbed()
-        .setColor(config.colors.embedColor)
-        .setTitle('Tag Not Found')
-        .addField('Did You Mean', closest(message, result))
-      
-      return message.channel.send(tagHelp);
+  if (tag) await message.channel.send(':warning: That term is already defined. Definition will be updated.');
+
+  var inserted = await Tags.insertOne({
+    tags
+  })
+
+  MeditationModel.updateOne(
+    { tag: tag },
+    { $set: {
+        tag: tag,
+        def: def
+      }
+    },
+    {
+      upsert: true
     }
-  });
+  );
 
-  return await message.channel.send(':x: Tag not found!');
+  const tagHelp = new Discord.MessageEmbed()
+    .setColor(config.colors.embedColor)
+    .setTitle(`\`${tag.title}\` Added to Glossary`)
+    .addField(
+      'Definition'
+      `\`${def}\``
+    )
+    .setFooter(`Tag id: ${tag.tag}`);
+  return await message.channel.send(tagHelp);
 };
 
 module.exports.config = {

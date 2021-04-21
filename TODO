@@ -3,7 +3,6 @@ commands/
  - meditate
  - remove
  - resetstats
- - settag
 
 extra
  - Reaction for polls
