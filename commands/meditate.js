@@ -1,7 +1,5 @@
-const MeditationModel = require('../databaseFiles/connect').MeditationModel;
-const GuildModel = require('../databaseFiles/connect').GuildModel;
-const Meditations = require('../databaseFiles/connect').Meditations;
 const Current = require('../databaseFiles/connect').Current;
+const meditateUtils = require('../utils/meditateUtils');
 const config = require('../config.json');
 
 module.exports.execute = async (client, message) => {
@@ -20,16 +18,19 @@ module.exports.execute = async (client, message) => {
       console.error('Meditate MongoDB error: ', err);
     }
 
-    if (usr) return await message.channel.send(':x: You are already meditating!');
-
-    begin(message, voiceChannel, link);
+		if (time > 180) return await message.channel.send(':x: You cannot meditate for longer than three hours at once.');
+		if (usr) return await message.channel.send(':x: You are already meditating!');
 
     try {
       Current.insertOne({
         usr: message.author.id,
         time: time,
-        curr: curr
-      });
+        whenToStop: new Date(curr.getTime() + time*60000)
+			});
+
+			meditateUtils.addToDatabases(message.author, message.guild, time);
+			
+			begin(message, voiceChannel, link);
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
@@ -51,9 +52,9 @@ function begin(message, voiceChannel, link) {
   }
 }
 
-async function stop(client, date, meditation, difference, catchUp = false) {
+async function stop(client, meditation, difference, catchUp = false) {
 	let userToStop = await client.users.fetch(meditation.usr);
-	let color, description;
+	let description;
 	var time = meditation.time;
 
 	if (catchUp) {
@@ -69,12 +70,13 @@ async function stop(client, date, meditation, difference, catchUp = false) {
 		.setTitle(`${config.emotes.meditation} Meditation Time Done ${config.emotes.meditation}`)
 		.setDescription(description);
 
-	userToRemind.send(stopMessage);
+	userToStop.send(stopMessage);
 
 	try {
 		await Current.deleteOne({
-			id: reminder._id
+			id: meditation._id
 		});
+
 	} catch(err) {
 		console.error('Meditation MongoDB error: ', err);
 	}
@@ -89,9 +91,9 @@ async function scanForMeditations(client) {
 		if (meditations) {
 			let difference;
 			meditations.forEach(async meditation => {
-				difference = currentDate - meditation.whenToRemind;
+				difference = currentDate - meditation.whenToStop;
 				if (difference > (-1)*config.meditationScanInterval) {
-					stop(client, currentDate, meditation, difference);
+					stop(client, meditation, difference);
 				}
 			});
 		}
@@ -109,9 +111,9 @@ async function catchUp(client) {
 		if (meditations) {
 			let difference;
 			meditations.forEach(async meditation => {
-				difference = currentDate - meditation.whenToRemind;
+				difference = currentDate - meditation.whenToStop;
 				if (difference > 0) {
-					stop(client, currentDate, meditation, difference, true);
+					stop(client, meditation, difference, true);
 				}
 			});
 		}

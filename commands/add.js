@@ -1,58 +1,14 @@
-var MeditationModel = require('../databaseFiles/connect').MeditationModel;
-var GuildModel = require('../databaseFiles/connect').GuildModel;
-var Meditations = require('../databaseFiles/connect').Meditations;
-var config = require('../config.json');
+const meditateUtils = require('../utils/meditateUtils');
+const config = require('../config.json');
 
 module.exports.execute = async (client, message, args) => {
   var time = args[0];
 
   if (message.channel.id == config.channels.meditation) {
     if (parseInt(time) && time <= 600) {
-        var member = message.member;
         var time = parseInt(time);
-        var now = Date.now();
 
-        var usr = await MeditationModel.findOne({usr: message.author.id});
-        var all_time = 0;
-
-        if (usr && usr.all_time) {
-            all_time = usr.all_time;
-        }
-
-        all_time = all_time + time;
-
-        MeditationModel.updateOne(
-            { usr: message.author.id },
-            { $set: {
-                usr: message.author.id,
-                last_time: time,
-                all_time: all_time
-                }
-            },
-            {
-                upsert: true
-            }
-        );
-
-        Meditations.insertOne(
-            {
-                usr: message.author.id,
-                date: now,
-                time: time
-            }
-        )
-        
-        var mettime = GuildModel.findOne({guild: message.guild.id});
-        var meditation_time = 0;
-        var meditation_count = 0;
-
-        if (mettime) {
-            meditation_time = parseInt(mettime.meditation_time);
-            meditation_count = parseInt(mettime.meditation_count);
-        }
-
-        meditation_time = meditation_time + time;
-        meditation_count = meditation_count + 1;
+        meditateUtils.addToDatabases(message.author, message.guild, time);
 
         try {
             var role = member.guild.roles.cache.find(role => role.id === config.roles.meditation);
@@ -68,19 +24,6 @@ module.exports.execute = async (client, message, args) => {
             await client.channels.cache.get(config.channel.meditation)
                 .send(`Awesome sauce! This server has collectively generated ${time_in_hours} hours of realmbreaking meditation!`);
         }
-
-        GuildModel.updateOne(
-            { guild: message.guild.id },
-            { $set: {
-                guild: message.guild.id,
-                meditation_time: meditation_time,
-                meditation_count: meditation_count
-                }
-            },
-            {
-                upsert: true
-            }
-        );
 
         var motivation_message = config.motivation_messages[Math.floor(Math.random() * config.motivation_messages.length)];
 
