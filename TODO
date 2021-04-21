@@ -1,6 +1,4 @@
 commands/
- - getstats
- - getsuggestions
  - listtags
  - meditate
  - remove
