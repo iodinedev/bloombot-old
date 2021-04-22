@@ -3,7 +3,7 @@ const Tags = require('../databaseFiles/connect').Tags;
 const Announcements = require('../databaseFiles/connect').Announcements;
 const MeditationModel = require('../databaseFiles/connect').MeditationModel;
 const GuildModel = require('../databaseFiles/connect').GuildModel;
-const Current = require('../databaseFiles/connect').CurrentMeditators;
+const Current = require('../databaseFiles/connect').Current;
 const Meditations = require('../databaseFiles/connect').Meditations;
 const BotStats = require('../databaseFiles/connect').BotStats;
 
