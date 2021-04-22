@@ -59,6 +59,8 @@ async function addToDatabases(author, guildid, time) {
         upsert: true
       }
   );
+
+  return meditation_count;
 }
 
 module.exports.addToDatabases = addToDatabases;

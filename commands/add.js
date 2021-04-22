@@ -8,7 +8,7 @@ module.exports.execute = async (client, message, args) => {
     var time = parseInt(time);
 
     if (time !== NaN && time <= 600) {
-        meditateUtils.addToDatabases(message.author, message.guild, time);
+        var meditation_count = meditateUtils.addToDatabases(message.author, message.guild, time);
 
         try {
             var role = member.guild.roles.cache.find(role => role.id === config.roles.meditation);
