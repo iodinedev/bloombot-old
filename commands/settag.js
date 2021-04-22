@@ -11,13 +11,13 @@ module.exports.execute = async (client, message, args) => {
 
   if (tag.split(" ").length > 1) return await message.channel.send(':x: Tags must not contain spaces.');
 
-  const tag = await Tags.findOne({
+  const check_tag = await Tags.findOne({
     tag: tag
   });
 
-  if (tag) await message.channel.send(':warning: That term is already defined. Definition will be updated.');
+  if (check_tag) await message.channel.send(':warning: That term is already defined. Definition will be updated.');
 
-  var inserted = await Tags.insertOne({
+  await Tags.insertOne({
     tags
   })
 

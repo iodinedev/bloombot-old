@@ -1,17 +1,24 @@
 const Current = require('../databaseFiles/connect').Current;
 const meditateUtils = require('../utils/meditateUtils');
 const config = require('../config.json');
+const Discord = require('discord.js');
+const ytdl = require('ytdl-core');
 
-module.exports.execute = async (client, message) => {
-  var voiceChannel = message.member.voiceChannel;
+module.exports.execute = async (client, message, args) => {
+  var voiceChannel = message.member.voice;
 
   if (voiceChannel) {
+		if (!args || !args[0]) {
+			return await message.channel.send(':x: You must specify how long you\'d like to meditate for!');
+		}
+
     var time = parseInt(args[0]);
-    var curr = new Date.now();
+		var curr = new Date();
+    var stop = new Date(curr.getTime() + time * 60000).getTime();
     var link = config.meditation_sound;
 
     try {
-      var usr = Current.findOne({
+      var usr = await Current.findOne({
         usr: message.author.id
       });
     } catch(err) {
@@ -21,16 +28,14 @@ module.exports.execute = async (client, message) => {
 		if (time > 180) return await message.channel.send(':x: You cannot meditate for longer than three hours at once.');
 		if (usr) return await message.channel.send(':x: You are already meditating!');
 
-    try {
+    try {			
+			begin(client, voiceChannel, link);
+			
       Current.insertOne({
         usr: message.author.id,
         time: time,
-        whenToStop: new Date(curr.getTime() + time*60000)
+        whenToStop: stop
 			});
-
-			meditateUtils.addToDatabases(message.author, message.guild, time);
-			
-			begin(message, voiceChannel, link);
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
@@ -39,17 +44,13 @@ module.exports.execute = async (client, message) => {
   }
 };
 
-function begin(message, voiceChannel, link) {
-  try {
-    voiceChannel.join().then(connection => {
-      const dispatcher = connection.playFile(link);
+function begin(client, voiceChannel, link) {
+    voiceChannel.channel.join().then(connection => {
+      const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
       dispatcher.on('end', end => {
-        voiceChannel.leave();
+        voiceChannel.channel.leave();
       });
-    }).catch(err => console.log(err))
-  } catch(err) {
-    return message.channel.send(':x: Could not connect to that channel.');
-  }
+    }).catch(err => console.log(err));
 }
 
 async function stop(client, meditation, difference, catchUp = false) {
@@ -59,11 +60,13 @@ async function stop(client, meditation, difference, catchUp = false) {
 
 	if (catchUp) {
 		description = `Whoops! Sorry for being late, I was probably down for maintenance. 😅
-		Anyway, you have finished your **${meditation.time}** minutes of meditation, with an additional time of **${difference}**. I've added it to your total.`;
+		Anyway, you have finished your **${meditation.time}** minutes of meditation. I've added it to your total.`;
 		time = time + difference;
 	} else {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
+
+	meditateUtils.addToDatabases(userToStop, userToStop.guild, time);
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
@@ -92,6 +95,7 @@ async function scanForMeditations(client) {
 			let difference;
 			meditations.forEach(async meditation => {
 				difference = currentDate - meditation.whenToStop;
+				console.log(difference);
 				if (difference > (-1)*config.meditationScanInterval) {
 					stop(client, meditation, difference);
 				}

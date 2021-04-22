@@ -36,20 +36,21 @@ module.exports.execute = async (client, message, args) => {
 
       meditations.push(`\`${meditation.time}\` - ${day}/${month}/${year}\n`)
 
-    let rankEmbed = new Discord.MessageEmbed()
-      .setColor(config.colors.embedColor)
-      .setTitle('Meditation Stats')
-      .setThumbnail(user.avatarURL())
-      .addField(
-        'Meditation Minutes',
-        usr.all_time
-      )
-      .addField(
-        'Recent Meditations',
-        meditations
-      );
+      let rankEmbed = new Discord.MessageEmbed()
+        .setColor(config.colors.embedColor)
+        .setTitle('Meditation Stats')
+        .setThumbnail(user.avatarURL())
+        .addField(
+          'Meditation Minutes',
+          usr.all_time
+        )
+        .addField(
+          'Recent Meditations',
+          meditations
+        );
 
-    return message.channel.send(rankEmbed);
+      return message.channel.send(rankEmbed);
+    });
   });
 };
 

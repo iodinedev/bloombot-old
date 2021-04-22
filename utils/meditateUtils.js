@@ -2,7 +2,7 @@ const MeditationModel = require('../databaseFiles/connect').MeditationModel;
 const GuildModel = require('../databaseFiles/connect').GuildModel;
 const Meditations = require('../databaseFiles/connect').Meditations;
 
-function addToDatabases(author, guild, time) {
+async function addToDatabases(author, guild, time) {
   var now = Date.now();
 
   var usr = await MeditationModel.findOne({usr: author.id});

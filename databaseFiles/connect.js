@@ -16,5 +16,6 @@ module.exports.Tags = client.db(config.mongodbDatabase).collection('Tags');
 module.exports.Announcements = client.db(config.mongodbDatabase).collection('Announcements');
 module.exports.MeditationModel = client.db(config.mongodbDatabase).collection('MeditationModel');
 module.exports.GuildModel = client.db(config.mongodbDatabase).collection('GuildModel');
+module.exports.Current = client.db(config.mongodbDatabase).collection('CurrentMeditators');
 module.exports.Meditations = client.db(config.mongodbDatabase).collection('Meditations');
 module.exports.BotStats = client.db(config.mongodbDatabase).collection('BotStats');
