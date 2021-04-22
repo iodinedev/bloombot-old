@@ -60,7 +60,7 @@ async function addToDatabases(author, guildid, time) {
       }
   );
 
-  return meditation_count;
+  return meditation_count, meditation_time;
 }
 
 module.exports.addToDatabases = addToDatabases;
