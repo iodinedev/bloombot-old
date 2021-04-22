@@ -1,4 +1,3 @@
-const Reminders = require('../databaseFiles/connect').Reminders;
 const Tags = require('../databaseFiles/connect').Tags;
 const Announcements = require('../databaseFiles/connect').Announcements;
 const MeditationModel = require('../databaseFiles/connect').MeditationModel;
@@ -8,9 +7,6 @@ const Meditations = require('../databaseFiles/connect').Meditations;
 const BotStats = require('../databaseFiles/connect').BotStats;
 
 module.exports.execute = async (client, message) => {
-  await Reminders.find().toArray(function(err, result) {
-    console.log(result);
-  });
   await Tags.find().toArray(function(err, result) {
     console.log(result);
   });
