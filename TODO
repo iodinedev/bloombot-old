@@ -6,3 +6,6 @@ commands/
 extra
  - Reaction for polls
  - Automatically send to staff-room for 10 upvotes
+
+- Fix botstats and guild meditation stats
+- Make it cut off if user leaves voice chat
