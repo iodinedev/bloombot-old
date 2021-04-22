@@ -78,7 +78,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 
 	try {
 		await Current.deleteOne({
-			id: meditation._id
+			usr: meditation.usr
 		});
 
 	} catch(err) {
