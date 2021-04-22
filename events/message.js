@@ -16,31 +16,36 @@ module.exports = async (client, message) => {
     if (commandfile) {
       message.channel.startTyping();
 
-      var total = 0;
+      if (commandfile.admin && commandfile.admin === true && indexOf(global_admins, message.author.id) === -1) {
+        await message.channel.send(':x: You don\'t have permission to run this command.');
+      } else {
+        var total = 0;
 
-      var stats = BotStats.findOne({
-        guild: message.guild.id
-      });
+        var stats = BotStats.findOne({
+          guild: message.guild.id
+        });
 
-      if (stats) {
-        total = stats.total;
+        if (stats) {
+          total = stats.total;
+        }
+
+        total = total + 1;
+
+        BotStats.updateOne(
+          { bot: client.user.id },
+          { $set: {
+              bot: client.user.id,
+              total: total,
+              }
+          },
+          {
+              upsert: true
+          }
+        );
+        
+        commandfile.execute(client, message, args); // Execute found command
       }
 
-      total = total + 1;
-
-      BotStats.updateOne(
-        { bot: client.user.id },
-        { $set: {
-            bot: client.user.id,
-            total: total,
-            }
-        },
-        {
-            upsert: true
-        }
-      );
-      
-      commandfile.execute(client, message, args); // Execute found command
       message.channel.stopTyping();
     }
   }
