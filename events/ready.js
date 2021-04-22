@@ -5,8 +5,6 @@ const BotStats = require('../databaseFiles/connect').BotStats;
 const Current = require('../databaseFiles/connect').Current;
 
 module.exports = (client) => {
-	Current.drop();
-	
 	remind.catchUp(client);
 	setInterval(remind.scanForReminders, config.reminderScanInterval, client);
 	
