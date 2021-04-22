@@ -3,6 +3,7 @@ const Current = require('../databaseFiles/connect').Current;
 const config = require('../config.json');
 
 module.exports = async (client, oldMember, newMember) => {
+	if (oldMember.voice.channel and !newMember.voice.channel) {
   const currentDate = new Date();
 
 	try {
@@ -28,5 +29,6 @@ module.exports = async (client, oldMember, newMember) => {
 		}
 	} catch(err) {
 		console.error('Meditation MongoDB error: ', err);
+	}
 	}
 }
