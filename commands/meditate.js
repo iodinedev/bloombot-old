@@ -34,8 +34,9 @@ module.exports.execute = async (client, message, args) => {
       Current.insertOne({
         usr: message.author.id,
         time: time,
-        whenToStop: stop
-			});
+        whenToStop: stop,
+	guild: message.guild
+}     );
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
@@ -66,7 +67,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	meditateUtils.addToDatabases(userToStop, userToStop.guild, time);
+	meditateUtils.addToDatabases(userToStop, meditation.guild, time);
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
