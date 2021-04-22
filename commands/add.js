@@ -5,9 +5,9 @@ module.exports.execute = async (client, message, args) => {
   var time = args[0];
 
   if (message.channel.id == config.channels.meditation) {
-    if (parseInt(time) && time <= 600) {
-        var time = parseInt(time);
+    var time = parseInt(time);
 
+    if (time !== NaN && time <= 600) {
         meditateUtils.addToDatabases(message.author, message.guild, time);
 
         try {
