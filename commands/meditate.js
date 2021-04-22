@@ -48,9 +48,6 @@ module.exports.execute = async (client, message, args) => {
 function begin(client, voiceChannel, link) {
     voiceChannel.channel.join().then(connection => {
       const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
-      dispatcher.on('end', end => {
-        voiceChannel.channel.leave();
-      });
     }).catch(err => console.log(err));
 }
 
@@ -58,6 +55,12 @@ async function stop(client, meditation, difference, catchUp = false) {
 	let userToStop = await client.users.fetch(meditation.usr);
 	let description;
 	var time = meditation.time;
+	
+	try {
+		userToStop.voice.channel.leave();
+	} catch(err) {
+		console.error(err);
+	}
 
 	if (catchUp) {
 		description = `Whoops! Sorry for being late, I was probably down for maintenance. 😅
