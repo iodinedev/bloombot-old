@@ -2,7 +2,7 @@ const MeditationModel = require('../databaseFiles/connect').MeditationModel;
 const GuildModel = require('../databaseFiles/connect').GuildModel;
 const Meditations = require('../databaseFiles/connect').Meditations;
 
-async function addToDatabases(author, guild, time) {
+async function addToDatabases(author, guildid, time) {
   var now = Date.now();
 
   var usr = await MeditationModel.findOne({usr: author.id});
@@ -35,7 +35,7 @@ async function addToDatabases(author, guild, time) {
     }
   )
 
-  var mettime = GuildModel.findOne({guild: guild.id});
+  var mettime = GuildModel.findOne({guild: guildid});
     var meditation_time = 0;
     var meditation_count = 0;
 
@@ -48,9 +48,9 @@ async function addToDatabases(author, guild, time) {
     meditation_count = meditation_count + 1;
     
     GuildModel.updateOne(
-      { guild: guild.id },
+      { guild: guildid },
       { $set: {
-          guild: guild.id,
+          guild: guildid,
           meditation_time: meditation_time,
           meditation_count: meditation_count
         }

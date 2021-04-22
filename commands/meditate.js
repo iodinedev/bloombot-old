@@ -15,7 +15,9 @@ module.exports.execute = async (client, message, args) => {
     var time = parseInt(args[0]);
 		var curr = new Date();
     var stop = new Date(curr.getTime() + time * 60000).getTime();
-    var link = config.meditation_sound;
+	var link = config.meditation_sound;
+	
+	console.log('Hi');
 
     try {
       var usr = await Current.findOne({
