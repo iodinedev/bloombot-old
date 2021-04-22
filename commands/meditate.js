@@ -37,7 +37,7 @@ module.exports.execute = async (client, message, args) => {
         usr: message.author.id,
         time: time,
         whenToStop: stop,
-	guild: message.guild
+	guild: message.guild.id
 }     );
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
