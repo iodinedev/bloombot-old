@@ -8,6 +8,7 @@ module.exports.execute = async (client, message, args) => {
     var time = parseInt(time);
 
     if (time !== NaN && time <= 600) {
+        var member = message.member;
         var meditation_count, meditation_time, all_time = await meditateUtils.addToDatabases(message.author, message.guild.id, time);
 
         try {
