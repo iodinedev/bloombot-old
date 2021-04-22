@@ -20,7 +20,7 @@ module.exports.execute = async (client, message, args) => {
 
     var meditation_count = Meditations.count();
 
-    checks[meditations] = await Meditations.remove({
+    await Meditations.remove({
       usr: message.author.id
     });
 
