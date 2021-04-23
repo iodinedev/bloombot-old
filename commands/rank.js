@@ -22,8 +22,6 @@ module.exports.execute = async (client, message, args) => {
 
     const user = client.users.cache.get(get_usr);
 
-    if (result.length > 0) time = usr.all_time;
-
     var meditations = [];
 
     result.forEach(meditation => {
