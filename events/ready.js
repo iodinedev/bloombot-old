@@ -1,13 +1,8 @@
 const config = require('../config.json');
 const meditation = require('../commands/meditate');
 const BotStats = require('../databaseFiles/connect').BotStats;
-const Current = require('../databaseFiles/connect').Current;
-const Meditations = require('../databaseFiles/connect').Meditations;
 
 module.exports = (client) => {
-	Current.drop();
-	Meditations.drop();
-	
 	meditation.catchUp(client);
 	setInterval(meditation.scanForMeditations, config.meditationScanInterval, client);
 
