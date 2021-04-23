@@ -21,7 +21,7 @@ module.exports = async (client, message) => {
       } else {
         var total = 0;
 
-        var stats = BotStats.findOne({
+        var stats = await BotStats.findOne({
           guild: message.guild.id
         });
 
@@ -31,7 +31,7 @@ module.exports = async (client, message) => {
 
         total = total + 1;
 
-        BotStats.updateOne(
+        await BotStats.updateOne(
           { bot: client.user.id },
           { $set: {
               bot: client.user.id,
@@ -43,7 +43,7 @@ module.exports = async (client, message) => {
           }
         );
         
-        commandfile.execute(client, message, args); // Execute found command
+        await commandfile.execute(client, message, args); // Execute found command
       }
 
       message.channel.stopTyping();
