@@ -43,6 +43,8 @@ async function getGuildData(guildid) {
     guild: guildid
   });
 
+  console.log(meditation_count);
+
   var meditation_time = await Meditations.aggregate([
     {
       $match: {
