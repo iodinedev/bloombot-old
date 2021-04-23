@@ -17,8 +17,10 @@ async function addToDatabase(userid, guildid, time) {
 
 async function getUserData(userid, guildid) {
   var meditation_count = await Meditations.countDocuments({
-    usr: userid,
-    guild: guildid
+    $and: [
+      {usr: userid},
+      {guild: guildid}
+    ]
   });
 
   var meditation_time = await Meditations.aggregate([ 
@@ -38,7 +40,7 @@ async function getUserData(userid, guildid) {
     }
   ]).toArray();
 
-  console.log(meditation_time[0].sum)
+  console.log(meditation_count)
   meditation_time = meditation_time[0].sum;
 
   return meditation_count, meditation_time;
