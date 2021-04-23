@@ -30,7 +30,7 @@ async function getUserData(userid, guildid) {
       $group: {
         _id: null,
         "TotalCount": {
-            $sum:1
+            $sum: "$time"
         }
       }
     }
