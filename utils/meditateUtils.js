@@ -43,7 +43,10 @@ async function getUserData(userid, guildid) {
   console.log(meditation_count)
   meditation_time = meditation_time[0].sum;
 
-  return meditation_count, meditation_time;
+  return {
+    meditation_count,
+    meditation_time
+  };
 }
 
 async function getGuildData(guildid) {
@@ -81,7 +84,10 @@ async function getGuildData(guildid) {
 
   meditation_time = meditation_time[0].sum;
 
-  return meditation_count, meditation_time;
+  return {
+    meditation_count,
+    meditation_time
+  };
 }
 
 module.exports.addToDatabase = addToDatabase;

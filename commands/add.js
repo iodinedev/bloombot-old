@@ -11,8 +11,13 @@ module.exports.execute = async (client, message, args) => {
         var member = message.member;
         await meditateUtils.addToDatabase(message.author.id, message.guild.id, time);
 
-        var user_count, user_time = await meditateUtils.getUserData(message.author.id, message.guild.id);
-        var guild_count, guild_time = await meditateUtils.getGuildData(message.guild.id);
+        var userdata = await meditateUtils.getUserData(message.author.id, message.guild.id);
+        var guilddata = await meditateUtils.getGuildData(message.guild.id);
+
+        var user_time = userdata.meditation_time;
+
+        var guild_count = guilddata.meditation_count;
+        var guild_time = guilddata.meditation_time;
 
         try {
             var role = member.guild.roles.cache.find(role => role.id === config.roles.meditation);

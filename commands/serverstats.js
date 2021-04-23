@@ -4,7 +4,9 @@ const config = require('../config.json');
 
 
 module.exports.execute = async (client, message) => {
-  var guild_count, guild_time = await meditateUtils.getGuildData(message.guild.id);
+  var data = await meditateUtils.getGuildData(message.guild.id);
+  var guild_count = data.meditation_count;
+  var guild_time = data.meditation_time;
 
   console.log(guild_count);
 

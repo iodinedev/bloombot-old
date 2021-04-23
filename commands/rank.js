@@ -18,7 +18,9 @@ module.exports.execute = async (client, message, args) => {
   Meditations.find({
     usr: get_usr
   }).sort({_id:-1}).limit(3).toArray(async function(err, result) {
-    var user_count, user_time = await meditateUtils.getUserData(message.author.id, message.guild.id);
+    var data = await meditateUtils.getUserData(message.author.id, message.guild.id);
+    var user_count = data.meditation_count;
+    var user_time = data.meditation_time;
 
     const user = client.users.cache.get(get_usr);
 
