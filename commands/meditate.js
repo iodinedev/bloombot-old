@@ -49,9 +49,9 @@ module.exports.execute = async (client, message, args) => {
 };
 
 function begin(client, voiceChannel, link) {
-    voiceChannel.channel.join().then(connection => {
-      const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
-    }).catch(err => console.error(err));
+	voiceChannel.channel.join().then(connection => {
+		const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
+	}).catch(err => console.error(err));
 }
 
 async function stop(client, meditation, difference, catchUp = false) {
@@ -99,6 +99,8 @@ async function scanForMeditations(client) {
 
 	try {
 		const meditations = await Current.find();
+
+		console.log(meditations);
 
 		if (meditations) {
 			let difference;
