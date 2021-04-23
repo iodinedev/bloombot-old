@@ -1,69 +1,64 @@
-const MeditationModel = require('../databaseFiles/connect').MeditationModel;
-const GuildModel = require('../databaseFiles/connect').GuildModel;
 const Meditations = require('../databaseFiles/connect').Meditations;
 
-async function addToDatabases(author, guildid, time) {
+async function addToDatabase(userid, guildid, time) {
   var now = Date.now();
 
-  var usr = await MeditationModel.findOne({usr: author.id});
-  var all_time = 0;
-
-  if (usr && usr.all_time) {
-    all_time = usr.all_time;
-  }
-
-  all_time = all_time + time;
-
-  MeditationModel.updateOne(
-    { usr: author.id },
-    { $set: {
-        usr: author.id,
-        all_time: all_time
-      }
-    },
+  await Meditations.insertOne(
     {
-      upsert: true
-    }
-  );
-
-  Meditations.insertOne(
-    {
-      usr: author.id,
+      usr: userid,
       date: now,
       time: time,
       guild: guildid
     }
-  )
-
-  var mettime = GuildModel.findOne({guild: guildid});
-    var meditation_time = 0;
-    var meditation_count = 0;
-
-    if (mettime.meditation_time && mettime.meditation_count) {
-      meditation_time = parseInt(mettime.meditation_time);
-      meditation_count = parseInt(mettime.meditation_count);
-    }
-
-    meditation_time = meditation_time + time;
-    meditation_count = meditation_count + 1;
-
-    console.log(meditation_time);
-    console.log(meditation_count);
-    
-    GuildModel.updateOne(
-      { guild: guildid },
-      { $set: {
-          guild: guildid,
-          meditation_time: meditation_time,
-          meditation_count: meditation_count
-        }
-      },
-      {
-        upsert: true
-      }
   );
 
-  return meditation_count, meditation_time, all_time;
+  return true;
 }
 
-module.exports.addToDatabases = addToDatabases;
+async function getUserData(userid, guildid) {
+  var meditation_count = await Meditations.countDocuments({
+    usr: userid,
+    guild: guildid
+  });
+
+  var meditation_time = await Meditations.aggregate([
+    {
+      $match: {
+        guild: guildid,
+        usr: userid
+      }
+    },
+    {
+      $group: {
+        timeTotal: { $sum: "$time" }
+      }
+    }
+  ]).timeTotal;
+
+  return meditation_count, meditation_time;
+}
+
+async function getGuildData(guildid) {
+  var meditation_count = await Meditations.countDocuments({
+    guild: guildid
+  });
+
+  var meditation_time = await Meditations.aggregate([
+    {
+      $match: {
+        guild: guildid
+      }
+    },
+    {
+      $group: {
+        timeTotal: { $sum: "$time" }
+      }
+    }
+  ]).timeTotal;
+
+  return meditation_count, meditation_time;
+}
+
+module.exports.addToDatabase = addToDatabase;
+module.exports.getUserData = getUserData;
+module.exports.getGuildData = getGuildData;

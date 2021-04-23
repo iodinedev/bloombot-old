@@ -1,5 +1,10 @@
+const Tags = require('../databaseFiles/connect').Tags;
+const config = require('../config.json');
+const {distance, closest} = require('fastest-levenshtein');
+const Discord = require('discord.js');
+
 module.exports.execute = async (client, message) => {
-  return await message.channel.send('Hey there!');
+  
 };
 
 module.exports.config = {

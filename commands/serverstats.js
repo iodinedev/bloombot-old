@@ -1,26 +1,23 @@
-const GuildModel = require('../databaseFiles/connect').GuildModel;
+const meditateUtils = require('../utils/meditateUtils');
 const Discord = require('discord.js');
 const config = require('../config.json');
 
 
 module.exports.execute = async (client, message) => {
+  var guild_count, guild_time = await meditateUtils.getGuildData(message.guild.id);
 
-  var guild = await GuildModel.findOne({
-    guild: message.guild.id
-  });
-
-  if (!guild) return await message.channel.send(':x: No data found for this guild!');
+  if (!guild_count) return await message.channel.send(':x: No data found for this guild!');
 
   let rankEmbed = new Discord.MessageEmbed()
     .setColor(config.colors.embedColor)
     .setTitle('Server Meditation Stats')
     .addField(
       'Meditation Minutes',
-      guild.meditation_time
+      guild_time
     )
     .addField(
       'Meditation Count',
-      guild.meditation_count
+      guild_count
     );
 
   return await message.channel.send(rankEmbed);

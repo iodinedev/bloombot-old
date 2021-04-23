@@ -1,4 +1,4 @@
-const MeditationModel = require('../databaseFiles/connect').MeditationModel;
+const meditateUtils = require('../utils/meditateUtils');
 const Meditations = require('../databaseFiles/connect').Meditations;
 const Discord = require('discord.js');
 const config = require('../config.json');
@@ -18,12 +18,9 @@ module.exports.execute = async (client, message, args) => {
   Meditations.find({
     usr: get_usr
   }).sort({_id:-1}).limit(3).toArray(async function(err, result) {
-    var usr = await MeditationModel.findOne({
-      usr: get_usr
-    });
+    var user_count, user_time = await meditateUtils.getUserData(message.author.id, message.guild.id);
 
     const user = client.users.cache.get(get_usr);
-    var time = 0;
 
     if (result.length > 0) time = usr.all_time;
 
@@ -44,7 +41,11 @@ module.exports.execute = async (client, message, args) => {
       .setThumbnail(user.avatarURL())
       .addField(
         'Meditation Minutes',
-        time
+        user_time
+      )
+      .addField(
+        'Meditation Count',
+        user_count
       )
       .addField(
         'Recent Meditations',
