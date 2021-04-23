@@ -75,7 +75,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	meditateUtils.addToDatabases(user, meditation.guild, time);
+	meditateUtils.addToDatabase(user, meditation.guild, time);
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
