@@ -33,6 +33,8 @@ module.exports.execute = async (client, message, args) => {
 
 			await message.channel.send(`:white_check_mark: I will notify you when your ${time} minutes are up via a DM!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
 			
+			console.log(message.author.id);
+
       Current.insertOne({
         usr: message.author.id,
         time: time,
