@@ -21,14 +21,20 @@ async function getUserData(userid, guildid) {
     guild: guildid
   });
 
-  var meditation_time = await Meditations.aggregate([ {
-    $group: {
-       _id: null,
-       "TotalCount": {
-          $sum:1
-       }
+  var meditation_time = await Meditations.aggregate([ 
+    { $match: {
+      usr: userid,
+      guild: guildid
+    } },
+    {
+      $group: {
+        _id: null,
+        "TotalCount": {
+            $sum:1
+        }
+      }
     }
-    } ] ).toArray();
+  ]).toArray();
 
   console.log(meditation_time)
 
