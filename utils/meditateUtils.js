@@ -28,9 +28,7 @@ async function getUserData(userid, guildid) {
           $sum:1
        }
     }
-    } ], function(err, result) {
-      console.log(result);
-});
+    } ] ).toArray();
 
   console.log(meditation_time)
 
