@@ -16,7 +16,7 @@ module.exports = async (client, message) => {
     if (commandfile) {
       message.channel.startTyping();
 
-      if (commandfile.admin && commandfile.admin === true && indexOf(global_admins, message.author.id) === -1) {
+      if (commandfile.config.admin && commandfile.config.admin === true && config.global_admins.indexOf(message.author.id) === -1) {
         await message.channel.send(':x: You don\'t have permission to run this command.');
       } else {
         var total = 0;

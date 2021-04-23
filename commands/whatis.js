@@ -1,6 +1,7 @@
 const Tags = require('../databaseFiles/connect').Tags;
 const config = require('../config.json');
 const {distance, closest} = require('fastest-levenshtein');
+const Discord = require('discord.js');
 
 module.exports.execute = async (client, message, args) => {
   if (!args[0]) return await message.channel.send(':x: You must include a tag!');
@@ -12,26 +13,28 @@ module.exports.execute = async (client, message, args) => {
   if (tag) {
 		const tagHelp = new Discord.MessageEmbed()
 			.setColor(config.colors.embedColor)
-			.setTitle(tag.title)
-			.setDescription(tag.description)
-      .setFooter(`Tag id: ${tag.tag}`);
+			.setTitle('Tag Glossary')
+			.addField(
+        `Definition of \`${tag.tag}\``,
+        tag.def
+      )
+      .setFooter(`Tag ID: ${tag._id}`);
     return await message.channel.send(tagHelp);
   }
   
   await Tags.find().toArray(function(err, result) {
     if (result.length > 0) {
       if (distance(args[0], closest(args[0], result)) <= 5) {
+        console.log(closest(message, result));
         const tagHelp = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle('Tag Not Found')
-          .addField('Did You Mean', closest(message, result))
+          .setDescription(`Did you mean \`${closest(message, result).tag}\`?`)
         
         return message.channel.send(tagHelp);
       }
     }
   });
-
-  return await message.channel.send(':x: Tag not found!');
 };
 
 module.exports.config = {

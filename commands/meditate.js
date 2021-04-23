@@ -7,7 +7,7 @@ const ytdl = require('ytdl-core');
 module.exports.execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
 
-  if (voiceChannel) {
+  if (voiceChannel.channel) {
 		if (!args || !args[0]) {
 			return await message.channel.send(':x: You must specify how long you\'d like to meditate for!');
 		}
@@ -30,12 +30,15 @@ module.exports.execute = async (client, message, args) => {
 
     try {			
 			begin(client, voiceChannel, link);
+
+			await message.channel.send(`:white_check_mark: I will notify you when your ${time} minutes are up via a DM!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
 			
       Current.insertOne({
         usr: message.author.id,
         time: time,
         whenToStop: stop,
-	guild: message.guild.id
+				guild: message.guild.id,
+				channel: voiceChannel.channel.id
 }     );
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
@@ -52,12 +55,14 @@ function begin(client, voiceChannel, link) {
 }
 
 async function stop(client, meditation, difference, catchUp = false) {
-	let userToStop = await client.users.fetch(meditation.usr);
 	let description;
 	var time = meditation.time;
+	const guild = client.guilds.cache.get(meditation.guild);
+	const voice = guild.channels.cache.get(meditation.channel);
+	const user = guild.members.cache.get(meditation.usr);
 	
 	try {
-		userToStop.voice.channel.leave();
+		voice.leave();
 	} catch(err) {
 		console.error(err);
 	}
@@ -70,14 +75,14 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	meditateUtils.addToDatabases(userToStop, meditation.guild, time);
+	meditateUtils.addToDatabases(user, meditation.guild, time);
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
 		.setTitle(`${config.emotes.meditation} Meditation Time Done ${config.emotes.meditation}`)
 		.setDescription(description);
 
-	userToStop.send(stopMessage);
+	user.send(stopMessage);
 
 	try {
 		await Current.deleteOne({
@@ -132,6 +137,7 @@ async function catchUp(client) {
 
 module.exports.scanForMeditations = scanForMeditations;
 module.exports.catchUp = catchUp;
+module.exports.stop = stop;
 
 module.exports.config = {
   name: 'meditate',

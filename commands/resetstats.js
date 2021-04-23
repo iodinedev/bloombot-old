@@ -20,7 +20,7 @@ module.exports.execute = async (client, message, args) => {
 
     var meditation_count = Meditations.count();
 
-    await Meditations.remove({
+    await Meditations.deleteMany({
       usr: message.author.id
     });
 
@@ -32,7 +32,7 @@ module.exports.execute = async (client, message, args) => {
       time = usr.all_time;
     }
 
-    await MeditationModel.remove({
+    await MeditationModel.deleteOne({
       usr: message.author.id
     });
 

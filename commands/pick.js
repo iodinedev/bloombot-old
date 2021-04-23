@@ -14,7 +14,7 @@ module.exports.execute = async (client, message) => {
   var usr = await MeditationModel.findOne({usr: user.id});
   var all_time = 0;
 
-  if (usr.all_time) {
+  if (usr && usr.all_time) {
     all_time = usr.all_time;
   }
 
@@ -34,7 +34,9 @@ module.exports.execute = async (client, message) => {
 
   var channel = client.channels.cache.get(config.channels.announce);
 
-  return await channel.send(announceEmbed);
+  await channel.send(announceEmbed);
+
+  return await message.channel.send(`:white_check_mark: Announcement posted in <#${channel.id}>!`)
 };
 
 module.exports.config = {

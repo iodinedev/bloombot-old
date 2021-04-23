@@ -1,6 +1,5 @@
 commands/
  - listtags
- - remove
 
 extra
  - Reaction for polls

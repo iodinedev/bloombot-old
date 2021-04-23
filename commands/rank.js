@@ -10,7 +10,7 @@ module.exports.execute = async (client, message, args) => {
   if (args[0]) {
     get_usr = args[0].match(/\d/g);
 
-    if (get_usr === null) return await message.channel.send(':x: Must be a user mention or user ID.')
+    if (get_usr === null) return await message.channel.send(':x: Must be a user mention or user ID.');
 
     get_usr = get_usr.join("");
   }
@@ -23,8 +23,9 @@ module.exports.execute = async (client, message, args) => {
     });
 
     const user = client.users.cache.get(get_usr);
+    var time = 0;
 
-    if (result.length === 0) return await message.channel.send(':x: This user has no meditation data.');
+    if (result.length > 0) time = usr.all_time;
 
     var meditations = [];
 
@@ -34,7 +35,7 @@ module.exports.execute = async (client, message, args) => {
       var day = date.getUTCDate();
       var year = date.getUTCFullYear();
 
-      meditations.push(`\`${meditation.time}\` - ${day}/${month}/${year}\n`);
+      meditations.push(`**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation._id}\`\n`);
     });
 
     let rankEmbed = new Discord.MessageEmbed()
@@ -43,11 +44,11 @@ module.exports.execute = async (client, message, args) => {
       .setThumbnail(user.avatarURL())
       .addField(
         'Meditation Minutes',
-        usr.all_time
+        time
       )
       .addField(
         'Recent Meditations',
-        meditations
+        meditations.length === 0 ? 'None' : meditations
       );
 
     return message.channel.send(rankEmbed);

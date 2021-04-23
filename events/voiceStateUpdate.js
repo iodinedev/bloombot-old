@@ -1,31 +1,37 @@
-const meditation = require('../commands/meditate.js');
+const meditate_functions = require('../commands/meditate.js');
 const Current = require('../databaseFiles/connect').Current;
 const config = require('../config.json');
 
-module.exports = async (client, oldMember, newMember) => {
-	if (oldMember.voice.channel and !newMember.voice.channel) {
+module.exports = async (client, oldState, newState) => {
+	if (oldState.channelID && !newState.channelID) {
   const currentDate = new Date();
+  const member = oldState.guild.members.cache.get(oldState.id);
 
 	try {
 		const meditation = await Current.findOne({
-      usr: newMember.id
+      usr: member.id
     });
 
 		if (meditation) {
       let difference;
-      difference = currentDate - meditation.whenToStop;
+      difference = meditation.whenToStop - currentDate;
 
-      difference = difference.getMinutes();
+      difference = new Date(difference).getMinutes();     
 
       await Current.updateOne(
-        { usr: newMember.id },
+        { usr: member.id },
         { $set: {
-            time: difference
+            time: meditation.time - difference
           }
         }
       );
 
-      meditation.stop(client, meditation, difference);
+
+      const new_meditation = await Current.findOne({
+        usr: member.id
+      });
+
+      meditate_functions.stop(client, new_meditation, difference);
 		}
 	} catch(err) {
 		console.error('Meditation MongoDB error: ', err);

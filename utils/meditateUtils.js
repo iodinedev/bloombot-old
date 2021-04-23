@@ -18,7 +18,6 @@ async function addToDatabases(author, guildid, time) {
     { usr: author.id },
     { $set: {
         usr: author.id,
-        last_time: time,
         all_time: all_time
       }
     },
@@ -31,7 +30,8 @@ async function addToDatabases(author, guildid, time) {
     {
       usr: author.id,
       date: now,
-      time: time
+      time: time,
+      guild: guildid
     }
   )
 
@@ -39,13 +39,16 @@ async function addToDatabases(author, guildid, time) {
     var meditation_time = 0;
     var meditation_count = 0;
 
-    if (mettime) {
+    if (mettime.meditation_time && mettime.meditation_count) {
       meditation_time = parseInt(mettime.meditation_time);
       meditation_count = parseInt(mettime.meditation_count);
     }
 
     meditation_time = meditation_time + time;
     meditation_count = meditation_count + 1;
+
+    console.log(meditation_time);
+    console.log(meditation_count);
     
     GuildModel.updateOne(
       { guild: guildid },
