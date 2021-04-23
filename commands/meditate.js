@@ -32,8 +32,6 @@ module.exports.execute = async (client, message, args) => {
 			begin(client, voiceChannel, link);
 
 			await message.channel.send(`:white_check_mark: I will notify you when your ${time} minutes are up via a DM!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
-			
-			console.log(message.author.id);
 
       Current.insertOne({
         usr: message.author.id,
@@ -77,7 +75,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	await meditateUtils.addToDatabase(user, meditation.guild, time);
+	await meditateUtils.addToDatabase(user.id, meditation.guild, time);
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
