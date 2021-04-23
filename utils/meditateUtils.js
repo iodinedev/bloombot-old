@@ -40,7 +40,6 @@ async function getUserData(userid, guildid) {
     }
   ]).toArray();
 
-  console.log(meditation_count)
   meditation_time = meditation_time[0].sum;
 
   return {
@@ -53,7 +52,6 @@ async function getGuildData(guildid) {
   var meditation_count = await Meditations.countDocuments({
     guild: guildid
   });
-  console.log(guild_count);
 
   var meditation_time = await Meditations.aggregate([
     {
