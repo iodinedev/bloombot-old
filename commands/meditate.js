@@ -51,7 +51,7 @@ module.exports.execute = async (client, message, args) => {
 function begin(client, voiceChannel, link) {
     voiceChannel.channel.join().then(connection => {
       const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
-    }).catch(err => console.log(err));
+    }).catch(err => console.error(err));
 }
 
 async function stop(client, meditation, difference, catchUp = false) {
@@ -75,7 +75,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	meditateUtils.addToDatabase(user, meditation.guild, time);
+	await meditateUtils.addToDatabase(user, meditation.guild, time);
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
@@ -104,7 +104,6 @@ async function scanForMeditations(client) {
 			let difference;
 			meditations.forEach(async meditation => {
 				difference = currentDate - meditation.whenToStop;
-				console.log(difference);
 				if (difference > (-1)*config.meditationScanInterval) {
 					stop(client, meditation, difference);
 				}

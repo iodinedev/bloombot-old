@@ -1,7 +1,6 @@
 const config = require('../config.json');
 const meditation = require('../commands/meditate');
 const BotStats = require('../databaseFiles/connect').BotStats;
-const GuildModel = require('../databaseFiles/connect').GuildModel;
 
 module.exports = (client) => {
 	meditation.catchUp(client);
