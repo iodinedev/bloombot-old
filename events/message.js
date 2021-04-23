@@ -43,7 +43,7 @@ module.exports = async (client, message) => {
           }
         );
         
-        await commandfile.execute(client, message, args); // Execute found command
+        commandfile.execute(client, message, args); // Execute found command
       }
 
       message.channel.stopTyping();
