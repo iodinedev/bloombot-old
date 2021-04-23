@@ -6,6 +6,8 @@ const config = require('../config.json');
 module.exports.execute = async (client, message) => {
   var guild_count, guild_time = await meditateUtils.getGuildData(message.guild.id);
 
+  console.log(guild_count);
+
   if (!guild_count) return await message.channel.send(':x: No data found for this guild!');
 
   let rankEmbed = new Discord.MessageEmbed()
