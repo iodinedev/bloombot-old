@@ -98,9 +98,7 @@ async function scanForMeditations(client) {
 	const currentDate = new Date();
 
 	try {
-		const meditations = await Current.find();
-
-		console.log(meditations);
+		const meditations = await Current.find().toArray();
 
 		if (meditations) {
 			let difference;
