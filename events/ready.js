@@ -4,7 +4,6 @@ const BotStats = require('../databaseFiles/connect').BotStats;
 const GuildModel = require('../databaseFiles/connect').GuildModel;
 
 module.exports = (client) => {
-	GuildModel.drop()
 	meditation.catchUp(client);
 	setInterval(meditation.scanForMeditations, config.meditationScanInterval, client);
 

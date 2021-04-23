@@ -14,24 +14,24 @@
     "@discordjs/opus": "^0.5.0",
     "cron": "^1.8.2",
     "data-store": "^4.0.3",
-    "discord.js": "^12.5.1",
+    "discord.js": "^12.5.3",
     "eslint-plugin-jest": "^22.17.0",
     "fastest-levenshtein": "^1.0.12",
     "ffmpeg-static": "^4.3.0",
-    "moment": "^2.26.0",
-    "mongodb": "^3.6.4",
-    "mysql2": "^2.0.2",
-    "prettier": "^2.0.5",
-    "rss-parser": "^3.7.2",
-    "sequelize": "^5.21.3",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.6",
+    "mysql2": "^2.2.5",
+    "prettier": "^2.2.1",
+    "rss-parser": "^3.12.0",
+    "sequelize": "^5.22.4",
     "ytdl": "^1.4.1"
   },
   "devDependencies": {
-    "eslint": "^7.2.0",
+    "eslint": "^7.24.0",
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-standard": "^4.1.0"
   }
 }
