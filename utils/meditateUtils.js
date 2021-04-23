@@ -33,7 +33,9 @@ async function getUserData(userid, guildid) {
         timeTotal: { $sum: "$time" }
       }
     }
-  ]).timeTotal;
+  ]);
+
+  console.log(meditation_time)
 
   return meditation_count, meditation_time;
 }
