@@ -24,6 +24,7 @@ module.exports.execute = async (client, message) => {
   const announceEmbed = new Discord.MessageEmbed()
     .setColor(config.colors.embedColor)
     .setTitle(':tada: This month\'s meditation challenger in the spotlight is... :tada:')
+    .setThumbnail(user.avatarURL())
     .addField(
       `**Monthly hall-of-fame member**`,
       `**${user}** is our server member of the month, with a meditation time of **${user_time}** minutes!\nYou're doing great, keep at it!`
