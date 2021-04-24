@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../config.json');
-let prefix = config.prefix;
+const Prefixes = require('../databaseFiles/connect').Prefixes;
 const {distance, closest} = require('fastest-levenshtein');
 
 function capitalizeFLetter(input) {
@@ -12,6 +12,14 @@ module.exports.execute = async (client, message, args) => {
   var modules = config.modules;
   var cleanmodules = modules.map((v) => v.toLowerCase());
   let commandNames = [];
+
+  let prefix;
+  try {
+    prefix = await Prefixes.findOne({'guild': message.guild.id});
+    prefix = prefix.prefix;
+  } catch {
+    prefix = '.';
+  }
 
   if (!args || args.length === 0) {
     var modulelist = '';
