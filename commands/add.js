@@ -8,6 +8,8 @@ module.exports.execute = async (client, message, args) => {
   if (message.channel.id == config.channels.meditation) {
     var time = parseInt(time);
 
+    if (!not > 0) return message.channel.send(':x: Your meditation time must be greater than zero.');
+
     if (time !== NaN && time <= 600) {
         var member = message.member;
         await meditateUtils.addToDatabase(message.author.id, message.guild.id, time);
