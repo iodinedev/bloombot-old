@@ -160,6 +160,6 @@ module.exports.config = {
   name: 'meditate',
   aliases: [],
   module: 'Meditation',
-  description: 'Keeps track of your meditation time for you. Join a voice channel and it will join and play a gong sound to mark the beginning and end.\nIt will leave in between the gong sounds, but you must stay in the voice channel or it will stop it early.',
+  description: 'Keeps track of your meditation time for you. Join a voice channel and run the command, specifying how many minutes you would like to meditate for. It will join and play a gong sound to mark the beginning.\nYou may leave at any point to log the time so far.',
   usage: ['meditate <time in minutes>'],
 };

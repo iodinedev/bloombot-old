@@ -8,6 +8,8 @@ module.exports.execute = async (client, message) => {
 
   var menuEmbed = await createMenu(page, pages);
 
+  if (!menuEmbed) return await message.channel.send(':x: No terms have been defined yet.');
+
   var menu = await message.channel.send(menuEmbed);
   var active = true;
 
@@ -74,9 +76,9 @@ async function pageNumbers() {
 }
 
 module.exports.config = {
-  name: 'listtags',
-  aliases: ['tags'],
+  name: 'whatislist',
+  aliases: ['glossary', 'listtags'],
   module: 'Utility',
-  description: 'Shows a list of all tags available.',
+  description: 'Shows a list of all terms available in our glossary.',
   usage: ['listtags'],
 };
