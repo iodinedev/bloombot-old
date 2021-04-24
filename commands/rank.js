@@ -16,7 +16,10 @@ module.exports.execute = async (client, message, args) => {
   }
 
   Meditations.find({
-    usr: get_usr
+    $and: [
+      {usr: userid},
+      {guild: guildid}
+    ]
   }).sort({_id:-1}).limit(3).toArray(async function(err, result) {
     var data = await meditateUtils.getUserData(get_usr, message.guild.id);
     var user_count = 0;

@@ -16,7 +16,10 @@ module.exports.execute = async (client, message, args) => {
   if(parseInt(id) === NaN) return await message.channel.send(':x: That is not a valid user ID.');
 
   await Meditations.deleteMany({
-    usr: id
+    $and: [
+      {usr: userid},
+      {guild: guildid}
+    ]
   });
 
   await Object.values(config.roles.lvl_roles).every(async (roleid) => {
