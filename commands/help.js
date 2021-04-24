@@ -36,7 +36,7 @@ module.exports.execute = async (client, message, args) => {
     try {
       helpMessage.addField(`All Modules`, `${modulelist}`);
       return await message.channel.send(helpMessage).then(bot_msg => {
-        bot_msg.delete({timeout: 10000});
+        deleteMessages(message, bot_msg)
       });
     } catch (err) {
       console.log(err);
@@ -63,7 +63,7 @@ module.exports.execute = async (client, message, args) => {
 
       try {
         message.channel.send(helpMessage).then(bot_msg => {
-          bot_msg.delete({ timeout: 10000 });
+          deleteMessages(message, bot_msg)
         });
       } catch (err) {
         console.log(err);
@@ -90,7 +90,7 @@ module.exports.execute = async (client, message, args) => {
         });
         try {
           message.channel.send(helpMessage).then(bot_msg => {
-            bot_msg.delete({ timeout: 10000 });
+            deleteMessages(message, bot_msg)
           });
         } catch (err) {
           console.log(err);
@@ -116,17 +116,22 @@ async function didYouMean(commands, search, message) {
           closest(search, commands)
         }\`?`
       ).then(bot_msg => {
-        bot_msg.delete({ timeout: 10000 });
+        deleteMessages(message, bot_msg)
       })
       .catch((err) => console.log(err));
   } else {
     return await message.channel
       .send(`Did you mean \`${prefix}help ${closest(message, commands)}\`?`)
       .then(bot_msg => {
-        bot_msg.delete({ timeout: 10000 });
+        deleteMessages(message, bot_msg)
       })
       .catch((err) => console.log(err));
   }
+}
+
+function deleteMessages(usr, bot) {
+  usr.delete({timeout: 15000});
+  bot.delete({timeout: 15000});
 }
 
 module.exports.config = {
