@@ -1,8 +1,16 @@
 const Meditations = require('../databaseFiles/connect').Meditations;
-const prefix = require('../config.json').prefix;
+const Prefixes = require('../databaseFiles/connect').Prefixes;
 const { ObjectId } = require('mongodb');
 
 module.exports.execute = async (client, message, args) => {
+  let prefix;
+  try {
+    prefix = await Prefixes.findOne({'guild': message.guild.id});
+    prefix = prefix.prefix;
+  } catch {
+    prefix = '.';
+  }
+
   if (!args[0]) return await message.channel.send(`:x: You must include a meditation ID to remove. Use \`${prefix}rank\` to see your recent meditations' IDs.`)
   const id = ObjectId(args[0]);
 
@@ -22,8 +30,8 @@ module.exports.execute = async (client, message, args) => {
 
 module.exports.config = {
   name: 'remove',
-  aliases: ['hey', 'greetings'],
-  module: 'Utility',
-  description: 'Says hello. Use to test if bot is online.',
-  usage: ['hello'],
+  aliases: [],
+  module: 'Meditation',
+  description: `Deletes a meditation session by ID. Use \`${prefix}rank\` to see your recent meditations as well as their IDs.`,
+  usage: ['remove <meditation ID>'],
 };
