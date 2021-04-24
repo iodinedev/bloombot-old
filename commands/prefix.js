@@ -29,7 +29,7 @@ module.exports.execute = async (client, message, args) => {
 module.exports.config = {
   name: 'prefix',
   aliases: ['setprefix'],
-  module: 'Settings',
+  module: 'Admin',
   description: 'Change the prefix for the bot.',
   usage: ['prefix <new prefix>'],
   admin: true

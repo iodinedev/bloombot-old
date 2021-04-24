@@ -39,7 +39,7 @@ module.exports.execute = async (client, message, args) => {
 module.exports.config = {
   name: 'resetstats',
   aliases: ['reset'],
-  module: 'Meditation',
+  module: 'Admin',
   description: 'Resets a user\'s meditation stats.',
   usage: ['resetstats <user ID>'],
   admin: true,

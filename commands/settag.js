@@ -60,7 +60,7 @@ module.exports.execute = async (client, message, args) => {
 module.exports.config = {
   name: 'settag',
   aliases: [],
-  module: 'Utility',
+  module: 'Admin',
   description: 'Sets a tag definition.',
   usage: ['settag <tag>'],
   admin: true,
