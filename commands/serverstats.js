@@ -8,8 +8,6 @@ module.exports.execute = async (client, message) => {
   var guild_count = data.meditation_count;
   var guild_time = data.meditation_time;
 
-  console.log(guild_count);
-
   if (!guild_count) return await message.channel.send(':x: No data found for this guild!');
 
   let rankEmbed = new Discord.MessageEmbed()

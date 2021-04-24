@@ -19,18 +19,10 @@ module.exports.execute = async (client, message, args) => {
         var guild_count = guilddata.meditation_count;
         var guild_time = guilddata.meditation_time;
 
-        try {
-            var role = member.guild.roles.cache.find(role => role.id === config.roles.meditation);
-
-            await member.roles.add(role);
-        } catch(err) {
-            console.error("Role not found: " + err);
-        }
-
         if (guild_count % 10 === 0) {
-            var time_in_hours = int(Math.round(guild_time / 60, 1));
+            var time_in_hours = parseInt(Math.round(guild_time / 60, 1));
 
-            await client.channels.cache.get(config.channel.meditation)
+            await client.channels.cache.get(config.channels.meditation)
                 .send(`Awesome sauce! This server has collectively generated ${time_in_hours} hours of realmbreaking meditation!`);
         }
 

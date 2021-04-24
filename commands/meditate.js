@@ -48,7 +48,15 @@ module.exports.execute = async (client, message, args) => {
   }
 };
 
-function begin(client, voiceChannel, link) {
+async function begin(client, voiceChannel, link) {
+	try {
+		var role = member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
+
+		await member.roles.add(role);
+	} catch(err) {
+		console.error("Role not found: " + err);
+	}
+
 	voiceChannel.channel.join().then(connection => {
 		const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
 	}).catch(err => console.error(err));
@@ -60,6 +68,14 @@ async function stop(client, meditation, difference, catchUp = false) {
 	const guild = client.guilds.cache.get(meditation.guild);
 	const voice = guild.channels.cache.get(meditation.channel);
 	const user = guild.members.cache.get(meditation.usr);
+
+	try {
+		var role = member.guild.roleawaits.cache.find(role => role.id === config.roles.currently_meditating);
+
+		await member.roles.add(role);
+	} catch(err) {
+		console.error("Role not found: " + err);
+	}
 	
 	try {
 		voice.leave();
