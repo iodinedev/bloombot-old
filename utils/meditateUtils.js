@@ -23,7 +23,7 @@ async function getUserData(userid, guildid) {
     ]
   });
 
-  var meditation_time = await Meditations.aggregate([ 
+  var meditation_sum = await Meditations.aggregate([ 
     { $match: {
       $and: [
         {usr: userid},
@@ -40,7 +40,8 @@ async function getUserData(userid, guildid) {
     }
   ]).toArray();
 
-  meditation_time = meditation_time[0].sum;
+  var meditation_time = 0
+  if (meditation_sum.length > 0) meditation_time = meditation_sum[0].sum;
 
   return {
     meditation_count,
@@ -66,7 +67,7 @@ async function getGuildData(guildid) {
     }
   ]);
 
-  var meditation_time = await Meditations.aggregate([ 
+  var meditation_sum = await Meditations.aggregate([ 
     { $match: {
       guild: guildid
     } },
@@ -80,7 +81,10 @@ async function getGuildData(guildid) {
     }
   ]).toArray();
 
-  meditation_time = meditation_time[0].sum;
+
+
+  var meditation_time = 0
+  if (meditation_sum.length > 0) meditation_time = meditation_sum[0].sum;
 
   return {
     meditation_count,

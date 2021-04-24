@@ -35,6 +35,8 @@ module.exports.execute = async (client, message, args) => {
       }
     }
   });
+
+  return await message.channel.send(':x: Tag not found!');
 };
 
 module.exports.config = {

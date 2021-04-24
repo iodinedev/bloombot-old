@@ -50,9 +50,11 @@ module.exports.execute = async (client, message, args) => {
 
 async function begin(client, voiceChannel, link) {
 	try {
-		var role = member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
+		var curr_role = member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
+		var challenger_role = member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
 
-		await member.roles.add(role);
+		await member.roles.add(curr_role);
+		await member.roles.add(challenger_role);
 	} catch(err) {
 		console.error("Role not found: " + err);
 	}
@@ -72,7 +74,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 	try {
 		var role = member.guild.roleawaits.cache.find(role => role.id === config.roles.currently_meditating);
 
-		await member.roles.add(role);
+		await member.roles.remove(role);
 	} catch(err) {
 		console.error("Role not found: " + err);
 	}

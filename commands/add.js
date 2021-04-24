@@ -30,6 +30,15 @@ module.exports.execute = async (client, message, args) => {
 
         await message.channel.send(`You have meditated for ${time} minutes. Your total meditation time is ${user_time} minutes :tada:\n*${motivation_message}*`);
 
+
+        try {
+            var challenger_role = member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
+
+            await member.roles.add(challenger_role);
+        } catch(err) {
+            console.error("Role not found: " + err);
+        }
+
         var lvl_role;
 
         if (user_time >= 50) lvl_role = 'I_Star';

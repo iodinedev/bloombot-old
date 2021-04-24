@@ -9,46 +9,11 @@ module.exports.execute = async (client, message, args) => {
 
   if(parseInt(id) === NaN) return await message.channel.send(':x: That is not a valid user ID.');
 
-  await MeditationModel.find({
+  await Meditations.deleteMany({
     usr: message.author.id
-  }).toArray(async function(err, usr) {
-    if (err) return console.error(err);
-
-    var guild = await GuildModel.findOne({
-      guild: message.guild.id
-    });
-
-    var meditation_count = Meditations.count();
-
-    await Meditations.deleteMany({
-      usr: message.author.id
-    });
-
-    meditation_count = meditation_count - Meditations.count();
-
-    var time = 0;
-
-    if (usr) {
-      time = usr.all_time;
-    }
-
-    await MeditationModel.deleteOne({
-      usr: message.author.id
-    });
-
-    await GuildModel.updateOne(
-      { guild: message.guild.id },
-      {
-        $set: {
-          meditation_time: guild.meditation_time - time,
-          meditation_count: guild.meditation_count - meditation_count
-        }
-      }
-    );
-
-
-    return message.channel.send(':white_check_mark: User has been removed from all databases.');
   });
+
+  return message.channel.send(':white_check_mark: User has been removed from all databases.');
 };
 
 module.exports.config = {
