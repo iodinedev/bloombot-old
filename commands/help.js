@@ -35,7 +35,7 @@ module.exports.execute = async (client, message, args) => {
     });
     try {
       helpMessage.addField(`All Modules`, `${modulelist}`);
-      return await message.channel.send(helpMessage).then(bot_msg => {
+      return await message.channel.send(helpMessage).then(async (bot_msg) => {
         bot_msg.delete(10000);
       });
     } catch (err) {
