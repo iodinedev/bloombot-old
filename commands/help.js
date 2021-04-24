@@ -28,7 +28,7 @@ module.exports.execute = async (client, message, args) => {
       .setColor(config.colors.embedColor)
       .setTitle('List of available modules')
       .setDescription(
-        `Modules available in ${message.guild.name}. Use \`${prefix}help [module]\` for more about a specific module, or \`${prefix}help all\` for all commands.`
+        `Modules available in ${message.guild.name}. Use \`${prefix}help [module]\` for more about a specific module.`
       );
     modules.forEach((module) => {
       modulelist = modulelist.concat(`${module}\n`);
@@ -71,7 +71,7 @@ module.exports.execute = async (client, message, args) => {
         let helpMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle(`${capitalizeFLetter(modCmd)}`)
-          .setDescription(`You asked for commands under the ${modCmd} module`);
+          .setDescription(`You asked for commands under the ${modCmd} module.`);
 
         commands.forEach((requestedcommand) => {
           if (
@@ -83,25 +83,6 @@ module.exports.execute = async (client, message, args) => {
               `${requestedcommand.config.description}`
             );
           }
-        });
-        try {
-          message.channel.send(helpMessage);
-        } catch (err) {
-          console.log(err);
-        }
-      } else if (args[0].toLowerCase() == 'all') {
-        modCmd = args[0].toLowerCase();
-
-        let helpMessage = new Discord.MessageEmbed()
-          .setColor(config.colors.embedColor)
-          .setTitle(`${capitalizeFLetter(modCmd)}`)
-          .setDescription(`You asked for all commands`);
-
-        commands.forEach((requestedcommand) => {
-          helpMessage.addField(
-            `**${prefix}${requestedcommand.config.name}**`,
-            `${requestedcommand.config.description}`
-          );
         });
         try {
           message.channel.send(helpMessage);
