@@ -17,8 +17,8 @@ module.exports.execute = async (client, message, args) => {
 
   Meditations.find({
     $and: [
-      {usr: userid},
-      {guild: guildid}
+      {usr: message.author.id},
+      {guild: message.guild.id}
     ]
   }).sort({_id:-1}).limit(3).toArray(async function(err, result) {
     var data = await meditateUtils.getUserData(get_usr, message.guild.id);

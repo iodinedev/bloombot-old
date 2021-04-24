@@ -17,8 +17,8 @@ module.exports.execute = async (client, message, args) => {
 
   await Meditations.deleteMany({
     $and: [
-      {usr: userid},
-      {guild: guildid}
+      {usr: id},
+      {guild: message.guild.id}
     ]
   });
 
