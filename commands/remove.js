@@ -2,14 +2,15 @@ const Meditations = require('../databaseFiles/connect').Meditations;
 const Prefixes = require('../databaseFiles/connect').Prefixes;
 const { ObjectId } = require('mongodb');
 
+let prefix;
+try {
+  prefix = await Prefixes.findOne({'guild': message.guild.id});
+  prefix = prefix.prefix;
+} catch {
+  prefix = '.';
+}
+
 module.exports.execute = async (client, message, args) => {
-  let prefix;
-  try {
-    prefix = await Prefixes.findOne({'guild': message.guild.id});
-    prefix = prefix.prefix;
-  } catch {
-    prefix = '.';
-  }
 
   if (!args[0]) return await message.channel.send(`:x: You must include a meditation ID to remove. Use \`${prefix}rank\` to see your recent meditations' IDs.`)
   const id = ObjectId(args[0]);
