@@ -31,6 +31,16 @@ module.exports.execute = async (client, message, args) => {
     try {			
 			begin(client, voiceChannel, link);
 
+			try {
+				var curr_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
+				var challenger_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
+
+				await message.member.roles.add(curr_role);
+				await message.member.roles.add(challenger_role);
+			} catch(err) {
+				console.error("Role not found: " + err);
+			}
+
 			await message.channel.send(`:white_check_mark: I will notify you when your ${time} minutes are up via a DM!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
 
       Current.insertOne({
@@ -49,16 +59,6 @@ module.exports.execute = async (client, message, args) => {
 };
 
 async function begin(client, voiceChannel, link) {
-	try {
-		var curr_role = member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
-		var challenger_role = member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
-
-		await member.roles.add(curr_role);
-		await member.roles.add(challenger_role);
-	} catch(err) {
-		console.error("Role not found: " + err);
-	}
-
 	voiceChannel.channel.join().then(connection => {
 		const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
 	}).catch(err => console.error(err));
@@ -72,9 +72,9 @@ async function stop(client, meditation, difference, catchUp = false) {
 	const user = guild.members.cache.get(meditation.usr);
 
 	try {
-		var role = member.guild.roleawaits.cache.find(role => role.id === config.roles.currently_meditating);
+		var role = await user.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
 
-		await member.roles.remove(role);
+		await user.roles.remove(role);
 	} catch(err) {
 		console.error("Role not found: " + err);
 	}

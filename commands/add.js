@@ -1,5 +1,6 @@
 const meditateUtils = require('../utils/meditateUtils');
 const config = require('../config.json');
+const { check } = require('prettier');
 
 module.exports.execute = async (client, message, args) => {
   var time = args[0];
@@ -32,7 +33,7 @@ module.exports.execute = async (client, message, args) => {
 
 
         try {
-            var challenger_role = member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
+            var challenger_role = await member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
 
             await member.roles.add(challenger_role);
         } catch(err) {
@@ -54,18 +55,16 @@ module.exports.execute = async (client, message, args) => {
         if (user_time >= 50000) lvl_role = 'II_Star_S';
         if (user_time >= 100000) lvl_role = 'III_Star_S';
 
-        lvl_role = member.guild.roles.cache.find(role => role.id === config.roles.lvl_roles[lvl_role]);
+        await Object.values(config.roles.lvl_roles).every(async (roleid) => {
+            if (member.roles.cache.has(roleid)) {
+                var check_role = await member.guild.roles.cache.find(role => role.id === roleid);
 
-        config.roles.lvl_roles.forEach(role => {
-            check_role = member.guild.roles.cache.find(role => role.id === config.roles.lvl_roles[role]);
-
-            if (member.roles.cache.has(check_role)) {
                 member.roles.remove(check_role);
-                return;
             }
         });
         
-        if (lvl_role) return await member.roles.add(lvl_role);
+        var add_role = await member.guild.roles.cache.find(role => role.id === config.roles.lvl_roles[lvl_role]);
+        if (add_role) return await member.roles.add(add_role);
 
     } else {
         return await message.channel.send(":x: Whoa, easy there tiger... You can just add under 600 minutes at once!");
