@@ -1,6 +1,7 @@
 const config = require('../config.json');
 const BotStats = require('../databaseFiles/connect').BotStats;
 const Prefixes = require('../databaseFiles/connect').Prefixes;
+const reactions = require('../eventActions/reactions');
 
 module.exports = async (client, message) => {
   if (!message.guild || message.author.bot) return;
@@ -69,4 +70,6 @@ module.exports = async (client, message) => {
       message.channel.stopTyping();
     }
   }
+
+  reactions.checkIfCorrect(message);
 };
