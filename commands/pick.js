@@ -39,9 +39,9 @@ module.exports.execute = async (client, message) => {
 
 module.exports.config = {
   name: 'pick',
-  aliases: ['hey', 'greetings'],
-  module: 'Utility',
-  description: 'Says hello. Use to test if bot is online.',
-  usage: ['hello'],
+  aliases: [],
+  module: 'Admin',
+  description: 'Selects a random user from the meditation challengers role and posts an announcement with their meditation time.',
+  usage: ['pick'],
   admin: true
 };
