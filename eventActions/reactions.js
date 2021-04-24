@@ -7,7 +7,6 @@ class reactionCheckAction {
       try {
         if (message.channel.id === obj.channel) {
           obj.reacts.forEach(async (react) => {
-            console.log(react);
             await message.react(react);            
           })
         }

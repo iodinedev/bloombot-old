@@ -15,8 +15,6 @@ module.exports.execute = async (client, message, args) => {
     get_usr = get_usr.join("");
   }
 
-  console.log(message.guild.id);
-
   Meditations.find({
     $and: [
       {usr: get_usr},
