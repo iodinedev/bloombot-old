@@ -63,7 +63,7 @@ module.exports = async (client, message) => {
           }
         );
         
-        var response = commandfile.execute(client, message, args).then(() => {
+        var response = await commandfile.execute(client, message, args).then(() => {
           message.delete({timeout: 1500});
         }); // Execute found command
       }
