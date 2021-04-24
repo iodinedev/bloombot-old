@@ -35,7 +35,9 @@ module.exports.execute = async (client, message, args) => {
     });
     try {
       helpMessage.addField(`All Modules`, `${modulelist}`);
-      return await message.channel.send(helpMessage);
+      return await message.channel.send(helpMessage).then(bot_msg => {
+        bot_msg.delete(10000);
+      });
     } catch (err) {
       console.log(err);
     }
@@ -60,7 +62,9 @@ module.exports.execute = async (client, message, args) => {
       helpMessage.addField('Usage:', command.config.usage);
 
       try {
-        message.channel.send(helpMessage);
+        message.channel.send(helpMessage).then(bot_msg => {
+          bot_msg.delete(10000);
+        });
       } catch (err) {
         console.log(err);
       }
@@ -85,7 +89,9 @@ module.exports.execute = async (client, message, args) => {
           }
         });
         try {
-          message.channel.send(helpMessage);
+          message.channel.send(helpMessage).then(bot_msg => {
+            bot_msg.delete(10000);
+          });
         } catch (err) {
           console.log(err);
         }
@@ -109,11 +115,16 @@ async function didYouMean(commands, search, message) {
         `Did you mean \`${prefix}help ${
           closest(search, commands)
         }\`?`
-      )
+      ).then(bot_msg => {
+        bot_msg.delete(10000);
+      })
       .catch((err) => console.log(err));
   } else {
     return await message.channel
       .send(`Did you mean \`${prefix}help ${closest(message, commands)}\`?`)
+      .then(bot_msg => {
+        bot_msg.delete(10000);
+      })
       .catch((err) => console.log(err));
   }
 }

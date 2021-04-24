@@ -63,12 +63,10 @@ module.exports = async (client, message) => {
           }
         );
         
-        var response = await commandfile.execute(client, message, args).then(() => {
-          message.delete({timeout: 1500});
+        await commandfile.execute(client, message, args).then(() => {
+          message.delete();
         }); // Execute found command
       }
-
-      console.log(response);
 
       message.channel.stopTyping();
     }
