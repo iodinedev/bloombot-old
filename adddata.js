@@ -1,4 +1,4 @@
-const oldMeditations = require('../meditations.json');
+const oldMeditations = require('./meditations.json');
 const meditateUtils = require('./utils/meditateUtils');
 
 const total = oldMeditations.length;
@@ -11,10 +11,7 @@ oldMeditations.forEach(async (entry) => {
   var guildid = '244917432383176705';
   var time = entry.all_time + entry.last_time;
 
-  console.log(userid);
-  console.log(time);
+  if (time > 0) await meditateUtils.addToDatabase(userid, guildid, time);
 
-  //await meditateUtils.addToDatabase(userid, guildid, time);
-
-  console.log(`Added entry ${i} of total.`);
+  console.log(`Added entry ${i} of ${total}.`);
 });
