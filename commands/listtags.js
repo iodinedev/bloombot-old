@@ -77,6 +77,6 @@ module.exports.config = {
   name: 'listtags',
   aliases: ['tags'],
   module: 'Utility',
-  description: 'Shows a list of all tags available',
+  description: 'Shows a list of all tags available.',
   usage: ['listtags'],
 };

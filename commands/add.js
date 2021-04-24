@@ -1,6 +1,5 @@
 const meditateUtils = require('../utils/meditateUtils');
 const config = require('../config.json');
-const { check } = require('prettier');
 
 module.exports.execute = async (client, message, args) => {
   var time = args[0];
