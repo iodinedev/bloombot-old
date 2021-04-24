@@ -5,12 +5,18 @@ module.exports.execute = async (client, message, args) => {
   if (!args[0]) return await message.channel.send(':x: You must specify a user to reset.');
 
   var id = args[0];
-  var roles = message.member.roles;
+  
+  await message.guild.members.fetch();
+
+  var member = message.guild.members.cache.get(id);
+  if (!member) return await message.channel.send(':x: This user does not exist.');
+
+  var roles = member.roles;
 
   if(parseInt(id) === NaN) return await message.channel.send(':x: That is not a valid user ID.');
 
   await Meditations.deleteMany({
-    usr: message.author.id
+    usr: id
   });
 
   await Object.values(config.roles.lvl_roles).every(async (roleid) => {

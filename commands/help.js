@@ -48,7 +48,7 @@ module.exports.execute = async (client, message, args) => {
           `You asked for information on \`${prefix}${command.config.name}\``
         );
       helpMessage.addField('Description:', command.config.description);
-      helpMessage.addField('Aliases:', command.config.aliases);
+      helpMessage.addField('Aliases:', command.config.aliases.length > 0 ? command.config.aliases : 'None');
       helpMessage.addField('Usage:', command.config.usage);
 
       try {
