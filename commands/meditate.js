@@ -33,10 +33,8 @@ module.exports.execute = async (client, message, args) => {
 
 			try {
 				var curr_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
-				var challenger_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.meditation_challenger);
 
 				await message.member.roles.add(curr_role);
-				await message.member.roles.add(challenger_role);
 			} catch(err) {
 				console.error("Role not found: " + err);
 			}
