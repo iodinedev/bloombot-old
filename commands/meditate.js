@@ -96,8 +96,16 @@ async function stop(client, meditation, difference, catchUp = false) {
 	}
 	
 	try {
-		if (voice.members.size === 0) {
-			voice.leave();
+		if (voice.members.length === 1) {
+			for (const [memberID, vc_member] of voice.members) {
+			  if (memberID === client.id) {
+				try {
+				  voice.leave();
+				} catch(err) {
+				  console.error(err);
+				}
+			  }
+			}
 		}
 	} catch(err) {
 		console.error(err);

@@ -84,9 +84,6 @@ module.exports = async (client, oldState, newState) => {
         const meditation_channel = guild.channels.cache.find(channel => channel.id === config.channels.meditation);
   
         await meditation_channel.send(`:white_check_mark: You have joined <@${latest.usr}>'s meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
-  
-        console.log(time);
-        console.log(stop);
 
         Current.insertOne({
           usr: member.id,
