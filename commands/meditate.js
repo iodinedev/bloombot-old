@@ -96,8 +96,8 @@ async function stop(client, meditation, difference, catchUp = false) {
 	}
 	
 	try {
+		console.log(voice.members.size)
 		if (voice.members.length === 1) {
-			console.log('hi')
 			for (const [memberID, vc_member] of voice.members) {
 			  if (memberID === client.id) {
 				try {
