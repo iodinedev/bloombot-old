@@ -57,12 +57,12 @@ module.exports = async (client, oldState, newState) => {
     const voiceChannel = guild.channels.cache.get(newState.channelID);
 
     if (await Current.countDocuments() > 0) {
-      var host = await Current.find().sort({_id:1}).limit(1).toArray();
+      var latest = await Current.find().sort({_id:-1}).limit(1).toArray();
 
-      host = host[0];
+      latest = latest[0];
 
       let difference;
-      difference = host.whenToStop - currentDate;
+      difference = latest.whenToStop - currentDate;
 
       var time = new Date(difference).getMinutes();
       if (time === 0) time = 1;
@@ -83,7 +83,7 @@ module.exports = async (client, oldState, newState) => {
 
         const meditation_channel = guild.channels.cache.find(channel => channel.id === config.channels.meditation);
   
-        await meditation_channel.send(`:white_check_mark: You have joined <@${host.usr}>'s meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
+        await meditation_channel.send(`:white_check_mark: You have joined the group meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
 
         Current.insertOne({
           usr: member.id,
