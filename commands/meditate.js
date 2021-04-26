@@ -97,7 +97,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 		if (voice.members.size === 1) {
 			for (const [memberID, vc_member] of voice.members) {
 			console.log(memberID)
-			  if (memberID === client.bot.id) {
+			  if (memberID === client.user.id) {
 				try {
 				  voice.leave();
 				} catch(err) {
