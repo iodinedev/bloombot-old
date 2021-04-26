@@ -42,8 +42,6 @@ module.exports.execute = async (client, message, args) => {
 
 			for (const [memberID, vc_member] of voiceChannel.channel.members) {
 				if (!vc_member.user.bot) {
-					console.log(time);
-					console.log(stop);
 					meditators.push({
 						usr: memberID,
 						time: time,
@@ -98,6 +96,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 	try {
 		if (voice.members.size === 1) {
 			for (const [memberID, vc_member] of voice.members) {
+			console.log(memberID)
 			  if (memberID === client.bot.id) {
 				try {
 				  voice.leave();
