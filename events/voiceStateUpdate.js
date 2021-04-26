@@ -19,6 +19,7 @@ module.exports = async (client, oldState, newState) => {
             console.error(err);
           }
         }
+      }
     }
 
     try {
