@@ -96,6 +96,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 	}
 	
 	try {
+		console.log(voice);
 		if (voice.channel.members.length === 1) {
 			for (const [memberID, vc_member] of voice.channel.members) {
 			  if (memberID === client.id) {
