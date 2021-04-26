@@ -83,6 +83,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 	var time = meditation.time;
 	const guild = client.guilds.cache.get(meditation.guild);
 	const voice = guild.channels.cache.get(meditation.channel);
+	await message.guild.members.fetch();
 	const user = guild.members.cache.get(meditation.usr);
 
 	try {
