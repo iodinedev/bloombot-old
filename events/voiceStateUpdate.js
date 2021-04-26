@@ -3,38 +3,99 @@ const Current = require('../databaseFiles/connect').Current;
 const config = require('../config.json');
 
 module.exports = async (client, oldState, newState) => {
-	if (oldState.channelID && !newState.channelID) {
   const currentDate = new Date();
-  const member = oldState.guild.members.cache.get(oldState.id);
+  const guild = oldState.guild;
+  const member = guild.members.cache.get(oldState.id);
 
-	try {
-		const meditation = await Current.findOne({
-      usr: member.id
-    });
+	if (oldState.channelID && !newState.channelID) {
+    const voiceChannel = guild.channels.cache.get(oldState.channelID);
 
-		if (meditation) {
-      let difference;
-      difference = meditation.whenToStop - currentDate;
+    console.log(voiceChannel.channel.members[0].id)
 
-      difference = new Date(difference).getMinutes();     
+    if (voiceChannel.channel.members.length === 1 && voiceChannel.channel.members[0].id === client.id) {
+      try {
+        voiceChannel.leave();
+      } catch(err) {
+        console.error(err);
+      }
+    }
 
-      await Current.updateOne(
-        { usr: member.id },
-        { $set: {
-            time: meditation.time - difference
-          }
-        }
-      );
-
-
-      const new_meditation = await Current.findOne({
+    try {
+      const meditation = await Current.findOne({
         usr: member.id
       });
 
-      meditate_functions.stop(client, new_meditation, difference);
-		}
-	} catch(err) {
-		console.error('Meditation MongoDB error: ', err);
+      if (meditation) {
+        let difference;
+        difference = meditation.whenToStop - currentDate;
+
+        difference = new Date(difference).getMinutes();     
+
+        await Current.updateOne(
+          { usr: member.id },
+          { $set: {
+              time: meditation.time - difference
+            }
+          }
+        );
+
+
+        const new_meditation = await Current.findOne({
+          usr: member.id
+        });
+
+        meditate_functions.stop(client, new_meditation, difference);
+      }
+    } catch(err) {
+      console.error('Meditation MongoDB error: ', err);
+    }
 	}
-	}
+
+	if (!oldState.channelID && newState.channelID) {
+    const voiceChannel = guild.channels.cache.get(newState.channelID);
+
+    if (await Current.countDocuments() > 0) {
+      var latest = await Current.find().sort({_id:-1}).limit(1).toArray();
+
+      latest = latest[0];
+
+      let difference;
+      difference = latest.whenToStop - currentDate;
+
+      var time = new Date(difference).getMinutes();
+      if (time === 0) time = 1;
+
+      var curr = new Date();
+      var stop = new Date(curr.getTime() + time * 60000).getTime();
+
+      try {			
+        meditate_functions.begin(client, voiceChannel);
+  
+        try {
+          var curr_role = await guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
+  
+          await member.roles.add(curr_role);
+        } catch(err) {
+          console.error("Role not found: " + err);
+        }
+
+        const meditation_channel = guild.channels.cache.find(channel => channel.id === config.channels.meditation);
+  
+        await meditation_channel.send(`:white_check_mark: You have joined <@${latest.usr}>'s meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
+  
+        console.log(time);
+        console.log(stop);
+
+        Current.insertOne({
+          usr: member.id,
+          time: time,
+          whenToStop: stop,
+          guild: guild.id,
+          channel: voiceChannel.id
+        });
+      } catch(err) {
+        console.error('Meditation MongoDB error: ', err);
+      }
+    }
+  }
 }

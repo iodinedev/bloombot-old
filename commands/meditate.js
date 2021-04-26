@@ -15,7 +15,7 @@ module.exports.execute = async (client, message, args) => {
     var time = parseInt(args[0]);
 		var curr = new Date();
     var stop = new Date(curr.getTime() + time * 60000).getTime();
-	var link = config.meditation_sound;
+		var link = config.meditation_sound;
 
     try {
       var usr = await Current.findOne({
@@ -28,26 +28,44 @@ module.exports.execute = async (client, message, args) => {
 		if (time > 180) return await message.channel.send(':x: You cannot meditate for longer than three hours at once.');
 		if (usr) return await message.channel.send(':x: You are already meditating!');
 
+		try {
+			await voiceChannel.channel.leave();
+		} catch(err) {
+			console.error(err);
+		}
+
     try {			
-			begin(client, voiceChannel, link);
+			begin(client, voiceChannel.channel, link);
 
-			try {
-				var curr_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
+			const meditators = [];
+			var curr_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
 
-				await message.member.roles.add(curr_role);
-			} catch(err) {
-				console.error("Role not found: " + err);
+			for (const [memberID, vc_member] of voiceChannel.channel.members) {
+				if (!vc_member.user.bot) {
+					console.log(time);
+					console.log(stop);
+					meditators.push({
+						usr: memberID,
+						time: time,
+						whenToStop: stop,
+						guild: message.guild.id,
+						channel: voiceChannel.id
+					});
+
+					try {
+						await vc_member.roles.add(curr_role);
+					} catch(err) {
+						console.error("Role not found: " + err);
+					}
+				}
 			}
 
-			await message.channel.send(`:white_check_mark: I will notify you when your ${time} minutes are up via a DM!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
+			let people = meditators.length > 1 ? `${meditators.length} people` : 'you';
+			let note = meditators.length > 1 ? `Anyone` : 'You';
 
-      Current.insertOne({
-        usr: message.author.id,
-        time: time,
-        whenToStop: stop,
-				guild: message.guild.id,
-				channel: voiceChannel.channel.id
-}     );
+			await message.channel.send(`:white_check_mark: I will notify ${people} when your ${time} minutes are up via a DM!\n**Note**: ${note} can end your time at any point by simply leaving the voice channel.`);
+
+      Current.insertMany(meditators);
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
@@ -56,9 +74,9 @@ module.exports.execute = async (client, message, args) => {
   }
 };
 
-async function begin(client, voiceChannel, link) {
-	voiceChannel.channel.join().then(connection => {
-		const dispatcher = connection.play(ytdl(link, { quality: 'highestaudio' }));
+async function begin(client, voiceChannel, link=null) {
+	voiceChannel.join().then(connection => {
+		if(link) connection.play(ytdl(link, { quality: 'highestaudio' }));
 	}).catch(err => console.error(err));
 }
 
@@ -78,7 +96,9 @@ async function stop(client, meditation, difference, catchUp = false) {
 	}
 	
 	try {
-		voice.leave();
+		if (voice.members.size === 0) {
+			voice.leave();
+		}
 	} catch(err) {
 		console.error(err);
 	}
@@ -152,6 +172,7 @@ async function catchUp(client) {
 
 module.exports.scanForMeditations = scanForMeditations;
 module.exports.catchUp = catchUp;
+module.exports.begin = begin;
 module.exports.stop = stop;
 
 module.exports.config = {
