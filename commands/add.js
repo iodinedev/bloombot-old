@@ -4,7 +4,7 @@ const config = require('../config.json');
 module.exports.execute = async (client, message, args) => {
   var time = args[0];
 
-  if (message.channel.id == config.channels.meditation) {
+  if (message.channel.id === config.channels.meditation || message.channel.id === config.channels.group_meditation) {
     var time = parseInt(time);
 
     if (time <= 0) return message.channel.send(':x: Your meditation time must be greater than zero.');
@@ -62,7 +62,7 @@ module.exports.execute = async (client, message, args) => {
         return await message.channel.send(":x: Whoa, easy there tiger... You can just add under 600 minutes at once!");
     }
 } else {
-    return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}>.`);
+    return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}> or <#${config.channels.group_meditation}.`);
 }
 };
 
