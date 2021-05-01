@@ -49,7 +49,7 @@ module.exports.execute = async (client, message, args) => {
 						time: time,
 						whenToStop: stop,
 						guild: message.guild.id,
-						channel: voiceChannel.id
+						channel: voiceChannel.channel.id
 					});
 
 					try {

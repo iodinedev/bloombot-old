@@ -10,9 +10,13 @@ module.exports = async (client, oldState, newState) => {
 	if (oldState.channelID && !newState.channelID) {
     const voiceChannel = guild.channels.cache.get(oldState.channelID);
 
-    console.log(voiceChannel.channel.members[0].id)
+    var humans = 0;
 
-    if (voiceChannel.channel.members.length === 1 && voiceChannel.channel.members[0].id === client.id) {
+    voiceChannel.members.forEach(member => {
+      if (!member.user.bot) humans += 1;
+    });
+
+    if (humans === 0) {
       try {
         voiceChannel.leave();
       } catch(err) {
