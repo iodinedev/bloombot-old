@@ -42,8 +42,6 @@ module.exports.execute = async (client, message, args) => {
 
 			for (const [memberID, vc_member] of voiceChannel.channel.members) {
 				if (!vc_member.user.bot) {
-					console.log(time);
-					console.log(stop);
 					meditators.push({
 						usr: memberID,
 						time: time,
@@ -85,6 +83,7 @@ async function stop(client, meditation, difference, catchUp = false) {
 	var time = meditation.time;
 	const guild = client.guilds.cache.get(meditation.guild);
 	const voice = guild.channels.cache.get(meditation.channel);
+	await guild.members.fetch();
 	const user = guild.members.cache.get(meditation.usr);
 
 	try {
@@ -96,8 +95,16 @@ async function stop(client, meditation, difference, catchUp = false) {
 	}
 	
 	try {
-		if (voice.members.size === 0) {
-			voice.leave();
+		if (voice.members.size === 1) {
+			for (const [memberID, vc_member] of voice.members) {
+			  if (memberID === client.user.id) {
+				try {
+				  voice.leave();
+				} catch(err) {
+				  console.error(err);
+				}
+			  }
+			}
 		}
 	} catch(err) {
 		console.error(err);
