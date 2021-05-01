@@ -18,7 +18,7 @@ module.exports = async (client, oldState, newState) => {
 
     if (humans === 0) {
       try {
-        voiceChannel.leave();
+        await voiceChannel.leave();
       } catch(err) {
         console.error(err);
       }
