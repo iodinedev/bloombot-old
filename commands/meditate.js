@@ -64,6 +64,14 @@ module.exports.execute = async (client, message, args) => {
 			await message.channel.send(`:white_check_mark: I will notify ${people} when your ${time} minutes are up via a DM!\n**Note**: ${note} can end your time at any point by simply leaving the voice channel.`);
 
       Current.insertMany(meditators);
+
+			var humans = 0;
+    
+			voiceChannel.channel.members.forEach(member => {
+				if (!member.user.bot) humans += 1;
+			});
+
+			client.user.setActivity(`${humans} people currently meditating!`);
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
