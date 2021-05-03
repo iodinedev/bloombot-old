@@ -46,7 +46,7 @@ module.exports = async (client, message) => {
           guild: message.guild.id
         });
 
-        if (stats && parseInt(stats) !== NaN) {
+        if (stats && parseInt(stats.total) !== NaN) {
           total = parseInt(stats.total);
         }
 
