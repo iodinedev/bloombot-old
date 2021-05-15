@@ -1,6 +1,7 @@
 const config = require('../config.json');
 const BotStats = require('../databaseFiles/connect').BotStats;
 const Prefixes = require('../databaseFiles/connect').Prefixes;
+const ServerSetup = require('../databaseFiles/connect').ServerSetup;
 const reactions = require('../eventActions/reactions');
 
 module.exports = async (client, message) => {
@@ -37,7 +38,18 @@ module.exports = async (client, message) => {
     if (commandfile) {
       message.channel.startTyping();
 
-      if (commandfile.config.admin && commandfile.config.admin === true && config.global_admins.indexOf(message.author.id) === -1) {
+      var global_admins = await ServerSetup.findOne({
+        guild: message.guild.id
+      });
+
+      // Check if user has Discord admin permissions or is in global admin database
+      if (
+        commandfile.config.admin &&
+        commandfile.config.admin === true &&
+        global_admins && global_admins.admins &&
+        global_admins.admins.indexOf(message.author.id) === -1 &&
+        message.member.hasPermission('ADMINISTRATOR') === false
+      ) {
         await message.channel.send(':x: You don\'t have permission to run this command.');
       } else {
         var total = 0;

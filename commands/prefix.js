@@ -9,7 +9,7 @@ module.exports.execute = async (client, message, args) => {
   var exists = await Prefixes.findOne({'guild': message.guild.id});
 
   if (!exists) {
-    prefixObject = {
+    var prefixObject = {
       guild: message.guild.id,
       prefix: args
     }

@@ -58,10 +58,10 @@ module.exports.execute = async (client, message, args) => {
 				}
 			}
 
-			let people = meditators.length > 1 ? `${meditators.length} people` : 'you';
-			let note = meditators.length > 1 ? `Anyone` : 'You';
+			let people = meditators.length > 1 ? `${meditators.length} people` : 'You';
+			let plural = time > 1 ? 'minutes' : 'minute';
 
-			await message.channel.send(`:white_check_mark: I will notify ${people} when your ${time} minutes are up via a DM!\n**Note**: ${note} can end your time at any point by simply leaving the voice channel.`);
+			await message.channel.send(`:white_check_mark: ${people} will be notified at the end of ${time} ${plural} via DM!\n**Note**: Participants may end their own meditation at any time by simply leaving the voice channel.`);
 
       Current.insertMany(meditators);
 

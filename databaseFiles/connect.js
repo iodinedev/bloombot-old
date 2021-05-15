@@ -17,3 +17,4 @@ module.exports.Announcements = client.db(config.mongodbDatabase).collection('Ann
 module.exports.Current = client.db(config.mongodbDatabase).collection('CurrentMeditators');
 module.exports.Meditations = client.db(config.mongodbDatabase).collection('Meditations');
 module.exports.BotStats = client.db(config.mongodbDatabase).collection('BotStats');
+module.exports.ServerSetup = client.db(config.mongodbDatabase).collection('ServerSetup');
