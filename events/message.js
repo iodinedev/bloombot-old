@@ -54,20 +54,20 @@ module.exports = async (client, message) => {
       } else {
         var total = 0;
 
-        var stats = BotStats.findOne({
+        var stats = await BotStats.findOne({
           guild: message.guild.id
         });
 
-        if (stats) {
-          total = stats.total;
+        if (stats && parseInt(stats.total) !== NaN) {
+          total = parseInt(stats.total);
         }
 
         total = total + 1;
 
-        BotStats.updateOne(
-          { bot: client.user.id },
+        await BotStats.updateOne(
+          { guild: message.guild.id },
           { $set: {
-              bot: client.user.id,
+              guild: message.guild.id,
               total: total,
               }
           },
