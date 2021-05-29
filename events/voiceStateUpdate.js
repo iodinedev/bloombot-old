@@ -31,7 +31,7 @@ module.exports = async (client, oldState, newState) => {
 
       if (meditation) {
         let difference;
-        if (meditation.whenToStop === null) {
+        if (meditation.whenToStop !== null) {
           difference = meditation.whenToStop - currentDate;
         } else {
           difference = currentDate - meditation.started;
@@ -52,8 +52,6 @@ module.exports = async (client, oldState, newState) => {
         });
 
         meditate_functions.stop(client, new_meditation, difference);
-
-        client.user.setActivity(config.playing);
       }
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
@@ -105,8 +103,6 @@ module.exports = async (client, oldState, newState) => {
         voiceChannel.members.forEach(member => {
           if (!member.user.bot) humans += 1;
         });
-
-        client.user.setActivity(`${humans} people currently meditating!`);
       } catch(err) {
         console.error('Meditation MongoDB error: ', err);
       }

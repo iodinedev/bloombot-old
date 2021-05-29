@@ -78,8 +78,6 @@ module.exports.execute = async (client, message, args) => {
 			voiceChannel.channel.members.forEach(member => {
 				if (!member.user.bot) humans += 1;
 			});
-
-			client.user.setActivity(`${humans} people currently meditating!`);
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
@@ -162,9 +160,11 @@ async function scanForMeditations(client) {
 		if (meditations) {
 			let difference;
 			meditations.forEach(async meditation => {
-				difference = currentDate - meditation.whenToStop;
-				if (difference > (-1)*config.meditationScanInterval) {
-					stop(client, meditation, difference);
+				if (meditation.whenToStop !== null) {
+					difference = currentDate - meditation.whenToStop;
+					if (difference > (-1)*config.meditationScanInterval) {
+						stop(client, meditation, difference);
+					}
 				}
 			});
 		}
