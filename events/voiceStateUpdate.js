@@ -31,7 +31,11 @@ module.exports = async (client, oldState, newState) => {
 
       if (meditation) {
         let difference;
-        difference = meditation.whenToStop - currentDate;
+        if (meditation.whenToStop === null) {
+          difference = meditation.whenToStop - currentDate;
+        } else {
+          difference = currentDate - meditation.started;
+        }
 
         difference = new Date(difference).getMinutes();     
 
@@ -42,7 +46,6 @@ module.exports = async (client, oldState, newState) => {
             }
           }
         );
-
 
         const new_meditation = await Current.findOne({
           usr: member.id
