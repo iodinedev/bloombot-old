@@ -18,12 +18,13 @@ module.exports.execute = async (client, message, args) => {
     _id: id
   });
 
+  if (!meditation || !meditation.usr) return await message.channel.send(':x: That meditation session does not exist in the database. Be sure to select by ID.');
+
   if (meditation.usr !== message.author.id) return await message.channel.send(':x: You cannot delete someone else\'s meditations.');
 
   await Meditations.deleteOne({
     _id: id
   });
-
 
   return await message.channel.send(':white_check_mark: Meditation entry has been removed.');
 };
