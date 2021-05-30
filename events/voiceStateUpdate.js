@@ -37,12 +37,14 @@ module.exports = async (client, oldState, newState) => {
           difference = currentDate - meditation.started;
         }
 
-        difference = new Date(difference).getMinutes();     
+        difference = new Date(difference).getMinutes();
+
+        if (meditation.time) difference = meditation.time - difference;
 
         await Current.updateOne(
           { usr: member.id },
           { $set: {
-              time: meditation.time - difference
+              time: difference
             }
           }
         );
@@ -60,6 +62,8 @@ module.exports = async (client, oldState, newState) => {
 
 	if (!oldState.channelID && newState.channelID) {
     const voiceChannel = guild.channels.cache.get(newState.channelID);
+
+    if (member.user.bot) return;
 
     if (await Current.countDocuments() > 0) {
       var latest = await Current.find().sort({_id:-1}).limit(1).toArray();
@@ -88,6 +92,8 @@ module.exports = async (client, oldState, newState) => {
 
         const meditation_channel = guild.channels.cache.find(channel => channel.id === config.channels.group_meditation);
   
+        console.log(latest)
+
         await meditation_channel.send(`:white_check_mark: You have joined the group meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
 
         Current.insertOne({

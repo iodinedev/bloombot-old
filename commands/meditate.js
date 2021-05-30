@@ -132,7 +132,8 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	await meditateUtils.addToDatabase(user.id, meditation.guild, time);
+	if (time > 0) await meditateUtils.addToDatabase(user.id, meditation.guild, time);
+	else description = ':warning: Meditation time was too short; no meditation minutes were added.';
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
@@ -142,7 +143,8 @@ async function stop(client, meditation, difference, catchUp = false) {
 	user.send(stopMessage);
 
 	try {
-		await Current.deleteOne({
+		// In case there was an error, delete all a user's current meditation sessions
+		await Current.deleteMany({
 			usr: meditation.usr
 		});
 
@@ -182,9 +184,11 @@ async function catchUp(client) {
 		if (meditations) {
 			let difference;
 			meditations.forEach(async meditation => {
-				difference = currentDate - meditation.whenToStop;
-				if (difference > 0) {
-					stop(client, meditation, difference, true);
+				if (meditation.whenToStop !== null) {
+					difference = currentDate - meditation.whenToStop;
+					if (difference > 0) {
+						stop(client, meditation, difference, true);
+					}
 				}
 			});
 		}
