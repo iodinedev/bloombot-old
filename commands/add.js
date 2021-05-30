@@ -62,7 +62,7 @@ module.exports.execute = async (client, message, args) => {
         return await message.channel.send(":x: Whoa, easy there tiger... You can just add under 600 minutes at once!");
     }
 } else {
-    return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}> or <#${config.channels.group_meditation}.`);
+    return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}> or <#${config.channels.group_meditation}>.`);
 }
 };
 
