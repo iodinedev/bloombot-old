@@ -15,7 +15,7 @@ class reportCheckAction {
           .setAuthor(`${message.author.username}#${message.author.discriminator}`, message.author.displayAvatarURL())
           .setDescription(message.content)
           .addField('Link', `[Go to message](${message.url})`, true)
-          .setFooter(`Reported in #${channel.name} by ${user.username}`)
+          .setFooter(`Reported in #${channel.name} by ${user.username}#${user.discriminator}`)
           .setTimestamp(message.createdAt);
         client.channels.cache.get(config.channels.reportchannel).send(starBoardMessage)
         .then(() => {
