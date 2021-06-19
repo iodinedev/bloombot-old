@@ -7,15 +7,15 @@ class reportCheckAction {
     var message = reaction.message;
 
     try {
-      console.log(reaction._emoji.id)
       if (reaction._emoji && reaction._emoji.id === config.emotes.report) {
+        console.log(user)
         await reaction.users.remove(user.id);
         var channel = client.channels.cache.get(message.channel.id);
         let starBoardMessage = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setAuthor(`${message.author.username}#${message.author.discriminator}`, message.author.displayAvatarURL())
           .setDescription(message.content)
-          .setFooter(`Reported in #${channel.name} by ${user.username}`)
+          .setFooter(`Reported in #${channel.name}`)
           .setTimestamp(message.createdAt);
         client.channels.cache.get(config.channels.reportchannel).send(starBoardMessage)
         .then(() => {
@@ -24,7 +24,7 @@ class reportCheckAction {
           );
         });
       }
-    } catch {
+    } catch(err) {
       user.send(
         ':x: Error when reporting to staff. Please take a screenshot of the message and DM a staff member.'
       );
