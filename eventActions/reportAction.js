@@ -14,7 +14,7 @@ class reportCheckAction {
           .setColor(config.colors.embedColor)
           .setAuthor(`${message.author.username}#${message.author.discriminator}`, message.author.displayAvatarURL())
           .setDescription(message.content)
-          .setFooter(`Reported in #${channel.name}`)
+          .setFooter(`Reported in #${channel.name} by ${user.username}`)
           .setTimestamp(message.createdAt);
         client.channels.cache.get(config.channels.reportchannel).send(starBoardMessage)
         .then(() => {
