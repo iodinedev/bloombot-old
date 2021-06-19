@@ -3,6 +3,7 @@ const config = require('../config.json');
 const Discord = require('discord.js');
 
 module.exports.execute = async (client, message, args) => {
+  return await message.channel.send('Under construction.')
   /*if (!args || !args[0]) return await message.channel.send(':x: Must specify a tag!');
 
   var joined = args.join(' ');
@@ -12,7 +13,7 @@ module.exports.execute = async (client, message, args) => {
   if (tag) tag = tag[1];
   else return await message.channel.send(':x: Must include a tag surrounded in quotes.')
 
-  var def = joined.split(tag)[1];*/
+  var def = joined.split(tag)[1];
 
   try {
     await message.channel.send('Please send the name of the tag...')
