@@ -7,6 +7,7 @@ class reportCheckAction {
     var message = reaction.message;
 
     try {
+      console.log(reaction._emoji.id)
       if (reaction._emoji && reaction._emoji.id === config.emotes.report) {
         await reaction.users.remove(user.id);
         var channel = client.channels.cache.get(message.channel.id);
