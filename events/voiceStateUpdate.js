@@ -31,26 +31,29 @@ module.exports = async (client, oldState, newState) => {
 
       if (meditation) {
         let difference;
-        difference = meditation.whenToStop - currentDate;
+        if (meditation.whenToStop !== null) {
+          difference = meditation.whenToStop - currentDate;
+        } else {
+          difference = currentDate - meditation.started;
+        }
 
-        difference = new Date(difference).getMinutes();     
+        difference = new Date(difference).getMinutes();
+
+        if (meditation.time) difference = meditation.time - difference;
 
         await Current.updateOne(
           { usr: member.id },
           { $set: {
-              time: meditation.time - difference
+              time: difference
             }
           }
         );
-
 
         const new_meditation = await Current.findOne({
           usr: member.id
         });
 
         meditate_functions.stop(client, new_meditation, difference);
-
-        client.user.setActivity(config.playing);
       }
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
@@ -59,6 +62,8 @@ module.exports = async (client, oldState, newState) => {
 
 	if (!oldState.channelID && newState.channelID) {
     const voiceChannel = guild.channels.cache.get(newState.channelID);
+
+    if (member.user.bot) return;
 
     if (await Current.countDocuments() > 0) {
       var latest = await Current.find().sort({_id:-1}).limit(1).toArray();
@@ -87,6 +92,8 @@ module.exports = async (client, oldState, newState) => {
 
         const meditation_channel = guild.channels.cache.find(channel => channel.id === config.channels.group_meditation);
   
+        console.log(latest)
+
         await meditation_channel.send(`:white_check_mark: You have joined the group meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`);
 
         Current.insertOne({
@@ -102,8 +109,6 @@ module.exports = async (client, oldState, newState) => {
         voiceChannel.members.forEach(member => {
           if (!member.user.bot) humans += 1;
         });
-
-        client.user.setActivity(`${humans} people currently meditating!`);
       } catch(err) {
         console.error('Meditation MongoDB error: ', err);
       }

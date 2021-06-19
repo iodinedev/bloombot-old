@@ -8,13 +8,15 @@ module.exports.execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
 
   if (voiceChannel.channel) {
-		if (!args || !args[0]) {
-			return await message.channel.send(':x: You must specify how long you\'d like to meditate for!');
+		var time = null;
+		var curr = new Date();
+		var stop = null;
+
+		if (args && args[0]) {
+			time = parseInt(args[0]);
+			stop = new Date(curr.getTime() + time * 60000).getTime();
 		}
 
-    var time = parseInt(args[0]);
-		var curr = new Date();
-    var stop = new Date(curr.getTime() + time * 60000).getTime();
 		var link = config.meditation_sound;
 
     try {
@@ -46,6 +48,7 @@ module.exports.execute = async (client, message, args) => {
 						usr: memberID,
 						time: time,
 						whenToStop: stop,
+						started: curr,
 						guild: message.guild.id,
 						channel: voiceChannel.channel.id
 					});
@@ -59,9 +62,14 @@ module.exports.execute = async (client, message, args) => {
 			}
 
 			let people = meditators.length > 1 ? `${meditators.length} people` : 'You';
-			let plural = time > 1 ? 'minutes' : 'minute';
 
-			await message.channel.send(`:white_check_mark: ${people} will be notified at the end of ${time} ${plural} via DM!\n**Note**: Participants may end their own meditation at any time by simply leaving the voice channel.`);
+			if (time !== null) {
+				let plural = time > 1 ? 'minutes' : 'minute';
+
+				await message.channel.send(`:white_check_mark: ${people} will be notified at the end of ${time} ${plural} via DM!\n**Note**: Participants may end their own meditation at any time by simply leaving the voice channel.`);
+			} else {
+				await message.channel.send(`:infinity: ${people} have started an infinite meditation session!\n**Note**: Participants may end their own meditation at any time by simply leaving the voice channel.`);
+			}
 
       Current.insertMany(meditators);
 
@@ -70,8 +78,6 @@ module.exports.execute = async (client, message, args) => {
 			voiceChannel.channel.members.forEach(member => {
 				if (!member.user.bot) humans += 1;
 			});
-
-			client.user.setActivity(`${humans} people currently meditating!`);
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
     }
@@ -126,7 +132,8 @@ async function stop(client, meditation, difference, catchUp = false) {
 		description = `Hello! Your **${meditation.time}** minutes of meditation are done! I've added it to your total.`
 	}
 
-	await meditateUtils.addToDatabase(user.id, meditation.guild, time);
+	if (time > 0) await meditateUtils.addToDatabase(user.id, meditation.guild, time);
+	else description = ':warning: Meditation time was too short; no meditation minutes were added.';
 
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
@@ -136,7 +143,8 @@ async function stop(client, meditation, difference, catchUp = false) {
 	user.send(stopMessage);
 
 	try {
-		await Current.deleteOne({
+		// In case there was an error, delete all a user's current meditation sessions
+		await Current.deleteMany({
 			usr: meditation.usr
 		});
 
@@ -154,9 +162,11 @@ async function scanForMeditations(client) {
 		if (meditations) {
 			let difference;
 			meditations.forEach(async meditation => {
-				difference = currentDate - meditation.whenToStop;
-				if (difference > (-1)*config.meditationScanInterval) {
-					stop(client, meditation, difference);
+				if (meditation.whenToStop !== null) {
+					difference = currentDate - meditation.whenToStop;
+					if (difference > (-1)*config.meditationScanInterval) {
+						stop(client, meditation, difference);
+					}
 				}
 			});
 		}
@@ -174,9 +184,11 @@ async function catchUp(client) {
 		if (meditations) {
 			let difference;
 			meditations.forEach(async meditation => {
-				difference = currentDate - meditation.whenToStop;
-				if (difference > 0) {
-					stop(client, meditation, difference, true);
+				if (meditation.whenToStop !== null) {
+					difference = currentDate - meditation.whenToStop;
+					if (difference > 0) {
+						stop(client, meditation, difference, true);
+					}
 				}
 			});
 		}

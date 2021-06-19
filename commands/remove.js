@@ -11,21 +11,27 @@ module.exports.execute = async (client, message, args) => {
     prefix = '.';
   }
 
-  if (!args[0]) return await message.channel.send(`:x: You must include a meditation ID to remove. Use \`${prefix}rank\` to see your recent meditations' IDs.`)
-  const id = ObjectId(args[0]);
+  if (!args[0]) return await message.channel.send(`:x: You must include a meditation ID to remove. Use \`${prefix}rank\` to see your recent meditations' IDs.`);
 
-  var meditation = await Meditations.findOne({
-    _id: id
-  });
+  try {
+    const id = ObjectId(args[0]);
 
-  if (meditation.usr !== message.author.id) return await message.channel.send(':x: You cannot delete someone else\'s meditations.');
+    var meditation = await Meditations.findOne({
+      _id: id
+    });
 
-  await Meditations.deleteOne({
-    _id: id
-  });
+    if (!meditation || !meditation.usr) return await message.channel.send(':x: That meditation session does not exist in the database. Be sure to select by ID.');
 
+    if (meditation.usr !== message.author.id) return await message.channel.send(':x: You cannot delete someone else\'s meditations.');
 
-  return await message.channel.send(':white_check_mark: Meditation entry has been removed.');
+    await Meditations.deleteOne({
+      _id: id
+    });
+
+    return await message.channel.send(':white_check_mark: Meditation entry has been removed.');
+  } catch(err) {
+    return await message.channel.send(':x: ID could not be parsed. Make sure you use a valid meditation session ID.')
+  }
 };
 
 module.exports.config = {
