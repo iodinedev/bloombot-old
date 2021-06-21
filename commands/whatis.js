@@ -13,7 +13,7 @@ module.exports.execute = async (client, message, args) => {
   if (tag) {
 		const tagHelp = new Discord.MessageEmbed()
 			.setColor(config.colors.embedColor)
-			.setTitle(`\`${tag.tag}\``)
+			.setTitle(`${tag.tag}`)
 			.addField(
         `Definition`,
         tag.def

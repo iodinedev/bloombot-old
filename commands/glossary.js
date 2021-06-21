@@ -65,7 +65,7 @@ async function createMenu(page, pages) {
     .setTitle('Glossary')
     .setFooter(`Page ${page+1} of ${pages}.`);
 
-  selected.forEach(term => {
+  await selected.forEach(term => {
     menuEmbed
     .addField(
       term._id,
