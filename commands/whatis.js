@@ -22,11 +22,7 @@ module.exports.execute = async (client, message, args) => {
         `Links`,
         tag.links
       )
-      .addField(
-        `Category`,
-        tag.cat
-      )
-      .setFooter(`Tag ID: ${tag._id}`);
+      .setFooter(`Category: ${tag.cat}`);
     return await message.channel.send(tagHelp);
   }
   

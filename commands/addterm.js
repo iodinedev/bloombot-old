@@ -72,12 +72,7 @@ module.exports.execute = async (client, message, args) => {
                 `\`${db_tag.def}\``,
                 true
               )
-              .addField(
-                'Category',
-                `\`${db_tag.cat}\``,
-                true
-              )
-              .setFooter(`Tag ID: ${db_tag._id}`);
+              .setFooter(`Category: ${db_tag.cat}`);
 
             if (db_tag.links) {
               tagHelp.addField(
