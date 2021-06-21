@@ -13,10 +13,18 @@ module.exports.execute = async (client, message, args) => {
   if (tag) {
 		const tagHelp = new Discord.MessageEmbed()
 			.setColor(config.colors.embedColor)
-			.setTitle('Tag Glossary')
+			.setTitle(`\`${tag.tag}\``)
 			.addField(
-        `Definition of \`${tag.tag}\``,
+        `Definition`,
         tag.def
+      )
+      .addField(
+        `Links`,
+        tag.links
+      )
+      .addField(
+        `Category`,
+        tag.cat
       )
       .setFooter(`Tag ID: ${tag._id}`);
     return await message.channel.send(tagHelp);
@@ -42,6 +50,6 @@ module.exports.config = {
   name: 'whatis',
   aliases: ['define'],
   module: 'Utility',
-  description: 'Shows you a description of a term in our glossary.',
+  description: 'Shows you a description of an individual term from our glossary.',
   usage: ['whatis <tag>'],
 };

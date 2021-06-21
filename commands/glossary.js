@@ -49,7 +49,14 @@ module.exports.execute = async (client, message) => {
 };
 
 async function createMenu(page, pages) {
-  var selected = await Tags.find().sort({_id:1}).limit(9).skip(page*9).toArray();
+  var selected = await Tags.aggregate([
+    { $group: {
+      _id: '$cat',
+      tags: {
+        $push: '$tag'
+      }
+    } }
+  ]).toArray()
 
   if (selected.length === 0) return false;
 
@@ -61,8 +68,9 @@ async function createMenu(page, pages) {
   selected.forEach(term => {
     menuEmbed
     .addField(
-      term.tag,
-      term.def
+      term._id,
+      term.tags.join('\n'),
+      true
     );
   });
 
@@ -76,9 +84,9 @@ async function pageNumbers() {
 }
 
 module.exports.config = {
-  name: 'whatislist',
-  aliases: ['glossary', 'listtags'],
+  name: 'glossary',
+  aliases: ['list', 'terms'],
   module: 'Utility',
   description: 'Shows a list of all terms available in our glossary.',
-  usage: ['listtags'],
+  usage: ['glossary'],
 };
