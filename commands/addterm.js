@@ -12,7 +12,7 @@ module.exports.execute = async (client, message, args) => {
     await message.channel.send('Please send the name of the tag...')
 
     const filter = m => m.author.id === message.author.id
-    const tag_collector = message.channel.createMessageCollector(filter, { max: 1, time: 15000 })
+    const tag_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
 
     tag_collector.on('collect', async (t) => {
       var tag = t.content.trim()
@@ -25,14 +25,14 @@ module.exports.execute = async (client, message, args) => {
 
       await message.channel.send('Please send the description of the tag...')
   
-      const def_collector = message.channel.createMessageCollector(filter, { max: 1, time: 15000 })
+      const def_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
 
       def_collector.on('collect', async (d) => {
         var def = d.content.trim()
 
         await message.channel.send('Please send the links of the tag (optional, use \'none\' without quotes to skip). Seperate multiple links with commas...')
 
-        const links_collector = message.channel.createMessageCollector(filter, { max: 1, time: 15000 })
+        const links_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
 
         links_collector.on('collect', async (l) => {
           var links = l.content.split(',')
@@ -41,7 +41,7 @@ module.exports.execute = async (client, message, args) => {
 
           await message.channel.send('Please send the category of the tag...')
 
-          const cat_collector = message.channel.createMessageCollector(filter, { max: 1, time: 15000 })
+          const cat_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
 
           cat_collector.on('collect', async (c) => {
             var category = c.content.trim()
@@ -50,6 +50,7 @@ module.exports.execute = async (client, message, args) => {
               { tag: tag },
               { $set: {
                   tag: tag,
+                  search: tag.split(' ').join('').toLowerCase(),
                   def: def,
                   links: links,
                   cat: category

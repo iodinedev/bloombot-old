@@ -7,7 +7,7 @@ module.exports.execute = async (client, message, args) => {
   if (!args[0]) return await message.channel.send(':x: You must include a tag!');
 
   const tag = await Tags.findOne({
-    tag: args[0]
+    search: args.join('').toLowerCase()
   });
 
   if (tag) {
@@ -18,11 +18,16 @@ module.exports.execute = async (client, message, args) => {
         `Definition`,
         tag.def
       )
-      .addField(
-        `Links`,
-        tag.links
-      )
       .setFooter(`Category: ${tag.cat}`);
+
+    if (tag.links) {
+      tagHelp.addField(
+        'Links',
+        `\`${tag.links}\``,
+        true
+      )
+    }
+
     return await message.channel.send(tagHelp);
   }
   
