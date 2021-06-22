@@ -18,3 +18,4 @@ module.exports.Current = client.db(config.mongodbDatabase).collection('CurrentMe
 module.exports.Meditations = client.db(config.mongodbDatabase).collection('Meditations');
 module.exports.BotStats = client.db(config.mongodbDatabase).collection('BotStats');
 module.exports.ServerSetup = client.db(config.mongodbDatabase).collection('ServerSetup');
+module.exports.Stars = client.db(config.mongodbDatabase).collection('Starboard');
