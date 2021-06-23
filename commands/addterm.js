@@ -37,7 +37,7 @@ module.exports.execute = async (client, message, args) => {
         links_collector.on('collect', async (l) => {
           var links = l.content.split(',')
 
-          links = links[0] === 'none' ? '' : links
+          links = links[0] === 'none' && links.length === 1 ? '' : links
 
           await message.channel.send('Please send the category of the tag...')
 
@@ -46,44 +46,59 @@ module.exports.execute = async (client, message, args) => {
           cat_collector.on('collect', async (c) => {
             var category = c.content.trim()
 
-            await Tags.updateOne(
-              { tag: tag },
-              { $set: {
-                  tag: tag,
-                  search: tag.split(' ').join('').toLowerCase(),
-                  def: def,
-                  links: links,
-                  cat: category
-                }
-              },
-              {
-                upsert: true
-              }
-            );
-          
-            var db_tag = await Tags.findOne({
-              tag: tag
-            });
-          
-            const tagHelp = new Discord.MessageEmbed()
-              .setColor(config.colors.embedColor)
-              .setTitle(`\`${db_tag.tag}\` Added to Glossary`)
-              .addField(
-                'Definition',
-                `\`${db_tag.def}\``,
-                true
-              )
-              .setFooter(`Category: ${db_tag.cat}`);
+            await message.channel.send('Please send the aliases of the tag (optional, use \'none\' without quotes to skip). Seperate multiple links with commas...')
 
-            if (db_tag.links) {
-              tagHelp.addField(
-                'Links',
-                `\`${db_tag.links}\``,
-                true
-              )
-            }
-              
-            return await message.channel.send(tagHelp);
+            const aliases_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
+
+            aliases_collector.on('collect', async (a) => {
+              var aliases = a.content.trim().split(',')
+
+              aliases = aliases[0] === 'none' && aliases.length === 1 ? [] : aliases
+
+              await Tags.updateOne(
+                { tag: tag },
+                { $set: {
+                    tag: tag,
+                    search: tag.split(' ').join('').toLowerCase(),
+                    def: def,
+                    links: links,
+                    cat: category,
+                    aliases: aliases
+                  }
+                },
+                {
+                  upsert: true
+                }
+              );
+            
+              var db_tag = await Tags.findOne({
+                tag: tag
+              });
+            
+              const tagHelp = new Discord.MessageEmbed()
+                .setColor(config.colors.embedColor)
+                .setTitle(`\`${db_tag.tag}\` Added to Glossary`)
+                .addField(
+                  'Definition',
+                  `\`${db_tag.def}\``,
+                  true
+                )
+                .setFooter(`Category: ${db_tag.cat}`);
+
+              if (db_tag.links) {
+                tagHelp.addField(
+                  'Links',
+                  `\`${db_tag.links}\``,
+                  true
+                )
+              }
+                
+              return await message.channel.send(tagHelp);
+            })
+
+            aliases_collector.on('end', async (a) => {
+              timeout(a)
+            })
           })
 
           cat_collector.on('end', async (c) => {
