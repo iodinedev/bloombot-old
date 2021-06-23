@@ -7,7 +7,6 @@ module.exports.execute = async (client, message, args) => {
     if (messages.size === 0) return await message.channel.send(':x: Command timed out.')
   }
 
-
   try {
     await message.channel.send('Please send the name of the tag...')
 
@@ -18,7 +17,14 @@ module.exports.execute = async (client, message, args) => {
       var tag = t.content.trim()
         
       const check_tag = await Tags.findOne({
-        tag: tag
+        $or: [
+          { search: tag.split(' ').join('').toLowerCase() },
+          { aliases: {
+            $in: [
+              tag.toLowerCase().split(' ')
+            ]
+          }}
+        ]
       });
     
       if (check_tag) await message.channel.send(':warning: That term is already defined. Definition will be updated. Wait for the bot to alert you the command has timed out (15 seconds) to cancel.');
@@ -46,7 +52,7 @@ module.exports.execute = async (client, message, args) => {
           cat_collector.on('collect', async (c) => {
             var category = c.content.trim()
 
-            await message.channel.send('Please send the aliases of the tag (optional, use \'none\' without quotes to skip). Seperate multiple links with commas...')
+            await message.channel.send('Please send the aliases of the tag (optional, use \'none\' without quotes to skip). Seperate multiple entries with commas...')
 
             const aliases_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
 
@@ -54,7 +60,8 @@ module.exports.execute = async (client, message, args) => {
               var aliases = a.content.trim().split(',')
 
               aliases = aliases[0] === 'none' && aliases.length === 1 ? [] : aliases
-
+              
+              if (check_tag) {
               await Tags.updateOne(
                 { tag: tag },
                 { $set: {
@@ -65,11 +72,18 @@ module.exports.execute = async (client, message, args) => {
                     cat: category,
                     aliases: aliases
                   }
-                },
-                {
-                  upsert: true
                 }
               );
+              } else {
+                await Tags.insertOne({
+                  tag: tag,
+                  search: tag.split(' ').join('').toLowerCase(),
+                  def: def,
+                  links: links,
+                  cat: category,
+                  aliases: aliases
+                });
+              }
             
               var db_tag = await Tags.findOne({
                 tag: tag
@@ -88,7 +102,15 @@ module.exports.execute = async (client, message, args) => {
               if (db_tag.links) {
                 tagHelp.addField(
                   'Links',
-                  `\`${db_tag.links}\``,
+                  `${db_tag.links.join('\n')}`,
+                  true
+                )
+              }
+
+              if (db_tag.aliases) {
+                tagHelp.addField(
+                  'Aliases',
+                  `${db_tag.aliases.join('\n')}`,
                   true
                 )
               }

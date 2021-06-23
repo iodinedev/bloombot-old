@@ -7,7 +7,14 @@ module.exports.execute = async (client, message, args) => {
   if (!args[0]) return await message.channel.send(':x: You must include a tag!');
 
   const tag = await Tags.findOne({
-    search: args.join('').toLowerCase()
+    $or: [
+      { search: args.join('').toLowerCase() },
+      { aliases: {
+        $in: [
+          args.join('').toLowerCase()
+        ]
+      }}
+    ]
   });
 
   if (tag) {
@@ -23,7 +30,15 @@ module.exports.execute = async (client, message, args) => {
     if (tag.links) {
       tagHelp.addField(
         'Links',
-        `\`${tag.links}\``,
+        `${tag.links.join('\n')}`,
+        true
+      )
+    }
+
+    if (tag.aliases) {
+      tagHelp.addField(
+        'Aliases',
+        `${tag.aliases.join('\n')}`,
         true
       )
     }
