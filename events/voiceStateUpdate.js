@@ -7,7 +7,8 @@ module.exports = async (client, oldState, newState) => {
   const guild = oldState.guild;
   const member = guild.members.cache.get(oldState.id);
 
-	if (oldState.channelID && !newState.channelID) {
+  // Left a voice channel
+	if (!newState.channelID || oldState.channelID) {
     const voiceChannel = guild.channels.cache.get(oldState.channelID);
 
     var humans = 0;
@@ -60,7 +61,8 @@ module.exports = async (client, oldState, newState) => {
     }
 	}
 
-	if (!oldState.channelID && newState.channelID) {
+  // Joined a voice channel
+	if (newState.channelID) {
     const voiceChannel = guild.channels.cache.get(newState.channelID);
 
     if (member.user.bot) return;

@@ -178,7 +178,6 @@ async function stop(client, meditation, difference, catchUp = false) {
 
 		var streak_role;
 
-		if (streak >= 1) streak_role = 'test';
 		if (streak >= 7) streak_role = 'egg';
 		if (streak >= 14) streak_role = 'hatching_chick';
 		if (streak >= 28) streak_role = 'baby_chick';
