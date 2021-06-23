@@ -2,7 +2,6 @@ const Current = require('../databaseFiles/connect').Current;
 const meditateUtils = require('../utils/meditateUtils');
 const config = require('../config.json');
 const Discord = require('discord.js');
-const ytdl = require('ytdl-core');
 
 module.exports.execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
@@ -27,8 +26,6 @@ module.exports.execute = async (client, message, args) => {
 			stop = new Date(curr.getTime() + time * 60000).getTime();
 		}
 
-		var link = config.meditation_sound;
-
     try {
       var usr = await Current.findOne({
         usr: message.author.id
@@ -40,14 +37,8 @@ module.exports.execute = async (client, message, args) => {
 		if (time > 180) return await message.channel.send(':x: You cannot meditate for longer than three hours at once.');
 		if (usr) return await message.channel.send(':x: You are already meditating!');
 
-		try {
-			await voiceChannel.channel.leave();
-		} catch(err) {
-			console.error(err);
-		}
-
     try {			
-			begin(client, voiceChannel.channel, link);
+			begin(client, voiceChannel.channel);
 
 			const meditators = [];
 			var curr_role = await message.member.guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
@@ -96,13 +87,17 @@ module.exports.execute = async (client, message, args) => {
   }
 };
 
-async function begin(client, voiceChannel, link=null) {
-	voiceChannel.join().then(connection => {
-		if(link) connection.play(ytdl(link, { quality: 'highestaudio' }));
-	}).catch(err => console.error(err));
+async function begin(client, voiceChannel, voiceupdate = false) {
+	var link = config.meditation_sound;
+
+	if (!voiceupdate) {
+		voiceChannel.join().then(connection => {
+			if(link) connection.play(link);
+		}).catch(err => console.error(err));
+	}
 }
 
-async function stop(client, meditation, difference, catchUp = false) {
+async function stop(client, meditation, difference, catchUp = false, voiceupdate = false) {
 	let description;
 	var time = meditation.time;
 	const guild = client.guilds.cache.get(meditation.guild);
@@ -123,11 +118,23 @@ async function stop(client, meditation, difference, catchUp = false) {
 			for (const [memberID, vc_member] of voice.members) {
 			  if (memberID === client.user.id) {
 				try {
-				  voice.leave();
+					voice.leave();
 				} catch(err) {
 				  console.error(err);
 				}
 			  }
+			}
+		} else {
+			var link = config.meditation_sound;
+					
+			if (!voiceupdate) {
+				voice.join().then(connection => {
+					if(link) connection.play(link);
+				}).catch(err => console.error(err));
+
+				setTimeout(function() {
+					voice.leave();
+				}, 20000);
 			}
 		}
 	} catch(err) {

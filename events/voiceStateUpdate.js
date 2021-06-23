@@ -54,7 +54,7 @@ module.exports = async (client, oldState, newState) => {
           usr: member.id
         });
 
-        meditate_functions.stop(client, new_meditation, difference);
+        meditate_functions.stop(client, new_meditation, difference, false, true);
       }
     } catch(err) {
       console.error('Meditation MongoDB error: ', err);
@@ -86,7 +86,7 @@ module.exports = async (client, oldState, newState) => {
       var stop = new Date(curr.getTime() + time * 60000).getTime();
 
       try {			
-        meditate_functions.begin(client, voiceChannel);
+        meditate_functions.begin(client, voiceChannel, true);
   
         try {
           var curr_role = await guild.roles.cache.find(role => role.id === config.roles.currently_meditating);
