@@ -24,10 +24,12 @@ module.exports.execute = async (client, message, args) => {
     var data = await meditateUtils.getUserData(get_usr, message.guild.id);
     var user_count = 0;
     var user_time = 0;
+    var streak = 0;
 
     if (data) {
       user_count = data.meditation_count;
       user_time = data.meditation_time;
+      streak = data.streak;
     }
 
     await message.guild.members.fetch();
@@ -50,15 +52,23 @@ module.exports.execute = async (client, message, args) => {
       .setThumbnail(user.avatarURL())
       .addField(
         'Meditation Minutes',
-        user_time
+        user_time,
+        true
       )
       .addField(
         'Meditation Count',
-        user_count
+        user_count,
+        true
       )
       .addField(
         'Recent Meditations',
-        meditations.length === 0 ? 'None' : meditations
+        meditations.length === 0 ? 'None' : meditations,
+        true
+      )
+      .addField(
+        'Current Streak',
+        `${streak} days`,
+        true
       );
 
     return message.channel.send(rankEmbed);

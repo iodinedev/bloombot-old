@@ -145,6 +145,64 @@ async function stop(client, meditation, difference, catchUp = false) {
 	if (time > 0) await meditateUtils.addToDatabase(user.id, meditation.guild, time);
 	else description = ':warning: Meditation time was too short; no meditation minutes were added.';
 
+	try {
+		var userdata = await meditateUtils.getUserData(user.id, meditation.guild.id);
+		var streak = userdata.streak;
+		var user_time = userdata.meditation_time;
+
+		var lvl_role;
+
+		if (user_time >= 50) lvl_role = 'I_Star';
+		if (user_time >= 100) lvl_role = 'II_Star';
+		if (user_time >= 150) lvl_role = 'III_Star';
+		if (user_time >= 250) lvl_role = 'I_S_Star';
+		if (user_time >= 500) lvl_role = 'II_S_Star';
+		if (user_time >= 1000) lvl_role = 'III_S_Star';
+		if (user_time >= 2000) lvl_role = 'I_M_Star';
+		if (user_time >= 5000) lvl_role = 'II_M_Star';
+		if (user_time >= 10000) lvl_role = 'III_M_Star';
+		if (user_time >= 20000) lvl_role = 'I_Star_S';
+		if (user_time >= 50000) lvl_role = 'II_Star_S';
+		if (user_time >= 100000) lvl_role = 'III_Star_S';
+
+		await Object.values(config.roles.lvl_roles).every(async (roleid) => {
+				if (user.roles.cache.has(roleid)) {
+						var check_role = await user.guild.roles.cache.find(role => role.id === roleid);
+
+						user.roles.remove(check_role);
+				}
+		});
+		
+		var add_lvl_role = await user.guild.roles.cache.find(role => role.id === config.roles.lvl_roles[lvl_role]);
+		if (add_lvl_role) await user.roles.add(add_lvl_role);
+
+		var streak_role;
+
+		if (streak >= 1) streak_role = 'test';
+		if (streak >= 7) streak_role = 'egg';
+		if (streak >= 14) streak_role = 'hatching_chick';
+		if (streak >= 28) streak_role = 'baby_chick';
+		if (streak >= 35) streak_role = 'chicken';
+		if (streak >= 56) streak_role = 'dove';
+		if (streak >= 70) streak_role = 'owl';
+		if (streak >= 140) streak_role = 'eagle';
+		if (streak >= 365) streak_role = 'dragon';
+		if (streak >= 730) streak_role = 'alien';
+
+		await Object.values(config.roles.streak_roles).every(async (roleid) => {
+				if (user.roles.cache.has(roleid)) {
+						var check_role = await user.guild.roles.cache.find(role => role.id === roleid);
+
+						user.roles.remove(check_role);
+				}
+		});
+		
+		var add_streak_role = await user.guild.roles.cache.find(role => role.id === config.roles.streak_roles[streak_role]);
+		if (add_streak_role) await user.roles.add(add_streak_role);
+	} catch(err) {
+		console.error(err);
+	}
+
 	const stopMessage = new Discord.MessageEmbed()
 		.setColor(config.embed_color)
 		.setTitle(`${config.emotes.meditation} Meditation Time Done ${config.emotes.meditation}`)

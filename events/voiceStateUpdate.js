@@ -72,7 +72,7 @@ module.exports = async (client, oldState, newState) => {
 
       var latest_voice = await client.channels.cache.get(latest.channel);
 
-      if (latest.guild === message.guild.id && latest_voice.id !== voiceChannel.channel.id) return;
+      if (latest.guild === guild.id && latest_voice.id !== voiceChannel.id) return;
 
       let difference;
       difference = latest.whenToStop - currentDate;
