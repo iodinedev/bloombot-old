@@ -52,23 +52,19 @@ module.exports.execute = async (client, message, args) => {
       .setThumbnail(user.avatarURL())
       .addField(
         'Meditation Minutes',
-        user_time,
-        true
+        user_time
       )
       .addField(
         'Meditation Count',
-        user_count,
-        true
+        user_count
       )
       .addField(
         'Recent Meditations',
-        meditations.length === 0 ? 'None' : meditations,
-        true
+        meditations.length === 0 ? 'None' : meditations
       )
       .addField(
         'Current Streak',
-        `${streak} days`,
-        true
+        `${streak} days`
       );
 
     return message.channel.send(rankEmbed);
