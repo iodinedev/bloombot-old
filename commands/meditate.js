@@ -8,6 +8,16 @@ module.exports.execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
 
   if (voiceChannel.channel) {
+		var latest = await Current.find().sort({_id:-1}).limit(1).toArray();
+
+		if (latest.length > 0) {
+			latest = latest[0];
+
+      var latest_voice = await client.channels.cache.get(latest.channel);
+
+			if (latest.guild === message.guild.id && latest_voice.id !== voiceChannel.channel.id) return await message.channel.send(':x: There\'s already a meditation session going on in a different channel in this server!')
+		}
+
 		var time = null;
 		var curr = new Date();
 		var stop = null;
