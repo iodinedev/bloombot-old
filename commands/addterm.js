@@ -107,7 +107,7 @@ module.exports.execute = async (client, message, args) => {
                 )
               }
 
-              if (db_tag.aliases) {
+              if (db_tag.aliases.length > 0) {
                 tagHelp.addField(
                   'Aliases',
                   `${db_tag.aliases.join('\n')}`,
