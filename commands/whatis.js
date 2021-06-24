@@ -50,7 +50,7 @@ module.exports.execute = async (client, message, args) => {
   
   await Tags.find().toArray(function(err, result) {
     if (result.length > 0) {
-      if (distance(args[0], closest(args[0], result)) <= 5) {
+      if (distance(args.join(' '), closest(args.join(' '), result)) <= 5) {
         const tagHelp = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle('Tag Not Found')
