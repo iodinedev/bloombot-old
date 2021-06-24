@@ -5,13 +5,15 @@ const Discord = require('discord.js');
 
 module.exports.execute = async (client, message, args) => {
   if (!args[0]) return await message.channel.send(':x: You must include a tag!');
+  
+  var regex = new RegExp(["^", args.join(' '), "$"].join(""), "i");
 
   const tag = await Tags.findOne({
     $or: [
       { search: args.join('').toLowerCase() },
       { aliases: {
         $in: [
-          args.join('').toLowerCase()
+          regex
         ]
       }}
     ]
