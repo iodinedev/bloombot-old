@@ -48,21 +48,23 @@ module.exports.execute = async (client, message, args) => {
     return await message.channel.send(tagHelp);
   }
   
-  await Tags.find().toArray(function(err, result) {
-    if (result.length > 0) {
-      if (distance(args.join(' '), closest(args.join(' '), result)) <= 5) {
-        console.log(closest(args.join(' '), result))
+  await Tags.find().toArray(async function(err, result) {
+    if (result && result.length > 0) {
+      var search = args.join(' ').toLowerCase();
+      var close = closest(search, result);
+
+      if (distance(search, close.search) <= 5 || (close.aliases.length > 0 && distance(search, closest(search, close.aliases)) <= 5)) {
         const tagHelp = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle('Tag Not Found')
-          .setDescription(`Did you mean \`${closest(message, result).tag}\`?`)
+          .setDescription(`Did you mean \`${close.tag}\`?`)
         
-        return message.channel.send(tagHelp);
+        return await message.channel.send(tagHelp);
       }
     }
-  });
 
-  return await message.channel.send(':x: Tag not found!');
+    return await message.channel.send(':x: Tag not found!');
+  });
 };
 
 module.exports.config = {
