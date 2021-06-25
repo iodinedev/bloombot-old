@@ -37,7 +37,7 @@ module.exports.execute = async (client, message, args) => {
       )
     }
 
-    if (tag.aliases.length > 0) {
+    if (tag.aliases && tag.aliases.length > 0) {
       tagHelp.addField(
         'Aliases',
         `${tag.aliases.join('\n')}`,
@@ -63,7 +63,7 @@ module.exports.execute = async (client, message, args) => {
         }
       })
 
-      if (distance(search, close.search) <= 5 || (close.aliases && close.aliases.length > 0 && distance(search, closest(search, close.aliases)) <= 5)) {
+      if (close && distance(search, close.search) <= 5 || (close.aliases && close.aliases.length > 0 && distance(search, closest(search, close.aliases)) <= 5)) {
         const tagHelp = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle('Tag Not Found')
