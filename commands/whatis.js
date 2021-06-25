@@ -63,7 +63,7 @@ module.exports.execute = async (client, message, args) => {
         }
       })
 
-      if (close && distance(search, close.search) <= 5 || (close.aliases && close.aliases.length > 0 && distance(search, closest(search, close.aliases)) <= 5)) {
+      if (close && (distance(search, close.search) <= 5 || (close.aliases && close.aliases.length > 0 && distance(search, closest(search, close.aliases)) <= 5))) {
         const tagHelp = new Discord.MessageEmbed()
           .setColor(config.colors.embedColor)
           .setTitle('Tag Not Found')
