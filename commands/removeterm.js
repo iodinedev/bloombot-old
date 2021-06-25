@@ -5,15 +5,36 @@ const Discord = require('discord.js');
 module.exports.execute = async (client, message, args) => {
   if (!args[0]) return await message.channel.send(':x: You must include a tag!');
 
-  const tag = await Tags.deleteOne({
-    tag: args[0]
-  });
-
-  if (tag) {
-		return await message.channel.send(':white_check_mark: Term deleted.')
+  const timeout = async (messages) => {
+    if (messages.size === 0) return await message.channel.send(':x: Command timed out.')
   }
 
-  return await message.channel.send(':x: Tag not found!');
+  const tag = await Tags.findOne({
+    search: args.join('').toLowerCase()
+  })
+
+  try {
+    await message.channel.send(`:warning: Delete the tag **${tag.tag}**? Reply \`yes\` to confirm or ignore this to deny.`)
+
+    const filter = m => m.author.id === message.author.id
+    const tag_collector = message.channel.createMessageCollector(filter, { max: 1, time: 30000 })
+
+    tag_collector.on('collect', async (t) => {
+      if (t.content.toLowerCase() === 'yes') {
+        const deletetag = await Tags.deleteOne({
+          tag: tag.tag
+        });
+      
+        if (deletetag) {
+          return await message.channel.send(':white_check_mark: Term deleted.')
+        }
+      
+        return await message.channel.send(':x: Tag not found!');
+      }
+    })
+  } catch(err) {
+    return console.error(err)
+  }
 };
 
 module.exports.config = {
