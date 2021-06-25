@@ -51,10 +51,17 @@ module.exports.execute = async (client, message, args) => {
   await Tags.find().toArray(async function(err, result) {
     if (result && result.length > 0) {
       var search = args.join(' ').toLowerCase();
-      var close = closest(search, result);
+      var close;
+      var closelen = search.length;
 
-      console.log(close)
-      console.log(distance(search, close.search))
+      result.forEach(async (term) => {
+        var termlen = distance(search, term.search);
+
+        if (termlen < closelen) {
+          close = term
+          closelen = termlen
+        }
+      })
 
       if (distance(search, close.search) <= 5 || (close.aliases && close.aliases.length > 0 && distance(search, closest(search, close.aliases)) <= 5)) {
         const tagHelp = new Discord.MessageEmbed()
