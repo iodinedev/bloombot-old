@@ -7,62 +7,74 @@ const config = require('../config.json');
 module.exports.execute = async (client, message, args) => {
   var get_usr = message.author.id;
 
-  if (args[0]) {
-    get_usr = args[0].match(/\d/g);
+  if (message.channel.id === config.channels.meditation || message.channel.id === config.channels.commands) {
 
-    if (get_usr === null) return await message.channel.send(':x: Must be a user mention or user ID.');
+    if (args[0]) {
+      get_usr = args[0].match(/\d/g);
 
-    get_usr = get_usr.join("");
-  }
+      if (get_usr === null) return await message.channel.send(':x: Must be a user mention or user ID.');
 
-  Meditations.find({
-    $and: [
-      {usr: get_usr},
-      {guild: message.guild.id}
-    ]
-  }).sort({_id:-1}).limit(3).toArray(async function(err, result) {
-    var data = await meditateUtils.getUserData(get_usr, message.guild.id);
-    var user_count = 0;
-    var user_time = 0;
-
-    if (data) {
-      user_count = data.meditation_count;
-      user_time = data.meditation_time;
+      get_usr = get_usr.join("");
     }
 
-    await message.guild.members.fetch();
-    const user = client.users.cache.get(get_usr);
+    Meditations.find({
+      $and: [
+        {usr: get_usr},
+        {guild: message.guild.id}
+      ]
+    }).sort({_id:-1}).limit(3).toArray(async function(err, result) {
+     var data = await meditateUtils.getUserData(get_usr, message.guild.id);
+      var user_count = 0;
+      var user_time = 0;
+      var streak = 0;
 
-    var meditations = [];
+     if (data) {
+        user_count = data.meditation_count;
+        user_time = data.meditation_time;
+        streak = data.streak;
+     }
 
-    result.forEach(meditation => {
-      var date = new Date(meditation.date);
-      var month = date.getUTCMonth() + 1;
-      var day = date.getUTCDate();
-      var year = date.getUTCFullYear();
+     await message.guild.members.fetch();
+     const user = client.users.cache.get(get_usr);
 
-      meditations.push(`**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation._id}\`\n`);
+      var meditations = [];
+
+      result.forEach(meditation => {
+        var date = new Date(meditation.date);
+        var month = date.getUTCMonth() + 1;
+        var day = date.getUTCDate();
+        var year = date.getUTCFullYear();
+
+        meditations.push(`**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation._id}\`\n`);
+      });
+
+      let rankEmbed = new Discord.MessageEmbed()
+        .setColor(config.colors.embedColor)
+        .setTitle('Meditation Stats')
+        .setThumbnail(user.avatarURL())
+        .addField(
+          'Meditation Minutes',
+          user_time
+        )
+        .addField(
+          'Meditation Count',
+          user_count
+        )
+        .addField(
+          'Recent Meditations',
+          meditations.length === 0 ? 'None' : meditations
+        )
+        .addField(
+          'Current Streak',
+          `${streak} days`
+        );
+
+      return message.channel.send(rankEmbed);
     });
 
-    let rankEmbed = new Discord.MessageEmbed()
-      .setColor(config.colors.embedColor)
-      .setTitle('Meditation Stats')
-      .setThumbnail(user.avatarURL())
-      .addField(
-        'Meditation Minutes',
-        user_time
-      )
-      .addField(
-        'Meditation Count',
-        user_count
-      )
-      .addField(
-        'Recent Meditations',
-        meditations.length === 0 ? 'None' : meditations
-      );
-
-    return message.channel.send(rankEmbed);
-  });
+  } else {
+    return await message.channel.send(`:x: You can execute this only in <#${config.channels.meditation}> or <#${config.channels.commands}>.`);
+  }
 };
 
 module.exports.config = {
