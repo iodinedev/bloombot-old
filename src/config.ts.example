@@ -1,0 +1,86 @@
+export = {
+  "botToken": "123",
+  "modules": ["Utility", "Meditation", "Fun", "Admin"],
+  "playing": "ready to .help!",
+  "mongodbURI": "mongodb://localhost:27017",
+  "mongodbDatabase": "bl-core",
+  "reminderScanInterval": 30000,
+  "meditationScanInterval": 30000,
+  "min_stars": 3,
+  "channels": {
+    "welcome": "493402917001494539",
+    "commands": "837344434676564078",
+    "meditation": "440556997364940801",
+    "group_meditation": "465613743662039050",
+    "announce": "244917519477899264",
+    "reportchannel": "855894610001395743",
+    "starchannel": "856865368098078720",
+    "logs": "791366170611679275",
+    "suggestions": "857247584338575370"
+  },
+  "meditation_sound": "https://www.youtube.com/watch?v=kZ70uUp9eWo",
+  "wait_time": 172800,
+  "channelReacts": [
+    {
+      "channel": "553676378621476887",
+      "reacts": [
+        "✅",
+        "❌"
+      ]
+    }
+  ],
+  "roles": {
+    "meditation_challenger": "796821826369617970",
+    "currently_meditating": "713817876695482449",
+    "lvl_roles": {
+      "I_Star": "504641899890475018",
+      "II_Star": "504641945596067851",
+      "III_Star": "504642088760115241",
+      "I_S_Star": "504641974486302751",
+      "II_S_Star": "504642451898630164",
+      "III_S_Star": "504642479459532810",
+      "I_M_Star": "504642975519866881",
+      "II_M_Star": "504643005479649280",
+      "III_M_Star": "504643037515874317",
+      "I_Star_S": "504645771464015893",
+      "II_Star_S": "504645799821574144",
+      "III_Star_S": "504645823888621568"
+    },
+    "streak_roles": {
+      "alien": "857242210302427186",
+      "dragon": "857242212991762463",
+      "eagle": "857242155784863754",
+      "owl": "857242214588612629",
+      "dove": "857242216493219862",
+      "chicken": "857242218695229450",
+      "baby_chick": "857242220675465227",
+      "hatching_chick": "857242222529347584",
+      "egg": "857242224390832158"
+    }
+  },
+  "emotes": {
+    "reminders": "❗",
+    "wave": "👋",
+    "meditation": "<a:clap:780892201625452554>",
+    "report": "852463521894629376",
+    "star": "⭐",
+    "downvote": "🔽",
+    "upvote": "🔼",
+    "confirm": "✅",
+    "deny": "❌"
+  },
+  "colors": {
+    "embedColor": 0xFDAC2E
+  },
+  "global_admins": [
+    "304280783969976321",
+    "443604140896288771",
+    "515919653445304345"
+  ],
+  "motivation_messages": [
+    "Breathing in, I calm body and mind. Breathing out, I smile.",
+    "Dwelling in the present moment I know this is the only moment.",
+    "A disciplined mind brings happiness.", "Radiate boundless love towards the",
+    "Meditate... do not delay, lest you later regret it."
+  ]
+}
