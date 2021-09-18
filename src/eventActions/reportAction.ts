@@ -28,7 +28,7 @@ export class reportCheckAction {
         starBoardMessage.timestamp = message.createdAt;
         client.channels.cache
           .get(config.channels.reportchannel)
-          .send(starBoardMessage)
+          .send({embeds: [ starBoardMessage ]})
           .then(() => {
             user.send(':white_check_mark: Reported to staff.');
           });
@@ -43,7 +43,7 @@ export class reportCheckAction {
       errorMessage.description = `Fatal error has been found when trying to report a message. Error: \`${err}\`.`;
       errorMessage.footer = { text: `Action in #${channel.name}` };
       errorMessage.timestamp = message.createdAt;
-      message.guild.channels.cache.get(config.channels.logs).send(errorMessage);
+      message.guild.channels.cache.get(config.channels.logs).send({embeds: [ errorMessage ]});
     }
   }
 }

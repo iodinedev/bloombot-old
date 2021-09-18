@@ -27,6 +27,7 @@ export const execute = async (client, message, args) => {
       .sort({ _id: -1 })
       .limit(3)
       .toArray(async function (err, result) {
+        if (!result) return await message.channel.send(':x: Looks like you don\'t have any meditation times! Use `.add` to add some time.')
         var data = await meditateUtils.getUserData(get_usr, message.guild.id);
         var user_count = 0;
         var user_time = 0;
@@ -83,7 +84,7 @@ export const execute = async (client, message, args) => {
         rankEmbed.thumbnail = user.avatarURL();
         rankEmbed.fields.push(...fields);
 
-        return message.channel.send(rankEmbed);
+        return message.channel.send({embeds: [ rankEmbed ]});
       });
   } else {
     return await message.channel.send(

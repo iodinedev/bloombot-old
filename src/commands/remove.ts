@@ -17,7 +17,7 @@ export const execute = async (client, message, args) => {
     );
 
   try {
-    const id = ObjectId(args[0]);
+    const id = new ObjectId(args[0]);
 
     var meditation = await Meditations.findOne({
       _id: id,

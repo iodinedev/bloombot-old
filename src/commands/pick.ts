@@ -36,7 +36,7 @@ export const execute = async (client, message) => {
 
   var channel = client.channels.cache.get(config.channels.announce);
 
-  await channel.send(announceEmbed);
+  await channel.send({embeds: [ announceEmbed ]});
 
   return await message.channel.send(
     `:white_check_mark: Announcement posted in <#${channel.id}>!`

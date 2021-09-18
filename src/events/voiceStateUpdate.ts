@@ -77,9 +77,9 @@ export = async (client, oldState, newState) => {
     if (member.user.bot) return;
 
     if ((await Current.countDocuments()) > 0) {
-      var latest = await Current.find().sort({ _id: -1 }).limit(1).toArray();
+      const latest_docs = await Current.find().sort({ _id: -1 }).limit(1).toArray();
 
-      latest = latest[0];
+      const latest = latest_docs[0];
 
       var latest_voice = await client.channels.cache.get(latest.channel);
 

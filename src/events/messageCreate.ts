@@ -36,7 +36,7 @@ export = async (client, message) => {
       client.commands.get(client.aliases.get(command));
 
     if (commandfile) {
-      message.channel.startTyping();
+      message.channel.sendTyping();
 
       var global_admins = await ServerSetup.findOne({
         guild: message.guild.id,
@@ -44,8 +44,8 @@ export = async (client, message) => {
 
       // Check if user has Discord admin permissions or is in global admin database
       if (
-        commandfile.config.admin &&
-        commandfile.config.admin === true &&
+        commandfile.architecture.admin &&
+        commandfile.architecture.admin === true &&
         global_admins &&
         global_admins.admins &&
         global_admins.admins.indexOf(message.author.id) === -1 &&
@@ -82,8 +82,6 @@ export = async (client, message) => {
 
         await commandfile.execute(client, message, args); // Execute found command
       }
-
-      message.channel.stopTyping();
     }
   }
 

@@ -109,19 +109,6 @@ export async function getGuildData(guildid) {
     guild: guildid,
   });
 
-  var meditation_time = await Meditations.aggregate([
-    {
-      $match: {
-        guild: guildid,
-      },
-    },
-    {
-      $group: {
-        timeTotal: { $sum: '$time' },
-      },
-    },
-  ]);
-
   var meditation_sum = await Meditations.aggregate([
     {
       $match: {

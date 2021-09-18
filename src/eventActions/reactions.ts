@@ -1,4 +1,5 @@
-const reactions = require('../config.json').channelReacts;
+import config from '../config';
+const reactions = config.channelReacts;
 
 export class reactionCheckAction {
   static async checkIfCorrect(message) {

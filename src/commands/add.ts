@@ -30,7 +30,7 @@ export const execute = async (client, message, args) => {
       var guild_count = guilddata.meditation_count;
       var guild_time = guilddata.meditation_time;
 
-      if (guild_count % 10 === 0) {
+      if (guild_count % 10 === 0 && guild_time) {
         var time_in_hours = Math.round(guild_time / 60);
 
         await client.channels.cache

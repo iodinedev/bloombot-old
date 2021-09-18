@@ -15,6 +15,8 @@ export const execute = async (client, message, args) => {
     search: args.join('').toLowerCase(),
   });
 
+  if (!tag) return message.channel.send(':x: Looks like that tag doesn\'t exist in the database.');
+
   try {
     await message.channel.send(
       `:warning: Delete the tag **${tag.tag}**? Reply \`yes\` to confirm or ignore this to deny.`

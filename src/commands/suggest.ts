@@ -91,7 +91,7 @@ async function postReminder(suggestTitle, suggestDesc, message) {
       text: `Suggestion by ${message.author.username}#${message.author.tag} on ${day}/${month}/${year}.`,
     };
 
-    var suggestion = suggestion_channel.send(suggestEmbed);
+    var suggestion = suggestion_channel.send({embeds: [ suggestEmbed ]});
 
     await suggestion.react(config.emotes.upvote);
     await suggestion.react(config.emotes.downvote);

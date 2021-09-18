@@ -21,7 +21,7 @@ export const execute = async (client, message) => {
   helpMessage.title = 'List of Global Admins';
   helpMessage.description = pretty;
 
-  return await message.channel.send(helpMessage);
+  return await message.channel.send({embeds: [ helpMessage ]});
 };
 
 export const architecture = {

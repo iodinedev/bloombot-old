@@ -1,6 +1,6 @@
 import config from '../config';
 import * as meditation from '../commands/meditate';
-import { BotStats, Tags } from '../databaseFiles/connect';
+import { BotStats } from '../databaseFiles/connect';
 
 export = (client) => {
   meditation.catchUp(client);

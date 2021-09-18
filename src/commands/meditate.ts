@@ -7,10 +7,10 @@ export const execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
 
   if (voiceChannel.channel) {
-    var latest = await Current.find().sort({ _id: -1 }).limit(1).toArray();
+    const latest_docs = await Current.find().sort({ _id: -1 }).limit(1).toArray();
 
-    if (latest.length > 0) {
-      latest = latest[0];
+    if (latest_docs.length > 0) {
+      const latest = latest_docs[0];
 
       var latest_voice = await client.channels.cache.get(latest.channel);
 
@@ -26,6 +26,7 @@ export const execute = async (client, message, args) => {
     var time: number = Infinity;
     var curr = new Date();
     var stop: number = Infinity;
+    var usr;
 
     if (args && args[0]) {
       time = parseInt(args[0]);
@@ -33,7 +34,7 @@ export const execute = async (client, message, args) => {
     }
 
     try {
-      var usr = await Current.findOne({
+      usr = await Current.findOne({
         usr: message.author.id,
       });
     } catch (err) {
@@ -261,7 +262,7 @@ export async function stop(
   stopMessage.title = `${config.emotes.meditation} Meditation Time Done ${config.emotes.meditation}`;
   stopMessage.description = description;
 
-  user.send(stopMessage);
+  user.send({embeds: [ stopMessage ]});
 
   try {
     // In case there was an error, delete all a user's current meditation sessions
@@ -299,10 +300,10 @@ export async function catchUp(client) {
   const currentDate = new Date().getTime();
 
   try {
-    const meditations = await Current.find();
+    const meditations = await Current.find().toArray();
 
     if (meditations) {
-      let difference;
+      let difference: number;
       meditations.forEach(async (meditation) => {
         if (meditation.whenToStop !== null) {
           difference = currentDate - meditation.whenToStop;

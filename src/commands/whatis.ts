@@ -47,7 +47,7 @@ export const execute = async (client, message, args) => {
       });
     }
 
-    return await message.channel.send(tagHelp);
+    return await message.channel.send({embeds: [ tagHelp ]});
   }
 
   await Tags.find().toArray(async function (err, result) {
@@ -77,7 +77,7 @@ export const execute = async (client, message, args) => {
         tagHelp.title = 'Tag Not Found';
         tagHelp.description = `Did you mean \`${close.tag}\`?`;
 
-        return await message.channel.send(tagHelp);
+        return await message.channel.send({embeds: [ tagHelp ]});
       }
     }
 

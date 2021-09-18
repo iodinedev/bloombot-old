@@ -37,7 +37,7 @@ export const execute = async (client, message, args) => {
         value: `${modulelist}`,
         inline: false,
       });
-      return await message.channel.send(helpMessage).then((bot_msg) => {
+      return await message.channel.send({embeds: [ helpMessage ]}).then((bot_msg) => {
         deleteMessages(message, bot_msg);
       });
     } catch (err) {
@@ -46,8 +46,8 @@ export const execute = async (client, message, args) => {
   } else if (args.length === 1) {
     let command = commands.find(
       (requestedcommand) =>
-        requestedcommand.config.name === args[0].toLowerCase() ||
-        requestedcommand.config.aliases.find(
+        requestedcommand.architecture.name === args[0].toLowerCase() ||
+        requestedcommand.architecture.aliases.find(
           (alias) => alias === args[0].toLowerCase()
         )
     );
@@ -55,24 +55,24 @@ export const execute = async (client, message, args) => {
     if (command) {
       let helpMessage = new Discord.MessageEmbed();
       helpMessage.color = config.colors.embedColor;
-      helpMessage.title = `${prefix}${command.config.name}`;
-      helpMessage.description = `You asked for information on \`${prefix}${command.config.name}\``;
+      helpMessage.title = `${prefix}${command.architecture.name}`;
+      helpMessage.description = `You asked for information on \`${prefix}${command.architecture.name}\``;
 
       const fields = [
         {
           name: 'Description:',
-          value: command.config.description,
+          value: command.architecture.description,
           inline: false,
         },
         {
           name: 'Aliases:',
           value:
-            command.config.aliases.length > 0 ? command.config.aliases : 'None',
+            command.architecture.aliases.length > 0 ? command.architecture.aliases.join(', ') : 'None',
           inline: false,
         },
         {
           name: 'Usage:',
-          value: command.config.usage,
+          value: `${command.architecture.usage}`,
           inline: false,
         },
       ];
@@ -80,7 +80,7 @@ export const execute = async (client, message, args) => {
       helpMessage.fields.push(...fields);
 
       try {
-        message.channel.send(helpMessage).then((bot_msg) => {
+        message.channel.send({embeds: [ helpMessage ]}).then((bot_msg) => {
           deleteMessages(message, bot_msg);
         });
       } catch (err) {
@@ -97,18 +97,18 @@ export const execute = async (client, message, args) => {
 
         commands.forEach((requestedcommand) => {
           if (
-            requestedcommand.config.module.toLowerCase() ==
+            requestedcommand.architecture.module.toLowerCase() ==
             args[0].toLowerCase()
           ) {
             helpMessage.fields.push({
-              name: `**${prefix}${requestedcommand.config.name}**`,
-              value: `${requestedcommand.config.description}`,
+              name: `**${prefix}${requestedcommand.architecture.name}**`,
+              value: `${requestedcommand.architecture.description}`,
               inline: false,
             });
           }
         });
         try {
-          message.channel.send(helpMessage).then((bot_msg) => {
+          message.channel.send({embeds: [ helpMessage ]}).then((bot_msg) => {
             deleteMessages(message, bot_msg);
           });
         } catch (err) {
@@ -116,8 +116,8 @@ export const execute = async (client, message, args) => {
         }
       } else {
         commands.forEach((requestedcommand) => {
-          commandNames.push(requestedcommand.config.name);
-          requestedcommand.config.aliases.forEach((alias) =>
+          commandNames.push(requestedcommand.architecture.name);
+          requestedcommand.architecture.aliases.forEach((alias) =>
             commandNames.push(alias)
           );
         });
@@ -146,8 +146,8 @@ async function didYouMean(commands, search, message, prefix) {
 }
 
 function deleteMessages(usr, bot) {
-  usr.delete({ timeout: 15000 });
-  bot.delete({ timeout: 15000 });
+  setTimeout(() => usr.delete(), 15000);
+  setTimeout(() => bot.delete(), 150000);
 }
 
 export const architecture = {

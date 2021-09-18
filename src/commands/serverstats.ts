@@ -16,17 +16,17 @@ export const execute = async (client, message) => {
   rankEmbed.fields.push(
     {
       name: 'Meditation Minutes',
-      value: guild_time,
+      value: `${guild_time}`,
       inline: false,
     },
     {
       name: 'Meditation Count',
-      value: guild_count,
+      value: `${guild_count}`,
       inline: false,
     }
   );
 
-  return await message.channel.send(rankEmbed);
+  return await message.channel.send({embeds: [ rankEmbed ]});
 };
 
 export const architecture = {
