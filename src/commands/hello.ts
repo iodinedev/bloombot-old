@@ -1,5 +1,5 @@
 export const execute = async (client, message) => {
-  return await message.channel.send('Hey there!');
+  return await message.channel.send('Hello there!');
 };
 
 export const architecture = {
