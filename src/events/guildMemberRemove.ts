@@ -12,5 +12,5 @@ export = async (client, member) => {
   embed.title = `Member Left`;
   embed.description = `We wish you well on your future endeavors ${member.user.username}#${member.user.discriminator}. :pray:`;
   embed.color = config.colors.embedColor;
-  client.channels.cache.get(config.channels.welcome).send(embed);
+  client.channels.cache.get(config.channels.welcome).send({embeds: [embed]});
 };
