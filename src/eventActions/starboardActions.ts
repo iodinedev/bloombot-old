@@ -28,8 +28,8 @@ export class starboardActions {
             message + '\n\n**[Click to jump to message.](' + link + ')**';
           starBoardMessage.footer = { text: '⭐ Times starred: ' + stars };
 
-          if (att.array()[0]) {
-            att = att.array()[0].url;
+          if (att[0]) {
+            att = att[0].url;
             starBoardMessage.setImage(att);
           }
 
