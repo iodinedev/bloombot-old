@@ -93,7 +93,7 @@ export const execute = async (client, message, args) => {
         if (streak >= 730) streak_role = 'alien';
 
         await Object.values(config.roles.streak_roles).every(async (roleid) => {
-          if (member.roles.cache.has(roleid)) {
+          if (member.roles.cache.has(roleid) && config.roles.streak_roles[streak_role] !== roleid) {
             var check_role = await member.guild.roles.cache.find(
               (role) => role.id === roleid
             );

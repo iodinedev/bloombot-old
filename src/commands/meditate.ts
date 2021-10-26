@@ -240,7 +240,7 @@ export async function stop(
     if (streak >= 730) streak_role = 'alien';
 
     Object.values(config.roles.streak_roles).every(async (roleid) => {
-      if (user.roles.cache.has(roleid)) {
+      if (user.roles.cache.has(roleid) && config.roles.streak_roles[streak_role] !== roleid) {
         var check_role = await user.guild.roles.cache.find(
           (role) => role.id === roleid
         );

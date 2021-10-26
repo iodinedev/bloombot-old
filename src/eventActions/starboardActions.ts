@@ -50,18 +50,17 @@ export class starboardActions {
           });
         }
       } else {
-        client.channels.cache
-          .get(config.channels.starchannel)
-          .messages.fetch(result.embedID)
-          .then((starmessage) => {
+        const starchannel = await reaction.message.guild.channels.cache
+          .find((channel) => config.channels.starchannel === channel.id);
+        
+        starchannel.messages.fetch(result.embedID)
+          .then(async (starmessage) => {
             var starmessageEmbed = starmessage.embeds[0];
-            var times = starmessageEmbed.footer.text.substring(
-              16,
-              starmessageEmbed.footer.text.length
-            );
-            times = reaction.count;
+            var times = reaction.count;
+            console.log(times)
             starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
-            return starmessage.edit(starmessageEmbed);
+            console.log(starmessageEmbed)
+            return await starmessage.edit({embeds: [starmessageEmbed]});
           });
       }
     }
