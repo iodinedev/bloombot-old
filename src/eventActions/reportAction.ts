@@ -10,25 +10,25 @@ export class reportCheckAction {
       if (reaction._emoji && reaction._emoji.id === config.emotes.report) {
         await reaction.users.remove(user.id);
         var channel = client.channels.cache.get(message.channel.id);
-        let starBoardMessage = new Discord.MessageEmbed();
-        starBoardMessage.color = config.colors.embedColor;
-        starBoardMessage.author = {
+        let reportMessage = new Discord.MessageEmbed();
+        reportMessage.color = config.colors.embedColor;
+        reportMessage.author = {
           name: `${message.author.username}#${message.author.discriminator}`,
           url: message.author.displayAvatarURL(),
         };
-        starBoardMessage.description = message.content;
-        starBoardMessage.fields.push({
+        reportMessage.description = message.content;
+        reportMessage.fields.push({
           name: 'Link',
           value: `[Go to message](${message.url})`,
           inline: true,
         });
-        starBoardMessage.footer = {
+        reportMessage.footer = {
           text: `Reported in #${channel.name} by ${user.username}#${user.discriminator}`,
         };
-        starBoardMessage.timestamp = message.createdAt;
+        reportMessage.timestamp = message.createdAt;
         client.channels.cache
           .get(config.channels.reportchannel)
-          .send({ embeds: [starBoardMessage] })
+          .send({ content: '<@&788760128010059786>', embeds: [reportMessage] })
           .then(() => {
             user.send(':white_check_mark: Reported to staff.');
           });
@@ -45,7 +45,7 @@ export class reportCheckAction {
       errorMessage.timestamp = message.createdAt;
       message.guild.channels.cache
         .get(config.channels.logs)
-        .send({ content: 'Test <@&788760128010059786>', embeds: [errorMessage] });
+        .send({ embeds: [errorMessage] });
     }
   }
 }
