@@ -114,7 +114,10 @@ export const execute = async (client, message, args) => {
                 tag: tag,
               });
 
-              if (!db_tag) return await message.channel.send(':x: There was an error adding the tag to the database.');
+              if (!db_tag)
+                return await message.channel.send(
+                  ':x: There was an error adding the tag to the database.'
+                );
 
               const tagHelp = new Discord.MessageEmbed();
               tagHelp.color = config.colors.embedColor;
@@ -144,7 +147,7 @@ export const execute = async (client, message, args) => {
                 });
               }
 
-              return await message.channel.send({embeds: [ tagHelp ]});
+              return await message.channel.send({ embeds: [tagHelp] });
             });
 
             aliases_collector.on('end', async (a) => {

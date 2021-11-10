@@ -26,7 +26,7 @@ export const execute = async (client, message) => {
     }
   );
 
-  return await message.channel.send({embeds: [ rankEmbed ]});
+  return await message.channel.send({ embeds: [rankEmbed] });
 };
 
 export const architecture = {

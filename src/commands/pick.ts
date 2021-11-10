@@ -11,9 +11,42 @@ export const execute = async (client, message) => {
 
   if (role.members.size === 0)
     return await message.channel.send(":x: There's nobody in that role!");
-  let user = role.members.random().user;
 
-  var userdata = await meditateUtils.getUserData(user.id, message.guild.id);
+  var limit = 1;
+  var valid = false;
+
+  var user;
+  var userdata;
+
+  // Days * Hours * Minutes * Seconds * Milliseconds
+  const thirty = 30 * 24 * 60 * 60 * 1000;
+
+  const now = new Date(Date.now() - thirty);
+
+  while (valid == false && limit > 0) {
+    user = role.members.random().user;
+
+    userdata = await meditateUtils.getUserData(user.id, message.guild.id);
+
+    var latest: {
+      usr;
+      date;
+      time;
+      guild;
+    }[] = userdata.latest;
+
+    if (
+      latest.length > 1 &&
+      new Date(latest[0].date) >= now &&
+      new Date(latest[1].date) >= now
+    ) {
+      valid = true;
+    }
+
+    limit--;
+  }
+
+  if (!valid) return await message.channel.send(':x: Tried to find a winner and was unsuccessful. Try again.')
 
   var user_time = userdata.meditation_time;
 
@@ -34,12 +67,30 @@ export const execute = async (client, message) => {
   });
   announceEmbed.footer = { text: `Chosen on ${day}/${month}/${year}` };
 
-  var channel = client.channels.cache.get(config.channels.announce);
+  var channel = await client.channels.cache.get(config.channels.announce);
 
-  await channel.send({embeds: [ announceEmbed ]});
+  await channel.send({ embeds: [announceEmbed] });
+
+  await message.channel.send(
+    `:white_check_mark: Announcement posted in <#${channel.id}>!`
+  );
+
+  const dmEmbed = new Discord.MessageEmbed();
+  dmEmbed.color = config.colors.embedColor;
+  dmEmbed.description = 'Congratulations on winning the giveaway! 🥳\nWould you like a Steam key to play **PLAYNE: The Meditation Game**?';
+
+  try {
+  const dmMessage = await user.send({embeds: [dmEmbed]});
+  await dmMessage.react('✅');
+  await dmMessage.react('❌');
+  } catch(err) {
+    return await message.channel.send(
+      `:x: Unable to DM user. It is likely they have disabled DMs. Please reach out to them personally.`
+    );
+  }
 
   return await message.channel.send(
-    `:white_check_mark: Announcement posted in <#${channel.id}>!`
+    `:white_check_mark: User DMed!`
   );
 };
 

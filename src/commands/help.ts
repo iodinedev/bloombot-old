@@ -37,9 +37,11 @@ export const execute = async (client, message, args) => {
         value: `${modulelist}`,
         inline: false,
       });
-      return await message.channel.send({embeds: [ helpMessage ]}).then((bot_msg) => {
-        deleteMessages(message, bot_msg);
-      });
+      return await message.channel
+        .send({ embeds: [helpMessage] })
+        .then((bot_msg) => {
+          deleteMessages(message, bot_msg);
+        });
     } catch (err) {
       console.log(err);
     }
@@ -67,7 +69,9 @@ export const execute = async (client, message, args) => {
         {
           name: 'Aliases:',
           value:
-            command.architecture.aliases.length > 0 ? command.architecture.aliases.join(', ') : 'None',
+            command.architecture.aliases.length > 0
+              ? command.architecture.aliases.join(', ')
+              : 'None',
           inline: false,
         },
         {
@@ -80,7 +84,7 @@ export const execute = async (client, message, args) => {
       helpMessage.fields.push(...fields);
 
       try {
-        message.channel.send({embeds: [ helpMessage ]}).then((bot_msg) => {
+        message.channel.send({ embeds: [helpMessage] }).then((bot_msg) => {
           deleteMessages(message, bot_msg);
         });
       } catch (err) {
@@ -108,7 +112,7 @@ export const execute = async (client, message, args) => {
           }
         });
         try {
-          message.channel.send({embeds: [ helpMessage ]}).then((bot_msg) => {
+          message.channel.send({ embeds: [helpMessage] }).then((bot_msg) => {
             deleteMessages(message, bot_msg);
           });
         } catch (err) {

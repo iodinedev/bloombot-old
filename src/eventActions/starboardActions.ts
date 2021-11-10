@@ -37,7 +37,7 @@ export class starboardActions {
             config.channels.starchannel
           );
 
-          channel.send({embeds: [ starBoardMessage ]}).then((sentmessage) => {
+          channel.send({ embeds: [starBoardMessage] }).then((sentmessage) => {
             let starObject = {
               messageID: reaction.message.id,
               embedID: sentmessage.id,
@@ -50,18 +50,18 @@ export class starboardActions {
           });
         }
       } else {
-        const starchannel = await reaction.message.guild.channels.cache
-          .find((channel) => config.channels.starchannel === channel.id);
-        
-        starchannel.messages.fetch(result.embedID)
-          .then(async (starmessage) => {
-            var starmessageEmbed = starmessage.embeds[0];
-            var times = reaction.count;
-            console.log(times)
-            starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
-            console.log(starmessageEmbed)
-            return await starmessage.edit({embeds: [starmessageEmbed]});
-          });
+        const starchannel = await reaction.message.guild.channels.cache.find(
+          (channel) => config.channels.starchannel === channel.id
+        );
+
+        starchannel.messages.fetch(result.embedID).then(async (starmessage) => {
+          var starmessageEmbed = starmessage.embeds[0];
+          var times = reaction.count;
+          console.log(times);
+          starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
+          console.log(starmessageEmbed);
+          return await starmessage.edit({ embeds: [starmessageEmbed] });
+        });
       }
     }
   }

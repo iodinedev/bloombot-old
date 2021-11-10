@@ -15,7 +15,10 @@ export const execute = async (client, message, args) => {
     search: args.join('').toLowerCase(),
   });
 
-  if (!tag) return message.channel.send(':x: Looks like that tag doesn\'t exist in the database.');
+  if (!tag)
+    return message.channel.send(
+      ":x: Looks like that tag doesn't exist in the database."
+    );
 
   try {
     await message.channel.send(

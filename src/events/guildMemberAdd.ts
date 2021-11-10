@@ -17,7 +17,7 @@ export = async (client, member) => {
 Thanks for joining us. We hope you enjoy your stay!`;
   embed.color = config.colors.embedColor;
 
-  return await member.send({embeds: [ embed ]}).catch((err) => {
+  return await member.send({ embeds: [embed] }).catch((err) => {
     console.error(err);
   });
 };

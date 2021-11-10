@@ -39,10 +39,20 @@ export async function getUserData(userid, guildid) {
 
   var streak = await getStreak(userid);
 
+  const latest = await Meditations.find({
+    $and: [{ usr: userid }, { guild: guildid }],
+  })
+    .sort({
+      date: -1,
+    })
+    .limit(2)
+    .toArray();
+
   return {
     meditation_count,
     meditation_time,
     streak,
+    latest,
   };
 }
 

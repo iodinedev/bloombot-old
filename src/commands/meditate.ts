@@ -7,7 +7,10 @@ export const execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
 
   if (voiceChannel.channel) {
-    const latest_docs = await Current.find().sort({ _id: -1 }).limit(1).toArray();
+    const latest_docs = await Current.find()
+      .sort({ _id: -1 })
+      .limit(1)
+      .toArray();
 
     if (latest_docs.length > 0) {
       const latest = latest_docs[0];
@@ -252,7 +255,7 @@ export async function stop(
   stopMessage.title = `${config.emotes.meditation} Meditation Time Done ${config.emotes.meditation}`;
   stopMessage.description = description;
 
-  user.send({embeds: [ stopMessage ]});
+  user.send({ embeds: [stopMessage] });
 
   try {
     // In case there was an error, delete all a user's current meditation sessions

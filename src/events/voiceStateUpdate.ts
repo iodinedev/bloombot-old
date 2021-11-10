@@ -10,7 +10,9 @@ export = async (client, oldState, newState) => {
   // Left a voice channel
   if (!newState.channelID || oldState.channelID) {
     console.log(oldState.channelID);
-    const voiceChannel = await guild.channels.cache.find((channelId) => oldState.id === channelId);
+    const voiceChannel = await guild.channels.cache.find(
+      (channelId) => oldState.id === channelId
+    );
 
     var humans = 0;
 
@@ -78,7 +80,10 @@ export = async (client, oldState, newState) => {
     if (member.user.bot) return;
 
     if ((await Current.countDocuments()) > 0) {
-      const latest_docs = await Current.find().sort({ _id: -1 }).limit(1).toArray();
+      const latest_docs = await Current.find()
+        .sort({ _id: -1 })
+        .limit(1)
+        .toArray();
 
       const latest = latest_docs[0];
 

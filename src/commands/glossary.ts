@@ -11,7 +11,7 @@ export const execute = async (client, message) => {
   if (!menuEmbed)
     return await message.channel.send(':x: No terms have been defined yet.');
 
-  var menu = await message.channel.send({embeds: [ menuEmbed ]});
+  var menu = await message.channel.send({ embeds: [menuEmbed] });
   var active = true;
 
   let back, forward;
@@ -43,7 +43,7 @@ export const execute = async (client, message) => {
 
         menuEmbed = await createMenu(page, pages);
 
-        menu.edit({embeds: [ menuEmbed ]});
+        menu.edit({ embeds: [menuEmbed] });
 
         menu.reactions.removeAll();
       })
