@@ -1,8 +1,12 @@
-export = (client, packet) => {
+export = async (client, packet) => {
   if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t))
     return;
-  const channel = client.channels.cache.get(packet.d.channel_id);
-  if (channel.messages.cache.has(packet.d.message_id)) return;
+  var channel = client.channels.cache.get(packet.d.channel_id);
+  if (channel && channel.messages.cache.has(packet.d.message_id)) return;
+  if (!channel && client.users.cache.has(packet.d.user_id)) {
+    const user = client.users.cache.get(packet.d.user_id);
+    channel = await user.createDM();
+  }
   channel.messages.fetch(packet.d.message_id).then((message) => {
     const emoji = packet.d.emoji.id
       ? `${packet.d.emoji.name}:${packet.d.emoji.id}`

@@ -28,3 +28,7 @@ export const ServerSetup = client
   .db(config.mongodbDatabase)
   .collection('ServerSetup');
 export const Stars = client.db(config.mongodbDatabase).collection('Starboard');
+export const PickMessages = client
+  .db(config.mongodbDatabase)
+  .collection('PickMessages');
+export const Keys = client.db(config.mongodbDatabase).collection('Keys');

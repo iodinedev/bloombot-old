@@ -1,6 +1,7 @@
 import config from '../config';
 import Discord from 'discord.js';
 import * as meditateUtils from '../utils/meditateUtils';
+import { PickMessages } from '../databaseFiles/connect';
 
 export const execute = async (client, message) => {
   let role = message.guild.roles.cache.get(config.roles.meditation_challenger);
@@ -46,7 +47,10 @@ export const execute = async (client, message) => {
     limit--;
   }
 
-  if (!valid) return await message.channel.send(':x: Tried to find a winner and was unsuccessful. Try again.')
+  if (!valid)
+    return await message.channel.send(
+      ':x: Tried to find a winner and was unsuccessful. Try again.'
+    );
 
   var user_time = userdata.meditation_time;
 
@@ -75,23 +79,22 @@ export const execute = async (client, message) => {
     `:white_check_mark: Announcement posted in <#${channel.id}>!`
   );
 
-  const dmEmbed = new Discord.MessageEmbed();
-  dmEmbed.color = config.colors.embedColor;
-  dmEmbed.description = 'Congratulations on winning the giveaway! 🥳\nWould you like a Steam key to play **PLAYNE: The Meditation Game**?';
-
   try {
-  const dmMessage = await user.send({embeds: [dmEmbed]});
-  await dmMessage.react('✅');
-  await dmMessage.react('❌');
-  } catch(err) {
+    const dmMessage = await user.send(
+      '**Congratulations on winning the giveaway!** 🥳\n\nWould you like a Steam key to play *PLAYNE: The Meditation Game*?\n\nhttps://www.youtube.com/watch?v=P4JCE1oKjGs'
+    );
+    await PickMessages.insertOne({
+      msg: dmMessage.id,
+    });
+    await dmMessage.react('✅');
+    await dmMessage.react('❌');
+  } catch (err) {
     return await message.channel.send(
       `:x: Unable to DM user. It is likely they have disabled DMs. Please reach out to them personally.`
     );
   }
 
-  return await message.channel.send(
-    `:white_check_mark: User DMed!`
-  );
+  return await message.channel.send(`:white_check_mark: User DMed!`);
 };
 
 export const architecture = {
