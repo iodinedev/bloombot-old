@@ -45,7 +45,7 @@ export class reportCheckAction {
       errorMessage.timestamp = message.createdAt;
       message.guild.channels.cache
         .get(config.channels.logs)
-        .send({ content: '<@&788760128010059786>', embeds: [errorMessage] });
+        .send({ content: 'Test <@&788760128010059786>', embeds: [errorMessage] });
     }
   }
 }
