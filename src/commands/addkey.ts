@@ -24,10 +24,19 @@ export const execute = async (client, message, args) => {
       var resp = d.content.trim();
 
       if (resp === 'yes') {
-        await Keys.insertOne({
-          text: args[0],
-          valid: true,
+        var documents: {
+          text: String,
+          valid: Boolean
+        }[] = [];
+
+        args.forEach((element: any) => {
+          documents.push({
+            text: element,
+            valid: true
+          })
         });
+
+        await Keys.insertMany(documents);
 
         return await message.channel.send('✅ Success!');
       } else if (resp === 'no') {
