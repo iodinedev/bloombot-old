@@ -1,3 +1,4 @@
+import { MongoBulkWriteError } from 'mongodb';
 import { Keys } from '../databaseFiles/connect';
 
 export const execute = async (client, message, args) => {
@@ -42,8 +43,11 @@ export const execute = async (client, message, args) => {
 
         try {
           await Keys.insertMany(documents);
-        } catch(err) {
-          console.error(err);
+        } catch(err: any) {
+          if (err instanceof MongoBulkWriteError) {
+            console.log(err.code);
+            console.error(err);
+          }
         }
 
         return await message.channel.send('✅ Success!');
