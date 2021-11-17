@@ -43,17 +43,24 @@ export const execute = async (client, message, args) => {
 
         try {
           await Keys.insertMany(documents);
+
+          return await message.channel.send('✅ Success!');
         } catch(err: any) {
           if (err instanceof MongoBulkWriteError) {
             const writeErrors = err.result.result.writeErrors;
+            var notAdded: any[] = [];
 
             writeErrors.forEach(error => {
-              console.log(error.err.op);
-            })
-          }
-        }
+              const entry: any = error.err.op;
 
-        return await message.channel.send('✅ Success!');
+              notAdded.push(entry.text);
+            });
+            
+            return await message.channel.send(`:warning: ${writeErrors} documents not added, already in database. All other documents added.`);
+          }
+          
+          return await message.channel.send(`:x: An unknown error occured. Try again later.`);
+        }
       } else if (resp === 'no') {
         return await message.channel.send(
           '❌ Cancelled. Nothing has been added to the database.'
