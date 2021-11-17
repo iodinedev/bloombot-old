@@ -56,7 +56,7 @@ export const execute = async (client, message, args) => {
               notAdded.push(entry.text);
             });
             
-            return await message.channel.send(`:warning: ${writeErrors.length} documents not added, already in database. All other documents added.`);
+            return await message.channel.send(`:warning: ${writeErrors.length} documents not added, already in database. ${args.length - writeErrors.length} records added to database.`);
           }
           
           return await message.channel.send(`:x: An unknown error occured. Try again later.`);
