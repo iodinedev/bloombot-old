@@ -54,7 +54,7 @@ export const execute = async (client, message, args) => {
           var year = date.getUTCFullYear();
 
           meditations.push(
-            `**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation._id}\`\n`
+            `**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation._id}\``
           );
         });
 
@@ -71,7 +71,7 @@ export const execute = async (client, message, args) => {
           },
           {
             name: 'Recent Meditations',
-            value: meditations.length === 0 ? 'None' : `${meditations}`,
+            value: meditations.length === 0 ? 'None' : `${meditations.join("\n")}`,
             inline: false,
           },
           {
