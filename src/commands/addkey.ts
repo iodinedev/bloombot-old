@@ -7,8 +7,12 @@ export const execute = async (client, message, args) => {
     );
 
   try {
+    var check: string = `${args.length} records`;
+
+    if (args.length === 1) check = args[0];
+
     await message.channel.send(
-      `\`${args[0]}\` will be added to the database. Is this correct? (Type 'yes' or 'no')`
+      `\`${check}\` will be added to the database. Is this correct? (Type 'yes' or 'no')`
     );
     const filter = (m) => m.author.id === message.author.id;
 
@@ -36,7 +40,11 @@ export const execute = async (client, message, args) => {
           })
         });
 
-        await Keys.insertMany(documents);
+        try {
+          await Keys.insertMany(documents);
+        } catch(err) {
+          console.error(err);
+        }
 
         return await message.channel.send('✅ Success!');
       } else if (resp === 'no') {
