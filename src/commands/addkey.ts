@@ -50,10 +50,10 @@ export const execute = async (client, message, args) => {
             const writeErrors = err.result.result.writeErrors;
             var notAdded: any[] = [];
 
-            console.log(writeErrors);
-
             writeErrors.forEach(error => {
               const entry: any = error.err.op;
+
+              console.log(entry);
 
               notAdded.push(entry.text);
             });
