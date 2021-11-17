@@ -2,6 +2,7 @@ import { BotStats } from '../databaseFiles/connect';
 import { Prefixes } from '../databaseFiles/connect';
 import { ServerSetup } from '../databaseFiles/connect';
 import { reactionCheckAction } from '../eventActions/reactions';
+import { Permissions } from 'discord.js';
 
 export = async (client, message) => {
   if (!message.guild || message.author.bot) return;
@@ -49,7 +50,7 @@ export = async (client, message) => {
         global_admins &&
         global_admins.admins &&
         global_admins.admins.indexOf(message.author.id) === -1 &&
-        message.member.hasPermission('ADMINISTRATOR') === false
+        message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) === false
       ) {
         await message.channel.send(
           ":x: You don't have permission to run this command."
