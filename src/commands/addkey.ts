@@ -46,6 +46,7 @@ export const execute = async (client, message, args) => {
 
           return await message.channel.send('✅ Success!');
         } catch(err: any) {
+          console.log(err);
           if (err instanceof MongoBulkWriteError) {
             const writeErrors = err.result.result.writeErrors;
             var notAdded: any[] = [];
