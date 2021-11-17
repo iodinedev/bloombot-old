@@ -45,7 +45,11 @@ export const execute = async (client, message, args) => {
           await Keys.insertMany(documents);
         } catch(err: any) {
           if (err instanceof MongoBulkWriteError) {
-            console.error(err.result.result.writeErrors);
+            const writeErrors = err.result.result.writeErrors;
+
+            writeErrors.forEach(error => {
+              console.log(error.err.op);
+            })
           }
         }
 
