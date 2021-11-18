@@ -1,21 +1,8 @@
 import config from '../config';
 import * as meditation from '../commands/meditate';
-import { Keys, Meditations, Stars, BotStats, ServerSetup } from '../databaseFiles/connect';
-import meditations from '../backups/meditations';
-import serversetup from '../backups/serversetup';
-import starboard from '../backups/starboard';
-import botstats from '../backups/botstats';
+import { Keys, BotStats } from '../databaseFiles/connect';
 
 export = async (client) => {
-  console.log(meditations)
-  console.log(serversetup)
-  console.log(starboard)
-  console.log(botstats)
-  await Meditations.insertMany(meditations);
-  await ServerSetup.insertMany(serversetup);
-  await Stars.insertMany(starboard);
-  await BotStats.insertMany(botstats);
-
   try {
     await Keys.createIndex( { text: 1 }, { unique: true } )
   } catch(err) {
