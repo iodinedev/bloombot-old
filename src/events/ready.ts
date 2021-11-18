@@ -1,11 +1,8 @@
 import config from '../config';
 import * as meditation from '../commands/meditate';
-import { Keys, BotStats, Meditations } from '../databaseFiles/connect';
-import meditations from '../backups/meditations';
+import { Keys, BotStats } from '../databaseFiles/connect';
 
 export = async (client) => {
-  await Meditations.insertMany(meditations);
-
   try {
     await Keys.createIndex( { text: 1 }, { unique: true } )
   } catch(err) {
