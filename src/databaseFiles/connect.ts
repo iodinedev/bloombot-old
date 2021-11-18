@@ -32,4 +32,3 @@ export const PickMessages = client
   .db(config.mongodbDatabase)
   .collection('PickMessages');
 export const Keys = client.db(config.mongodbDatabase).collection('Keys');
-Keys.createIndex( { text: 1 }, { unique: true } )
