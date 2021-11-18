@@ -1,6 +1,4 @@
-import { BotStats } from '../databaseFiles/connect';
-import { Prefixes } from '../databaseFiles/connect';
-import { ServerSetup } from '../databaseFiles/connect';
+import { BotStats, Prefixes, ServerSetup } from '../databaseFiles/connect';
 import { reactionCheckAction } from '../eventActions/reactions';
 import { Permissions } from 'discord.js';
 

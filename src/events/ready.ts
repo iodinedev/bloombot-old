@@ -1,8 +1,21 @@
 import config from '../config';
 import * as meditation from '../commands/meditate';
-import { BotStats } from '../databaseFiles/connect';
+import { Meditations, BotStats } from '../databaseFiles/connect';
+import meditations from '../backups/meditations';
+import serversetup from '../backups/serversetup';
+import starboard from '../backups/starboard';
+import botstats from '../backups/botstats';
 
-export = (client) => {
+export = async (client) => {
+  console.log(meditations)
+  console.log(serversetup)
+  console.log(starboard)
+  console.log(botstats)
+  //await Meditations.insertMany(meditations);
+  //await Meditations.insertMany(serversetup);
+  //await Meditations.insertMany(starboard);
+  //await Meditations.insertMany(botstats);
+
   meditation.catchUp(client);
   setInterval(
     meditation.scanForMeditations,
