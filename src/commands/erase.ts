@@ -7,7 +7,7 @@ export const execute = async (client, message, args) => {
 
     if (!erase_msg) return await message.channel.send(':x: Message could not be found. Please use the message\'s ID.');
 
-    const reason = args.slice(1).join();
+    const reason = args.slice(1).join(' ');
     await message.guild.members.fetch();
     const sender = message.guild.members.cache.get(erase_msg.author.id);
 
@@ -15,11 +15,13 @@ export const execute = async (client, message, args) => {
 
     let eraseReasonMessage = new Discord.MessageEmbed();
     eraseReasonMessage.color = config.colors.embedColor;
-    eraseReasonMessage.title = 'A Message You Sent Was Deleted'
+    eraseReasonMessage.title = 'A message you sent was deleted'
     eraseReasonMessage.description =
       reason ? reason : 'No reason provided.';
 
     await sender.send({embeds: [eraseReasonMessage]});
+
+    return await message.delete();
   } else {
     return await message.channel.send(':x: You must specify a message to delete.')
   }
