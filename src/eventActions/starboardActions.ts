@@ -57,7 +57,6 @@ export class starboardActions {
         starchannel.messages.fetch(result.embedID).then(async (starmessage) => {
           var starmessageEmbed = starmessage.embeds[0];
           var times = reaction.count;
-          console.log(times);
           starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
           console.log(starmessageEmbed);
           return await starmessage.edit({ embeds: [starmessageEmbed] });
