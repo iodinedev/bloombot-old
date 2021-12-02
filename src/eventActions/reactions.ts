@@ -37,6 +37,12 @@ export class reactionCheckAction {
         });
 
         if (reaction._emoji.name === '❌') {
+          const admin_channel = await message.guild.channels.cache.find(
+            (channel) => channel.id === config.channels.admin
+          );
+
+          await admin_channel.send(`:information_source: User <@${user.id}> declined the steam key.`)
+
           return await message.channel.send(
             ':white_check_mark: Your message has been removed from the database.\nChange your mind? Reach out to a staff member.'
           );
