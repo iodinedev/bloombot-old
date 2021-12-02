@@ -17,9 +17,6 @@ export class starboardActions {
 
       var att = reaction.message.attachments;
 
-      console.log(reaction.message)
-      console.log(att)
-
       let result = await Stars.findOne({ messageID: reaction.message.id });
 
       if (result === null) {
@@ -32,8 +29,7 @@ export class starboardActions {
           starBoardMessage.footer = { text: '⭐ Times starred: ' + stars };
 
           if (att[0]) {
-            att = att[0].url;
-            starBoardMessage.setImage(att);
+            starBoardMessage.setImage(att[0].url);
           }
 
           let channel = await client.channels.cache.get(
