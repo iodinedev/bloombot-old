@@ -28,8 +28,8 @@ export class starboardActions {
             message + '\n\n**[Click to jump to message.](' + link + ')**';
           starBoardMessage.footer = { text: '⭐ Times starred: ' + stars };
 
-          if (att[0]) {
-            starBoardMessage.setImage(att[0].url);
+          if (att.size > 0) {
+            starBoardMessage.setImage(att.get(0).url);
           }
 
           let channel = await client.channels.cache.get(
