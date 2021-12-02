@@ -32,7 +32,9 @@ export class starboardActions {
           console.log(att.get(0))
 
           if (att.size > 0) {
-            starBoardMessage.setImage(att.get(0).url);
+            const att_arr = Array.from(att, ([name, value]) => ( value ));
+            
+            starBoardMessage.setImage(att_arr[0].url);
           }
 
           let channel = await client.channels.cache.get(
