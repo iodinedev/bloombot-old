@@ -32,16 +32,22 @@ export class reactionCheckAction {
       const message = await channel.messages.fetch(reaction.message.id);
 
       if (pickMessage) {
-        await PickMessages.deleteOne({
+        const guild = client.guilds.cache.get(pickMessage.guild);
+
+	await PickMessages.deleteOne({
           msg: reaction.message.id,
         });
 
         if (reaction._emoji.name === '❌') {
-          const admin_channel = await message.guild.channels.cache.find(
-            (channel) => channel.id === config.channels.admin
-          );
+	  console.log(config.channels.admin);
 
-          await admin_channel.send(`:information_source: User <@${user.id}> declined the steam key.`)
+	  try {
+            const admin_channel = await guild.channels.cache.get(config.channels.admin);
+    	    
+            await admin_channel.send(`:information_source: User <@${user.id}> declined the steam key.`)
+	  } catch(err) {
+	    console.error(err);
+	  }
 
           return await message.channel.send(
             ':white_check_mark: Your message has been removed from the database.\nChange your mind? Reach out to a staff member.'
