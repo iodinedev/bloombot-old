@@ -28,6 +28,9 @@ export class starboardActions {
             message + '\n\n**[Click to jump to message.](' + link + ')**';
           starBoardMessage.footer = { text: '⭐ Times starred: ' + stars };
 
+          console.log(att)
+          console.log(att.get(0))
+
           if (att.size > 0) {
             starBoardMessage.setImage(att.get(0).url);
           }
