@@ -17,6 +17,9 @@ export class starboardActions {
 
       var att = reaction.message.attachments;
 
+      console.log(reaction.message)
+      console.log(att)
+
       let result = await Stars.findOne({ messageID: reaction.message.id });
 
       if (result === null) {
