@@ -30,8 +30,8 @@ export const execute = async (client, message, args) => {
 export const architecture = {
   name: 'erase',
   aliases: ['rm'],
-  module: 'Admin',
-  admin: true,
+  module: 'Moderator',
+  moderator: true,
   description: `Deletes a message and alerts the user why with a reason.`,
   usage: ['erase <message ID> [reason]'],
 };
