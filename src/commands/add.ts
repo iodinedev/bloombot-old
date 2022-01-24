@@ -116,6 +116,8 @@ export const execute = async (client, message, args) => {
         var add_streak_role = await member.guild.roles.cache.find(
           (role) => role.id === config.roles.streak_roles[streak_role]
         );
+
+        console.log(add_streak_role);
     
         const streakRoles = Object.values(config.roles.streak_roles);
         var shouldAdd = false;
