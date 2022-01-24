@@ -220,6 +220,7 @@ export async function stop(
     );
 
     const levelRoles = Object.values(config.roles.lvl_roles);
+    var shouldAdd = false;
 
     levelRoles.every(async (roleid) => {
       if (user.roles.cache.has(roleid)) {
@@ -229,11 +230,12 @@ export async function stop(
 
         if (check_role.position < add_lvl_role.position) {
           user.roles.remove(check_role);
+          shouldAdd = true;
         }
       }
     });
 
-    if (user.roles.cache.some(role => role.id === add_lvl_role.id)) await user.roles.add(add_lvl_role);
+    if (shouldAdd) await user.roles.add(add_lvl_role);
 
     var streak_role: string;
 
@@ -252,6 +254,7 @@ export async function stop(
     );
 
     const streakRoles = Object.values(config.roles.streak_roles);
+    var shouldAdd = false;
 
     streakRoles.every(async (roleid) => {
       if (user.roles.cache.has(roleid)) {
@@ -260,12 +263,13 @@ export async function stop(
         );
 
         if (check_role.position < add_streak_role.position) {
+          shouldAdd = true;
           user.roles.remove(check_role);
         }
       }
     });
 
-    if (user.roles.cache.some(role => role.id === add_streak_role.id)) await user.roles.add(add_streak_role);
+    if (shouldAdd) await user.roles.add(add_streak_role);
   } catch (err) {
     console.error(err);
   }

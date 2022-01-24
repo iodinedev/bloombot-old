@@ -79,22 +79,27 @@ export const execute = async (client, message, args) => {
         if (user_time >= 50000) lvl_role = 'II_Star_S';
         if (user_time >= 100000) lvl_role = 'III_Star_S';
 
-	await Object.values(config.roles.lvl_roles).every(async (roleid) => {
+        var add_lvl_role = await member.guild.roles.cache.find(
+          (role) => role.id === config.roles.lvl_roles[lvl_role]
+        );
+    
+        const levelRoles = Object.values(config.roles.lvl_roles);
+        var shouldAdd = false;
+    
+        levelRoles.every(async (roleid) => {
           if (member.roles.cache.has(roleid)) {
             var check_role = await member.guild.roles.cache.find(
               (role) => role.id === roleid
             );
-
-	    if (ranks[check_role.name] < ranks[lvl_role]) {
+    
+            if (check_role.position < add_lvl_role.position) {
               member.roles.remove(check_role);
-	    }
+              shouldAdd = true;
+            }
           }
         });
-
-        var add_lvl_role = await member.guild.roles.cache.find(
-          (role) => role.id === config.roles.lvl_roles[lvl_role]
-        );
-        if (add_lvl_role) await member.roles.add(add_lvl_role);
+    
+        if (shouldAdd) await member.roles.add(add_lvl_role);
 
         var streak_role;
 
@@ -111,7 +116,24 @@ export const execute = async (client, message, args) => {
         var add_streak_role = await member.guild.roles.cache.find(
           (role) => role.id === config.roles.streak_roles[streak_role]
         );
-        if (add_streak_role) await member.roles.add(add_streak_role);
+    
+        const streakRoles = Object.values(config.roles.streak_roles);
+        var shouldAdd = false;
+    
+        streakRoles.every(async (roleid) => {
+          if (member.roles.cache.has(roleid)) {
+            var check_role = await member.guild.roles.cache.find(
+              (role) => role.id === roleid
+            );
+    
+            if (check_role.position < add_streak_role.position) {
+              shouldAdd = true;
+              member.roles.remove(check_role);
+            }
+          }
+        });
+    
+        if (shouldAdd) await member.roles.add(add_streak_role);
       } catch (err) {
         console.error(err);
       }
