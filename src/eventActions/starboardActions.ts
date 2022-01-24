@@ -59,7 +59,6 @@ export class starboardActions {
           var starmessageEmbed = starmessage.embeds[0];
           var times = reaction.count;
           starmessageEmbed.setFooter('⭐ Times starred: ' + times.toString());
-          console.log(starmessageEmbed);
           return await starmessage.edit({ embeds: [starmessageEmbed] });
         });
       }

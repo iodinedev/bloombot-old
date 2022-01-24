@@ -9,7 +9,6 @@ export = async (client, oldState, newState) => {
 
   // Left a voice channel
   if (!newState.channelID || oldState.channelID) {
-    console.log(oldState.channelID);
     const voiceChannel = await guild.channels.cache.find(
       (channelId) => oldState.id === channelId
     );
