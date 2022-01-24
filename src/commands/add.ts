@@ -51,6 +51,20 @@ export const execute = async (client, message, args) => {
 
       try {
         var lvl_role;
+	const ranks = {
+	  'I_Star': 0,
+          'II_Star': 1,
+          'III_Star': 2,
+          'I_S_Star': 3,
+          'II_S_Star': 4,
+          'III_S_Star': 5,
+          'I_M_Star': 6,
+          'II_M_Star': 7,
+          'III_M_Star': 8,
+          'I_Star_S': 9,
+          'II_Star_S': 10,
+          'III_Star_S': 11
+	};
 
         if (user_time >= 50) lvl_role = 'I_Star';
         if (user_time >= 100) lvl_role = 'II_Star';
@@ -65,13 +79,15 @@ export const execute = async (client, message, args) => {
         if (user_time >= 50000) lvl_role = 'II_Star_S';
         if (user_time >= 100000) lvl_role = 'III_Star_S';
 
-        await Object.values(config.roles.lvl_roles).every(async (roleid) => {
+	await Object.values(config.roles.lvl_roles).every(async (roleid) => {
           if (member.roles.cache.has(roleid)) {
             var check_role = await member.guild.roles.cache.find(
               (role) => role.id === roleid
             );
 
-            member.roles.remove(check_role);
+	    if (ranks[check_role.name] < ranks[lvl_role]) {
+              member.roles.remove(check_role);
+	    }
           }
         });
 

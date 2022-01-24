@@ -1,6 +1,7 @@
 import { BotStats, Prefixes, ServerSetup } from '../databaseFiles/connect';
 import { reactionCheckAction } from '../eventActions/reactions';
 import { Permissions } from 'discord.js';
+import config from '../config';
 
 export = async (client, message) => {
   if (!message.guild || message.author.bot) return;
@@ -40,16 +41,30 @@ export = async (client, message) => {
       var global_admins = await ServerSetup.findOne({
         guild: message.guild.id,
       });
-
+      
       // Check if user has Discord admin permissions or is in global admin database
       if (
-        commandfile.architecture.admin &&
-        commandfile.architecture.admin === true &&
-        global_admins &&
-        global_admins.admins &&
-        global_admins.admins.indexOf(message.author.id) === -1 &&
-        message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) === false &&
-        message.author.id !== "515919653445304345"
+	(
+          commandfile.architecture.admin &&
+          commandfile.architecture.admin === true &&
+          global_admins &&
+          global_admins.admins &&
+          global_admins.admins.indexOf(message.author.id) === -1 &&
+          message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) === false &&
+          message.author.id !== "515919653445304345"
+	) || (
+	  commandfile.architecture.moderator &&
+          commandfile.architecture.moderator === true &&
+          (
+	    message.member.roles.cache.has(config.roles.moderator) === false
+	  ) && (
+  	    global_admins &&
+            global_admins.admins &&
+            global_admins.admins.indexOf(message.author.id) === -1 &&
+            message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) === false &&
+            message.author.id !== "515919653445304345"
+	  )
+	)
       ) {
         await message.channel.send(
           ":x: You don't have permission to run this command."
