@@ -17,8 +17,11 @@
     "prettier": "prettier --write package.json tsconfig.json src/**/*.ts"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/voice": "^0.7.5",
     "discord.js": "^13.1.0",
     "fastest-levenshtein": "^1.0.12",
+    "libsodium-wrappers": "^0.7.9",
     "mongodb": "^4.2.1"
   },
   "devDependencies": {
