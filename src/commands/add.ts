@@ -84,9 +84,9 @@ export const execute = async (client, message, args) => {
         );
     
         const levelRoles = Object.values(config.roles.lvl_roles);
-        var shouldAdd = false;
+        var shouldAdd = true;
     
-        levelRoles.every(async (roleid) => {
+        await levelRoles.every(async (roleid) => {
           if (member.roles.cache.has(roleid)) {
             var check_role = await member.guild.roles.cache.find(
               (role) => role.id === roleid
@@ -94,7 +94,8 @@ export const execute = async (client, message, args) => {
     
             if (check_role.position < add_lvl_role.position) {
               member.roles.remove(check_role);
-              shouldAdd = true;
+            } else {
+              shouldAdd = false;
             }
           }
         });
@@ -130,8 +131,8 @@ export const execute = async (client, message, args) => {
             if (check_role.position < add_streak_role.position) {
               member.roles.remove(check_role);
             } else {
-	      shouldAdd = false;
-	    }
+              shouldAdd = false;
+            }
           }
         });
     
