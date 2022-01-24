@@ -9,13 +9,11 @@ export = async (client, oldState, newState) => {
 
   // Left a voice channel
   if (!newState.channelID || oldState.channelID) {
-    const voiceChannel = await guild.channels.cache.find(
-      (channelId) => oldState.id === channelId
-    );
-
+    await guild.channels.fetch();
+    const voiceChannel = await guild.channels.cache.get(oldState.id);
     var humans = 0;
 
-    if (voiceChannel.members) {
+    if (voiceChannel && voiceChannel.members) {
       voiceChannel.members.forEach((member) => {
         if (!member.user.bot) humans += 1;
       });
@@ -74,6 +72,8 @@ export = async (client, oldState, newState) => {
 
   // Joined a voice channel
   if (newState.channelID) {
+	  console.log('joined');
+    await guild.channels.fetch();
     const voiceChannel = guild.channels.cache.get(newState.channelID);
 
     if (member.user.bot) return;
