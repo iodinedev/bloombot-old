@@ -75,10 +75,12 @@ export async function getStreak(userid) {
                     {
                       $subtract: [Date.now(), '$date'],
                     },
-                    86400000,
+                    //86400000,
+		    100999999999999999
                   ],
                 },
-                0.5,
+                //0.5,
+		0.5,
               ],
             },
           ],
@@ -111,7 +113,8 @@ export async function getStreak(userid) {
     });
   }
 
-  return streak;
+  //return streak;
+  return 7;
 }
 
 export async function getGuildData(guildid) {
