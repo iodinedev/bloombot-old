@@ -215,22 +215,27 @@ export async function stop(
     if (user_time >= 50000) lvl_role = 'II_Star_S';
     if (user_time >= 100000) lvl_role = 'III_Star_S';
 
-    Object.values(config.roles.lvl_roles).every(async (roleid) => {
+    var add_lvl_role = await user.guild.roles.cache.find(
+      (role) => role.id === config.roles.lvl_roles[lvl_role]
+    );
+
+    const levelRoles = Object.values(config.roles.lvl_roles);
+
+    levelRoles.every(async (roleid) => {
       if (user.roles.cache.has(roleid)) {
         var check_role = await user.guild.roles.cache.find(
           (role) => role.id === roleid
         );
 
-        user.roles.remove(check_role);
+        if (check_role.position < add_lvl_role.position) {
+          user.roles.remove(check_role);
+        }
       }
     });
 
-    var add_lvl_role = await user.guild.roles.cache.find(
-      (role) => role.id === config.roles.lvl_roles[lvl_role]
-    );
-    if (add_lvl_role) await user.roles.add(add_lvl_role);
+    if (user.roles.cache.some(role => role.id === add_lvl_role.id)) await user.roles.add(add_lvl_role);
 
-    var streak_role;
+    var streak_role: string;
 
     if (streak >= 7) streak_role = 'egg';
     if (streak >= 14) streak_role = 'hatching_chick';
@@ -245,7 +250,22 @@ export async function stop(
     var add_streak_role = await user.guild.roles.cache.find(
       (role) => role.id === config.roles.streak_roles[streak_role]
     );
-    if (add_streak_role) await user.roles.add(add_streak_role);
+
+    const streakRoles = Object.values(config.roles.streak_roles);
+
+    streakRoles.every(async (roleid) => {
+      if (user.roles.cache.has(roleid)) {
+        var check_role = await user.guild.roles.cache.find(
+          (role) => role.id === roleid
+        );
+
+        if (check_role.position < add_streak_role.position) {
+          user.roles.remove(check_role);
+        }
+      }
+    });
+
+    if (user.roles.cache.some(role => role.id === add_streak_role.id)) await user.roles.add(add_streak_role);
   } catch (err) {
     console.error(err);
   }
