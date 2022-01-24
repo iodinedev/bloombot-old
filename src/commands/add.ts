@@ -84,9 +84,9 @@ export const execute = async (client, message, args) => {
         );
     
         const levelRoles = Object.values(config.roles.lvl_roles);
-        var shouldAdd = false;
+        var shouldAdd = true;
     
-        levelRoles.every(async (roleid) => {
+        await levelRoles.every(async (roleid) => {
           if (member.roles.cache.has(roleid)) {
             var check_role = await member.guild.roles.cache.find(
               (role) => role.id === roleid
@@ -94,7 +94,8 @@ export const execute = async (client, message, args) => {
     
             if (check_role.position < add_lvl_role.position) {
               member.roles.remove(check_role);
-              shouldAdd = true;
+            } else {
+              shouldAdd = false;
             }
           }
         });
@@ -112,25 +113,24 @@ export const execute = async (client, message, args) => {
         if (streak >= 140) streak_role = 'eagle';
         if (streak >= 365) streak_role = 'dragon';
         if (streak >= 730) streak_role = 'alien';
-	console.log(streak_role);
+
         var add_streak_role = await member.guild.roles.cache.find(
           (role) => role.id === config.roles.streak_roles[streak_role]
         );
-
-        console.log(add_streak_role);
     
         const streakRoles = Object.values(config.roles.streak_roles);
-        var shouldAdd = false;
+        var shouldAdd = true;
     
-        streakRoles.every(async (roleid) => {
+        await streakRoles.every(async (roleid) => {
           if (member.roles.cache.has(roleid)) {
             var check_role = await member.guild.roles.cache.find(
               (role) => role.id === roleid
             );
     
             if (check_role.position < add_streak_role.position) {
-              shouldAdd = true;
               member.roles.remove(check_role);
+            } else {
+              shouldAdd = false;
             }
           }
         });
