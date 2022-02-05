@@ -100,7 +100,7 @@ export const execute = async (client, message, args) => {
           }
         });
 
-        if (shouldAdd) await member.roles.add(add_lvl_role);
+        if (shouldAdd && add_lvl_role) await member.roles.add(add_lvl_role);
 
         var streak_role;
 
@@ -113,9 +113,6 @@ export const execute = async (client, message, args) => {
         if (streak >= 140) streak_role = 'eagle';
         if (streak >= 365) streak_role = 'dragon';
         if (streak >= 730) streak_role = 'alien';
-
-        console.log(streak)
-        console.log(streak_role)
 
         var add_streak_role = await member.guild.roles.cache.find(
           (role) => role.id === config.roles.streak_roles[streak_role]
@@ -138,7 +135,7 @@ export const execute = async (client, message, args) => {
           }
         });
 
-        if (shouldAdd) await member.roles.add(add_streak_role);
+        if (shouldAdd && add_streak_role) await member.roles.add(add_streak_role);
       } catch (err) {
         console.error(err);
       }
