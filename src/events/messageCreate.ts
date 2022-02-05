@@ -69,13 +69,6 @@ export = async (client, message) => {
         await message.channel.send(
           ":x: You don't have permission to run this command."
         );
-      } else if (
-        commandfile.architecture.moderator &&
-        commandfile.architecture.moderator === true
-      ) {
-        await message.channel.send(
-          ":x: You don't have permission to run this command."
-        );
       } else {
         var total = 0;
 
