@@ -4,8 +4,8 @@ import { Keys, BotStats } from '../databaseFiles/connect';
 
 export = async (client) => {
   try {
-    await Keys.createIndex( { text: 1 }, { unique: true } )
-  } catch(err) {
+    await Keys.createIndex({ text: 1 }, { unique: true });
+  } catch (err) {
     console.error(err);
   }
 

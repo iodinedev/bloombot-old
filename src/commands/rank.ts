@@ -71,7 +71,8 @@ export const execute = async (client, message, args) => {
           },
           {
             name: 'Recent Meditations',
-            value: meditations.length === 0 ? 'None' : `${meditations.join("\n")}`,
+            value:
+              meditations.length === 0 ? 'None' : `${meditations.join('\n')}`,
             inline: false,
           },
           {

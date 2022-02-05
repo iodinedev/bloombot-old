@@ -28,26 +28,29 @@ export class reactionCheckAction {
     });
 
     const channel = await user.createDM();
+
     try {
       const message = await channel.messages.fetch(reaction.message.id);
 
       if (pickMessage) {
         const guild = client.guilds.cache.get(pickMessage.guild);
 
-	await PickMessages.deleteOne({
+        await PickMessages.deleteOne({
           msg: reaction.message.id,
         });
 
         if (reaction._emoji.name === '❌') {
-	  console.log(config.channels.admin);
+          try {
+            const admin_channel = await guild.channels.cache.get(
+              config.channels.admin
+            );
 
-	  try {
-            const admin_channel = await guild.channels.cache.get(config.channels.admin);
-    	    
-            await admin_channel.send(`:information_source: User <@${user.id}> declined the steam key.`)
-	  } catch(err) {
-	    console.error(err);
-	  }
+            await admin_channel.send(
+              `:information_source: User <@${user.id}> declined the steam key.`
+            );
+          } catch (err) {
+            console.error(err);
+          }
 
           return await message.channel.send(
             ':white_check_mark: Your message has been removed from the database.\nChange your mind? Reach out to a staff member.'
@@ -96,7 +99,7 @@ export class reactionCheckAction {
           }
         }
       }
-    } catch(err) {
+    } catch (err) {
       if (err instanceof DiscordAPIError) {
         if (err.code === 10008) return false;
 

@@ -72,7 +72,6 @@ export = async (client, oldState, newState) => {
 
   // Joined a voice channel
   if (newState.channelID) {
-	  console.log('joined');
     await guild.channels.fetch();
     const voiceChannel = guild.channels.cache.get(newState.channelID);
 

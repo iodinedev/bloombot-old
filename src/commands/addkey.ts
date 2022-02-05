@@ -30,29 +30,35 @@ export const execute = async (client, message, args) => {
 
       if (resp === 'yes') {
         var documents: {
-          text: String,
-          valid: Boolean
+          text: String;
+          valid: Boolean;
         }[] = [];
 
         args.forEach((element: any) => {
           documents.push({
             text: element,
-            valid: true
-          })
+            valid: true,
+          });
         });
 
         const initLength = await Keys.countDocuments();
-        
+
         try {
           await Keys.insertMany(documents);
 
           return await message.channel.send('✅ Success!');
-        } catch(err: any) {
-          if (err instanceof MongoBulkWriteError) {            
-            return await message.channel.send(`:warning: Some documents not added, already in database. ${await Keys.countDocuments() - initLength} documents added.`);
+        } catch (err: any) {
+          if (err instanceof MongoBulkWriteError) {
+            return await message.channel.send(
+              `:warning: Some documents not added, already in database. ${
+                (await Keys.countDocuments()) - initLength
+              } documents added.`
+            );
           }
-          
-          return await message.channel.send(`:x: An unknown error occured. Try again later.`);
+
+          return await message.channel.send(
+            `:x: An unknown error occured. Try again later.`
+          );
         }
       } else if (resp === 'no') {
         return await message.channel.send(

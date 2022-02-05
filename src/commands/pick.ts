@@ -85,7 +85,7 @@ export const execute = async (client, message) => {
     );
     await PickMessages.insertOne({
       msg: dmMessage.id,
-      guild: message.guild.id
+      guild: message.guild.id,
     });
     await dmMessage.react('✅');
     await dmMessage.react('❌');

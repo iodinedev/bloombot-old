@@ -29,7 +29,7 @@ export class starboardActions {
           starBoardMessage.footer = { text: '⭐ Times starred: ' + stars };
 
           if (att.size > 0) {
-            const att_arr = Array.from(att, ([name, value]) => ( value ));
+            const att_arr = Array.from(att, ([name, value]) => value);
 
             starBoardMessage.setImage(att_arr[0].url);
           }
