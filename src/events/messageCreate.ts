@@ -42,17 +42,17 @@ export = async (client, message) => {
         guild: message.guild.id,
       });
 
-      const adminCommand: boolean = commandfile.architecture.admin && commandfile.architecture.admin === true;
-      const modCommand: boolean = commandfile.architecture.moderator && commandfile.architecture.moderator === true;
+      const adminCommand: boolean = !!(commandfile.architecture.admin && commandfile.architecture.admin === true);
+      const modCommand: boolean = !!(commandfile.architecture.moderator && commandfile.architecture.moderator === true);
 
       console.log("Admin Command", adminCommand)
       console.log("Mod Command", modCommand)
 
       const isPrivilegedCommand = adminCommand || modCommand;
 
-      const isGlobalAdmin: boolean = global_admins && global_admins.admins && global_admins.admins.indexOf(message.author.id) !== -1;
-      const isNormalAdmin: boolean = message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
-      const isMod: boolean = message.member.roles.cache.has(config.roles.moderator);
+      const isGlobalAdmin: boolean = !!(global_admins && global_admins.admins && global_admins.admins.indexOf(message.author.id) !== -1);
+      const isNormalAdmin: boolean = !!(message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR));
+      const isMod: boolean = !!(message.member.roles.cache.has(config.roles.moderator));
 
       console.log("Global Admin", isGlobalAdmin)
       console.log("Normal Admin", isNormalAdmin)
