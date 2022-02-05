@@ -42,26 +42,26 @@ export = async (client, message) => {
         guild: message.guild.id,
       });
 
+      const adminCommand = commandfile.architecture.admin && commandfile.architecture.admin === true;
+      const modCommand = commandfile.architecture.moderator && commandfile.architecture.moderator === true;
+
+      console.log("Admin Command", adminCommand)
+      console.log("Mod Command", modCommand)
+
+      const isPrivilegedCommand = adminCommand || modCommand;
+
+      const isGlobalAdmin = global_admins && global_admins.admins && global_admins.admins.indexOf(message.author.id) !== -1;
+      const isNormalAdmin = message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR);
+      const isMod = message.member.roles.cache.has(config.roles.moderator);
+
+      console.log("Global Admin", isGlobalAdmin)
+      console.log("Normal Admin", isNormalAdmin)
+      console.log("Mod", isMod)
+
+      const isPrivilegedUser = isGlobalAdmin || isNormalAdmin || isMod;
+
       // Check if user has Discord admin permissions or is in global admin database
-      if (
-        (commandfile.architecture.admin &&
-          commandfile.architecture.admin === true &&
-          global_admins &&
-          global_admins.admins &&
-          global_admins.admins.indexOf(message.author.id) === -1 &&
-          message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ===
-            false &&
-          message.author.id !== '515919653445304345') ||
-        (commandfile.architecture.moderator &&
-          commandfile.architecture.moderator === true &&
-          message.member.roles.cache.has(config.roles.moderator) === false &&
-          global_admins &&
-          global_admins.admins &&
-          global_admins.admins.indexOf(message.author.id) === -1 &&
-          message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ===
-            false &&
-          message.author.id !== '515919653445304345')
-      ) {
+      if (isPrivilegedCommand && !isPrivilegedUser) {
         await message.channel.send(
           ":x: You don't have permission to run this command."
         );
