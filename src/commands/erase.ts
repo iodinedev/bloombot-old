@@ -20,6 +20,13 @@ export const execute = async (client, message, args) => {
     eraseReasonMessage.color = config.colors.embedColor;
     eraseReasonMessage.title = 'A message you sent was deleted';
     eraseReasonMessage.description = reason ? reason : 'No reason provided.';
+    eraseReasonMessage.fields = [
+      {
+        name: "Message Content",
+        value: erase_msg.content,
+        inline: false
+      }
+    ]
 
     await sender.send({ embeds: [eraseReasonMessage] });
 
