@@ -137,6 +137,7 @@ export = async (client, message) => {
         );
 
         await commandfile.execute(client, message, args); // Execute found command
+      }
     }
   }
 
