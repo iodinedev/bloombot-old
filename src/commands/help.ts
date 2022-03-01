@@ -54,7 +54,7 @@ export const execute = async (client, message, args) => {
         )
     );
 
-    if (command) {
+    if (command && command.architecture.module !== "Hidden") {
       let helpMessage = new Discord.MessageEmbed();
       helpMessage.color = config.colors.embedColor;
       helpMessage.title = `${prefix}${command.architecture.name}`;
