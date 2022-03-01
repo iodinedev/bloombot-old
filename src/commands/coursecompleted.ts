@@ -6,9 +6,13 @@ export const execute = async (client, message) => {
 
   if (await member.roles.cache.find(r => r.id === config.roles.courseEnrolled)) {
     var role = await member.roles.cache.find(role => role.id === config.roles.courseCompleted);
-    if (!role) return await message.channel.send(":x: You aren't enrolled in the course. Make sure you have the proper role.");
+    if (!role) return await message.channel.send(":x: An error occured. Couldn't find the course completed role.");
     await member.guild.roles.add(role);
+
+    return await message.channel.send(":white_check_mark: Congrats! You have the course completed role.")
   }
+
+  return await message.channel.send(":x: You aren't enrolled in the course. Make sure you have the proper role.")
 };
 
 export const architecture = {
