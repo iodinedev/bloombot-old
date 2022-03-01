@@ -31,7 +31,9 @@ export const execute = async (client, message, args) => {
     await sender.send({ embeds: [eraseReasonMessage] });
 
     await message.delete();
-    return await message.channel.send(":white_check_mark: Message deleted and user alerted in DMs.")
+    return await message.channel.send(":white_check_mark: Message deleted and user alerted in DMs.").then((msg) => {
+      setTimeout(() => msg.delete(), 5000);
+    })
   } else {
     return await message.channel.send(
       ':x: You must specify a message to delete.'
