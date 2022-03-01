@@ -89,54 +89,7 @@ export = async (client, message) => {
     } else if (commandfile.architecture.module === "Hidden" && message.channel.type === "DM") {
       message.channel.sendTyping();
 
-      var global_admins = await ServerSetup.findOne({
-        guild: message.guild.id,
-      });
-
-      const adminCommand: boolean = !!(commandfile.architecture.admin && commandfile.architecture.admin === true);
-      const modCommand: boolean = !!(commandfile.architecture.moderator && commandfile.architecture.moderator === true);
-
-      const isPrivilegedCommand = adminCommand || modCommand;
-
-      const isGlobalAdmin: boolean = !!(global_admins && global_admins.admins && global_admins.admins.indexOf(message.author.id) !== -1);
-      const isNormalAdmin: boolean = !!(message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR));
-      const isMod: boolean = !!(message.member.roles.cache.has(config.roles.moderator));
-
-      const isPrivilegedUser = isGlobalAdmin || isNormalAdmin || isMod;
-
-      // Check if user has Discord admin permissions or is in global admin database
-      if (isPrivilegedCommand && !isPrivilegedUser) {
-        await message.channel.send(
-          ":x: You don't have permission to run this command."
-        );
-      } else {
-        var total = 0;
-
-        var stats = await BotStats.findOne({
-          guild: message.guild.id,
-        });
-
-        if (stats && parseInt(stats.total) !== NaN) {
-          total = parseInt(stats.total);
-        }
-
-        total = total + 1;
-
-        await BotStats.updateOne(
-          { guild: message.guild.id },
-          {
-            $set: {
-              guild: message.guild.id,
-              total: total,
-            },
-          },
-          {
-            upsert: true,
-          }
-        );
-
-        await commandfile.execute(client, message, args); // Execute found command
-      }
+      await commandfile.execute(client, message, args); // Execute found command
     }
   }
 
