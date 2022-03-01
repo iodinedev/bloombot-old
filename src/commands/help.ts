@@ -120,10 +120,12 @@ export const execute = async (client, message, args) => {
         }
       } else {
         commands.forEach((requestedcommand) => {
-          commandNames.push(requestedcommand.architecture.name);
-          requestedcommand.architecture.aliases.forEach((alias) =>
-            commandNames.push(alias)
-          );
+          if (requestedcommand.architecture.module !== "Hidden") {
+            commandNames.push(requestedcommand.architecture.name);
+            requestedcommand.architecture.aliases.forEach((alias) =>
+              commandNames.push(alias)
+            );
+          }
         });
         return didYouMean(commandNames, args[0].toLowerCase(), message, prefix);
       }
