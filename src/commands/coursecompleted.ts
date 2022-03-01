@@ -1,9 +1,9 @@
 import config from "../config";
 
 export const execute = async (client, message) => {
-  console.log(client.guilds.cache)
-  const guild = client.guilds.cache.get("244917432383176705");
-  console.log(guild)
+  const guild = client.guilds.cache.get("791366170611679272"); //244917432383176705
+  const member = guild.members.cache.get(message.author.id);
+  console.log(member)
   if (await message.member.roles.cache.find(r => r.id === config.roles.courseEnrolled)) {
     var role = await message.member.roles.cache.find(role => role.id === config.roles.courseCompleted);
     if (!role) return;
