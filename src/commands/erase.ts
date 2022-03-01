@@ -23,7 +23,7 @@ export const execute = async (client, message, args) => {
     eraseReasonMessage.fields = [
       {
         name: "Message Content",
-        value: `\`\`\`${erase_msg.content.split("`").join("\\`")}\`\`\``,
+        value: `\`\`\`${erase_msg.content.split("`").join("")}\`\`\``,
         inline: false
       }
     ]
