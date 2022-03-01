@@ -5,6 +5,7 @@ import config from '../config';
 
 export = async (client, message) => {
   if (message.author.bot) return;
+
   const args = message.content.split(/\s+/g); // Return the message content and split the prefix.
 
   var prefix;

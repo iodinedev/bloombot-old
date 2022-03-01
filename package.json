@@ -4,7 +4,7 @@
   "description": "Bot designed for the Meditation Mind Discord.",
   "main": "node bot.js",
   "engines": {
-    "node": "^17.6.0"
+    "node": "16.14.0"
   },
   "author": {
     "name": "Zachary Montgomery",
