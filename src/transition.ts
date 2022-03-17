@@ -1,8 +1,6 @@
 // Database requirements - Connection created at end
 import { MongoClient } from 'mongodb';
 import config from './config';
-
-const Keys = client.db(config.mongodbDatabase).collection('Keys');
 import { prisma } from './databaseFiles/connect';
 
 async function transition() {
@@ -12,6 +10,7 @@ async function transition() {
   await client.connect();
 
   // Make sure MongoDB can be accessed outside of this file
+  const Keys = client.db(config.mongodbDatabase).collection('Keys');
   const Prefixes = client
     .db(config.mongodbDatabase)
     .collection('Prefixes');
