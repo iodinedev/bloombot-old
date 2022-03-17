@@ -1,8 +1,10 @@
-import { Current } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message) => {
-  var usr = await Current.findOne({
-    usr: message.author.id,
+  var usr = await prisma.current.findUnique({
+    where: {
+      usr: message.author.id,
+    }
   });
 
   if (!usr)

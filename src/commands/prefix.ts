@@ -1,4 +1,4 @@
-import { Prefixes } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message, args) => {
   args = args[0];
@@ -12,22 +12,19 @@ export const execute = async (client, message, args) => {
       ':x: Your prefix must not be longer than two characters.'
     );
 
-  var exists = await Prefixes.findOne({ guild: message.guild.id });
 
-  if (!exists) {
-    var prefixObject = {
+  await prisma.serverSetup.upsert({
+    where: {
+      guild: message.guild.id
+    },
+    update: {
+      prefix: args
+    },
+    create: {
       guild: message.guild.id,
-      prefix: args,
-    };
-
-    await Prefixes.insertOne(prefixObject);
-  } else {
-    Prefixes.updateOne(
-      { guild: message.guild.id },
-      { $set: { prefix: args } },
-      { upsert: true }
-    );
-  }
+      prefix: args
+    }
+  });
 
   return await message.channel.send(
     `:white_check_mark: Success! New prefix is \`${args}\`.`

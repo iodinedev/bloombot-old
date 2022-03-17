@@ -1,5 +1,5 @@
 import config from '../config';
-import { Meditations } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message, args) => {
   if (!args[0])
@@ -18,8 +18,17 @@ export const execute = async (client, message, args) => {
   if (parseInt(id) === NaN)
     return await message.channel.send(':x: That is not a valid user ID.');
 
-  await Meditations.deleteMany({
-    $and: [{ usr: id }, { guild: message.guild.id }],
+  await prisma.meditations.deleteMany({
+    where: {
+      AND: [
+        {
+          usr: id
+        },
+        {
+          guild: message.guild.id
+        }
+      ],
+    }
   });
 
   await Object.values(config.roles.lvl_roles).every(async (roleid) => {

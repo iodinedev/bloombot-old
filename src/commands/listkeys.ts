@@ -1,4 +1,4 @@
-import { Keys } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import Discord from 'discord.js';
 import config from '../config';
 
@@ -55,37 +55,34 @@ export const execute = async (client, message, args) => {
 };
 
 async function createMenu(page, pages) {
-  var selected = await Keys.aggregate([
-    {
-      $group: {
-        _id: '$cat',
-        tags: {
-          $push: '$tag',
-        },
-      },
-    },
-  ]).toArray();
+  const keys: {
+    text: string,
+    valid: boolean
+  }[] = await prisma.steamKeys.findMany({
+    skip: page,
+    take: page + 9
+  });
 
-  if (selected.length === 0) return false;
+  if (keys.length === 0) return false;
 
   let menuEmbed = new Discord.MessageEmbed();
   menuEmbed.color = config.colors.embedColor;
   menuEmbed.title = 'Keys';
   menuEmbed.footer = { text: `Page ${page + 1} of ${pages}.` };
 
-  await selected.forEach((term) => {
+  for await (const key of keys) {
     menuEmbed.fields.push({
-      name: term._id,
-      value: term.tags.join('\n'),
+      name: key.text,
+      value: key.valid ? 'Valid' : 'Invalid',
       inline: true,
     });
-  });
+  }
 
   return menuEmbed;
 }
 
 async function pageNumbers() {
-  var count = await Keys.countDocuments();
+  var count = await prisma.steamKeys.count();
 
   return Math.ceil(count / 9);
 }

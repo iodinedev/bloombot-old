@@ -1,7 +1,7 @@
 import config from '../config';
 import Discord from 'discord.js';
 import * as meditateUtils from '../utils/meditateUtils';
-import { PickMessages } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message) => {
   let role = message.guild.roles.cache.get(config.roles.meditation_challenger);
@@ -83,9 +83,11 @@ export const execute = async (client, message) => {
     const dmMessage = await user.send(
       '**Congratulations on winning the giveaway!** 🥳\n\nWould you like a Steam key to play *PLAYNE: The Meditation Game*?\n\nhttps://www.youtube.com/watch?v=P4JCE1oKjGs'
     );
-    await PickMessages.insertOne({
-      msg: dmMessage.id,
-      guild: message.guild.id,
+    await prisma.pickMessages.create({
+      data: {
+        msg: dmMessage.id,
+        guild: message.guild.id,
+      }
     });
     await dmMessage.react('✅');
     await dmMessage.react('❌');

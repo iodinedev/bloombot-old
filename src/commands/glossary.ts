@@ -1,4 +1,4 @@
-import { Tags } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import config from '../config';
 import Discord from 'discord.js';
 
@@ -55,16 +55,10 @@ export const execute = async (client, message) => {
 };
 
 async function createMenu(page, pages) {
-  var selected = await Tags.aggregate([
-    {
-      $group: {
-        _id: '$cat',
-        tags: {
-          $push: '$tag',
-        },
-      },
-    },
-  ]).toArray();
+  var selected = await prisma.tags.findMany({
+    skip: page * 9,
+    take: (page * 9) + 9
+  });
 
   if (selected.length === 0) return false;
 
@@ -75,8 +69,8 @@ async function createMenu(page, pages) {
 
   await selected.forEach((term) => {
     menuEmbed.fields.push({
-      name: term._id,
-      value: term.tags.join('\n'),
+      name: term.tag,
+      value: term.def,
       inline: true,
     });
   });
@@ -85,7 +79,7 @@ async function createMenu(page, pages) {
 }
 
 async function pageNumbers() {
-  var count = await Tags.countDocuments();
+  var count = await prisma.tags.count();
 
   return Math.ceil(count / 9);
 }

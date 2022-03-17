@@ -1,4 +1,5 @@
-import { ServerSetup } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
+import guildMemberAdd from '../events/guildMemberAdd';
 
 export const execute = async (client, message, args) => {
   try {
@@ -14,8 +15,10 @@ export const execute = async (client, message, args) => {
   }
 
   var admins: any[] = [];
-  var db_admins = await ServerSetup.findOne({
-    guild: message.guild.id,
+  var db_admins = await prisma.serverSetup.findUnique({
+    where: {
+      guild: message.guild.id,
+    }
   });
 
   if (db_admins && db_admins.admins) {
@@ -31,11 +34,18 @@ export const execute = async (client, message, args) => {
 
   admins.push(user.id);
 
-  await ServerSetup.updateOne(
-    { guild: message.guild.id },
-    { $set: { admins: admins } },
-    { upsert: true }
-  );
+  await prisma.serverSetup.upsert({
+    where: {
+      guild: message.guild.id
+    },
+    update: {
+      admins: admins
+    },
+    create: {
+      guild: message.guild.id,
+      admins: admins
+    }
+  });
 
   return await message.channel.send(
     `:white_check_mark: ${user.username} has been added as an admin!`

@@ -1,4 +1,4 @@
-import { Current } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import * as meditateUtils from '../utils/meditateUtils';
 import config from '../config';
 import Discord from 'discord.js';
@@ -7,10 +7,14 @@ export const execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
 
   if (voiceChannel.channel) {
-    const latest_docs = await Current.find()
-      .sort({ _id: -1 })
-      .limit(1)
-      .toArray();
+    const latest_docs = await prisma.current.findMany({
+      orderBy: [
+        {
+          id: 'desc'
+        }
+      ],
+      take: 1
+    });
 
     if (latest_docs.length > 0) {
       const latest = latest_docs[0];
@@ -27,18 +31,20 @@ export const execute = async (client, message, args) => {
     }
 
     var time: number = Infinity;
-    var curr = new Date();
+    var curr = Date.now();
     var stop: number = Infinity;
     var usr;
 
     if (args && args[0]) {
       time = parseInt(args[0]);
-      stop = new Date(curr.getTime() + time * 60000).getTime();
+      stop = new Date(curr + time * 60000).getTime();
     }
 
     try {
-      usr = await Current.findOne({
-        usr: message.author.id,
+      usr = await prisma.current.findUnique({
+        where: {
+          usr: message.author.id,
+        }
       });
     } catch (err) {
       console.error('Meditate MongoDB error: ', err);
@@ -54,7 +60,14 @@ export const execute = async (client, message, args) => {
     try {
       begin(client, voiceChannel.channel);
 
-      const meditators: Object[] = [];
+      const meditators: {
+        usr: string,
+        time: number,
+        whenToStop: number,
+        started: number,
+        guild: string,
+        channel: string
+      }[] = [];
       var curr_role = await message.member.guild.roles.cache.find(
         (role) => role.id === config.roles.currently_meditating
       );
@@ -93,7 +106,7 @@ export const execute = async (client, message, args) => {
         );
       }
 
-      Current.insertMany(meditators);
+      prisma.current.createMany({ data: meditators });
 
       var humans = 0;
 
@@ -283,8 +296,10 @@ export async function stop(
 
   try {
     // In case there was an error, delete all a user's current meditation sessions
-    await Current.deleteMany({
-      usr: meditation.usr,
+    await prisma.current.deleteMany({
+      where: {
+        usr: meditation.usr,
+      }
     });
   } catch (err) {
     console.error('Meditation MongoDB error: ', err);
@@ -295,7 +310,7 @@ export async function scanForMeditations(client) {
   const currentDate = new Date().getTime();
 
   try {
-    const meditations = await Current.find().toArray();
+    const meditations = await prisma.current.findMany();
 
     if (meditations) {
       let difference;
@@ -317,7 +332,7 @@ export async function catchUp(client) {
   const currentDate = new Date().getTime();
 
   try {
-    const meditations = await Current.find().toArray();
+    const meditations = await prisma.current.findMany();
 
     if (meditations) {
       let difference: number;

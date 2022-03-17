@@ -1,4 +1,4 @@
-import { Tags } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import config from '../config';
 import { distance, closest } from 'fastest-levenshtein';
 import Discord from 'discord.js';
@@ -7,18 +7,21 @@ export const execute = async (client, message, args) => {
   if (!args[0])
     return await message.channel.send(':x: You must include a tag!');
 
-  var regex = new RegExp(['^', args.join(' '), '$'].join(''), 'i');
-
-  const tag = await Tags.findOne({
-    $or: [
-      { search: args.join('').toLowerCase() },
-      {
-        aliases: {
-          $in: [regex],
+  const tagList = await prisma.tags.findMany({
+    where: {
+      OR: [
+        { search: args.join('').toLowerCase() },
+        {
+          aliases: {
+            has: args.join('').toLowerCase(),
+          },
         },
-      },
-    ],
+      ]
+    },
+    take: 1
   });
+
+  const tag = tagList[0];
 
   if (tag) {
     const tagHelp = new Discord.MessageEmbed();
@@ -50,39 +53,39 @@ export const execute = async (client, message, args) => {
     return await message.channel.send({ embeds: [tagHelp] });
   }
 
-  await Tags.find().toArray(async function (err, result) {
-    if (result && result.length > 0) {
-      var search = args.join(' ').toLowerCase();
-      var close;
-      var closelen = search.length;
+  const result = await prisma.tags.findMany();
 
-      result.forEach(async (term) => {
-        var termlen = distance(search, term.search);
+  if (result && result.length > 0) {
+    var search = args.join(' ').toLowerCase();
+    var close;
+    var closelen = search.length;
 
-        if (termlen < closelen) {
-          close = term;
-          closelen = termlen;
-        }
-      });
+    result.forEach(async (term) => {
+      var termlen = distance(search, term.search);
 
-      if (
-        close &&
-        (distance(search, close.search) <= 5 ||
-          (close.aliases &&
-            close.aliases.length > 0 &&
-            distance(search, closest(search, close.aliases)) <= 5))
-      ) {
-        const tagHelp = new Discord.MessageEmbed();
-        tagHelp.color = config.colors.embedColor;
-        tagHelp.title = 'Tag Not Found';
-        tagHelp.description = `Did you mean \`${close.tag}\`?`;
-
-        return await message.channel.send({ embeds: [tagHelp] });
+      if (termlen < closelen) {
+        close = term;
+        closelen = termlen;
       }
-    }
+    });
 
-    return await message.channel.send(':x: Tag not found!');
-  });
+    if (
+      close &&
+      (distance(search, close.search) <= 5 ||
+        (close.aliases &&
+          close.aliases.length > 0 &&
+          distance(search, closest(search, close.aliases)) <= 5))
+    ) {
+      const tagHelp = new Discord.MessageEmbed();
+      tagHelp.color = config.colors.embedColor;
+      tagHelp.title = 'Tag Not Found';
+      tagHelp.description = `Did you mean \`${close.tag}\`?`;
+
+      return await message.channel.send({ embeds: [tagHelp] });
+    }
+  }
+
+  return await message.channel.send(':x: Tag not found!');
 };
 
 export const architecture = {

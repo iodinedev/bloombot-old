@@ -1,5 +1,5 @@
 import * as meditate_functions from '../commands/meditate.js';
-import { Current } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import config from '../config';
 
 export = async (client, oldState, newState) => {
@@ -28,8 +28,10 @@ export = async (client, oldState, newState) => {
     }
 
     try {
-      const meditation = await Current.findOne({
-        usr: member.id,
+      const meditation = await prisma.current.findUnique({
+        where: {
+          usr: member.id,
+        }
       });
 
       if (meditation) {
@@ -44,17 +46,17 @@ export = async (client, oldState, newState) => {
 
         if (meditation.time) difference = meditation.time - difference;
 
-        await Current.updateOne(
-          { usr: member.id },
-          {
-            $set: {
-              time: difference,
-            },
+        await prisma.current.update({
+          where: { usr: member.id },
+          data: {
+            time: difference,
           }
-        );
+        });
 
-        const new_meditation = await Current.findOne({
-          usr: member.id,
+        const new_meditation = await prisma.current.findUnique({
+          where: {
+            usr: member.id,
+          }
         });
 
         meditate_functions.stop(
@@ -77,11 +79,13 @@ export = async (client, oldState, newState) => {
 
     if (member.user.bot) return;
 
-    if ((await Current.countDocuments()) > 0) {
-      const latest_docs = await Current.find()
-        .sort({ _id: -1 })
-        .limit(1)
-        .toArray();
+    if ((await prisma.current.count()) > 0) {
+      const latest_docs = await prisma.current.findMany({
+        orderBy: [
+          { id: 'desc' }
+        ],
+        take: 1
+      });
 
       const latest = latest_docs[0];
 
@@ -120,12 +124,15 @@ export = async (client, oldState, newState) => {
           `:white_check_mark: You have joined the group meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`
         );
 
-        Current.insertOne({
-          usr: member.id,
-          time: time,
-          whenToStop: stop,
-          guild: guild.id,
-          channel: voiceChannel.id,
+        prisma.current.create({
+          data: {
+            usr: member.id,
+            time: time,
+            started: Date.now(),
+            whenToStop: stop,
+            guild: guild.id,
+            channel: voiceChannel.id,
+          }
         });
 
         var humans = 0;

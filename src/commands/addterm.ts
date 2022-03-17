@@ -1,4 +1,4 @@
-import { Tags } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import config from '../config';
 import Discord from 'discord.js';
 
@@ -20,15 +20,17 @@ export const execute = async (client, message, args) => {
     tag_collector.on('collect', async (t) => {
       var tag = t.content.trim();
 
-      const check_tag = await Tags.findOne({
-        $or: [
-          { search: tag.split(' ').join('').toLowerCase() },
-          {
-            aliases: {
-              $in: [tag.toLowerCase().split(' ')],
+      const check_tag = await prisma.tags.findFirst({
+        where: {
+          OR: [
+            { search: tag.split(' ').join('').toLowerCase() },
+            {
+              aliases: {
+                has: tag.toLowerCase().split(' ')
+              },
             },
-          },
-        ],
+          ],
+        }
       });
 
       if (check_tag)
@@ -86,32 +88,36 @@ export const execute = async (client, message, args) => {
                 aliases[0] === 'none' && aliases.length === 1 ? [] : aliases;
 
               if (check_tag) {
-                await Tags.updateOne(
-                  { tag: tag },
-                  {
-                    $set: {
-                      tag: tag,
-                      search: tag.split(' ').join('').toLowerCase(),
-                      def: def,
-                      links: links,
-                      cat: category,
-                      aliases: aliases,
-                    },
+                await prisma.tags.update({
+                  where: {
+                    tag: tag
+                  },
+                  data: {
+                    tag: tag,
+                    search: tag.split(' ').join('').toLowerCase(),
+                    def: def,
+                    links: links,
+                    cat: category,
+                    aliases: aliases,
                   }
-                );
+                });
               } else {
-                await Tags.insertOne({
-                  tag: tag,
-                  search: tag.split(' ').join('').toLowerCase(),
-                  def: def,
-                  links: links,
-                  cat: category,
-                  aliases: aliases,
+                await prisma.tags.create({
+                  data: {
+                    tag: tag,
+                    search: tag.split(' ').join('').toLowerCase(),
+                    def: def,
+                    links: links,
+                    cat: category,
+                    aliases: aliases,
+                  }
                 });
               }
 
-              var db_tag = await Tags.findOne({
-                tag: tag,
+              var db_tag = await prisma.tags.findUnique({
+                where: {
+                  tag: tag,
+                }
               });
 
               if (!db_tag)

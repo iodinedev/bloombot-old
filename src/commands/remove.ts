@@ -1,11 +1,10 @@
-import { Meditations } from '../databaseFiles/connect';
-import { Prefixes } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import { ObjectId } from 'mongodb';
 
 export const execute = async (client, message, args) => {
   let prefix;
   try {
-    prefix = await Prefixes.findOne({ guild: message.guild.id });
+    prefix = await prisma.serverSetup.findUnique({ where: { guild: message.guild.id } });
     prefix = prefix.prefix;
   } catch {
     prefix = '.';
@@ -17,10 +16,10 @@ export const execute = async (client, message, args) => {
     );
 
   try {
-    const id = new ObjectId(args[0]);
-
-    var meditation = await Meditations.findOne({
-      _id: id,
+    var meditation = await prisma.meditations.findUnique({
+      where: {
+        id: args[0]
+      }
     });
 
     if (!meditation || !meditation.usr)
@@ -33,8 +32,10 @@ export const execute = async (client, message, args) => {
         ":x: You cannot delete someone else's meditations."
       );
 
-    await Meditations.deleteOne({
-      _id: id,
+    await prisma.meditations.delete({
+      where: {
+        id: args[0],
+      }
     });
 
     return await message.channel.send(

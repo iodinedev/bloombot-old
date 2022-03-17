@@ -1,10 +1,12 @@
-import { ServerSetup } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import Discord from 'discord.js';
 import config from '../config';
 
 export const execute = async (client, message) => {
-  var admins = await ServerSetup.findOne({
-    guild: message.guild.id,
+  var admins = await prisma.serverSetup.findUnique({
+    where: {
+      guild: message.guild.id,
+    }
   });
 
   if (!admins || !admins.admins)

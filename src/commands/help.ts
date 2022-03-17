@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import config from '../config';
-import { Prefixes } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import { distance, closest } from 'fastest-levenshtein';
 
 function capitalizeFLetter(input) {
@@ -15,7 +15,7 @@ export const execute = async (client, message, args) => {
 
   let prefix;
   try {
-    prefix = await Prefixes.findOne({ guild: message.guild.id });
+    prefix = await prisma.serverSetup.findUnique({ where: { guild: message.guild.id } });
     prefix = prefix.prefix;
   } catch {
     prefix = '.';
