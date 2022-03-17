@@ -44,7 +44,15 @@ async function transition() {
     
   await prisma.meditations.deleteMany();
   const data5 = await Meditations.find({}, { projection: { _id:0 }}).toArray();
-  const inserted = await prisma.meditations.createMany({data: meditations, skipDuplicates: true});
+  for await (const meditation of data5) {
+    meditations.push({
+      usr: meditation.usr,
+      date: `${meditation.date}`,
+      time: meditation.time,
+      guild: meditation.guild
+    })
+  }
+  const inserted = await prisma.meditations.createMany({data: data5, skipDuplicates: true});
   console.log(inserted)
   /*const data7: any = await ServerSetup.find().toArray();
   await prisma.tags.createMany({data: data7});
