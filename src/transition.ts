@@ -36,22 +36,23 @@ async function transition() {
     .collection('PickMessages');
 
   var finaldata: {
-    guild: string,
-    admins: string[],
+    messageID: string,
+    embedID: string,
+    messageChannelID: string,
   }[] = [];
     
-  const data5 = await ServerSetup.find({}, { projection: { _id:0 }}).toArray();
+  const data5 = await Stars.find({}, { projection: { _id:0 }}).toArray();
   for await (const data of data5) {
     finaldata.push({
-      guild: data.guild,
-      admins: data.admins
+      messageID: data.messageID,
+      embedID: data.embedID,
+      messageChannelID: data.messageChannelID
     })
   }
-  const inserted = await prisma.serverSetup.createMany({data: finaldata, skipDuplicates: true});
+  const inserted = await prisma.stars.createMany({data: finaldata, skipDuplicates: true});
   console.log(inserted)
   return;
-  /*const data7: any = await ServerSetup.find().toArray();
-  await prisma.tags.createMany({data: data7});
+  /*
   const data8: any = await Stars.find().toArray();
   await prisma.tags.createMany({data: data8});
   const data9: any = await PickMessages.find().toArray();
