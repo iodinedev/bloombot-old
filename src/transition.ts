@@ -52,7 +52,7 @@ async function transition() {
       guild: meditation.guild
     })
   }
-  const inserted = await prisma.meditations.createMany({data: data5, skipDuplicates: true});
+  const inserted = await prisma.meditations.createMany({data: meditations, skipDuplicates: true});
   console.log(inserted)
   /*const data7: any = await ServerSetup.find().toArray();
   await prisma.tags.createMany({data: data7});
