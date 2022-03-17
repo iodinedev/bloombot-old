@@ -1,18 +1,52 @@
-import * as mongo from './databaseFiles/transitionConnect';
+// Database requirements - Connection created at end
+import { MongoClient } from 'mongodb';
+import config from './config';
+
+const Keys = client.db(config.mongodbDatabase).collection('Keys');
 import { prisma } from './databaseFiles/connect';
 
 async function transition() {
-  const data2: any = await mongo.Tags.find().toArray();
+  // Create connection
+  const client = new MongoClient(config.mongodbURI);
+
+  await client.connect();
+
+  // Make sure MongoDB can be accessed outside of this file
+  const Prefixes = client
+    .db(config.mongodbDatabase)
+    .collection('Prefixes');
+  const Tags = client.db(config.mongodbDatabase).collection('Tags');
+  const Announcements = client
+    .db(config.mongodbDatabase)
+    .collection('Announcements');
+  const Current = client
+    .db(config.mongodbDatabase)
+    .collection('CurrentMeditators');
+  const Meditations = client
+    .db(config.mongodbDatabase)
+    .collection('Meditations');
+  const BotStats = client
+    .db(config.mongodbDatabase)
+    .collection('BotStats');
+  const ServerSetup = client
+    .db(config.mongodbDatabase)
+    .collection('ServerSetup');
+  const Stars = client.db(config.mongodbDatabase).collection('Starboard');
+  const PickMessages = client
+    .db(config.mongodbDatabase)
+    .collection('PickMessages');
+    
+  const data2: any = await Tags.find().toArray();
   await prisma.tags.createMany({data: data2});
-  const data5: any = await mongo.Meditations.find().toArray();
+  const data5: any = await Meditations.find().toArray();
   await prisma.meditations.createMany({data: data5});
-  const data7: any = await mongo.ServerSetup.find().toArray();
+  const data7: any = await ServerSetup.find().toArray();
   await prisma.tags.createMany({data: data7});
-  const data8: any = await mongo.Stars.find().toArray();
+  const data8: any = await Stars.find().toArray();
   await prisma.tags.createMany({data: data8});
-  const data9: any = await mongo.PickMessages.find().toArray();
+  const data9: any = await PickMessages.find().toArray();
   await prisma.tags.createMany({data: data9});
-  const data0: any = await mongo.Keys.find().toArray();
+  const data0: any = await Keys.find().toArray();
   await prisma.tags.createMany({data: data0});
 }
 
