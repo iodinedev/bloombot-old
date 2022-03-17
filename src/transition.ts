@@ -35,11 +35,9 @@ async function transition() {
     .db(config.mongodbDatabase)
     .collection('PickMessages');
     
-  const data2: any = await Tags.find().toArray();
-  console.log(data2[0])
-  /*await prisma.tags.createMany({data: data2});
   const data5: any = await Meditations.find().toArray();
-  await prisma.meditations.createMany({data: data5});
+  console.log(data5)
+  /*await prisma.meditations.createMany({data: data5});
   const data7: any = await ServerSetup.find().toArray();
   await prisma.tags.createMany({data: data7});
   const data8: any = await Stars.find().toArray();
