@@ -35,24 +35,19 @@ async function transition() {
     .db(config.mongodbDatabase)
     .collection('PickMessages');
 
-  var meditations: {
-    usr: string,
-    date: string,
-    time: number,
+  var finaldata: {
     guild: string,
+    admins: string[],
   }[] = [];
     
-  await prisma.meditations.deleteMany();
-  const data5 = await Meditations.find({}, { projection: { _id:0 }}).toArray();
-  for await (const meditation of data5) {
-    meditations.push({
-      usr: meditation.usr,
-      date: `${meditation.date}`,
-      time: meditation.time,
-      guild: meditation.guild
+  const data5 = await ServerSetup.find({}, { projection: { _id:0 }}).toArray();
+  for await (const data of data5) {
+    finaldata.push({
+      guild: data.guild,
+      admins: data.admins
     })
   }
-  const inserted = await prisma.meditations.createMany({data: meditations, skipDuplicates: true});
+  const inserted = await prisma.serverSetup.createMany({data: finaldata, skipDuplicates: true});
   console.log(inserted)
   return;
   /*const data7: any = await ServerSetup.find().toArray();
