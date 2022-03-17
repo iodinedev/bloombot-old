@@ -24,11 +24,14 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
 
       return i;
     },
-    async getSum(guild: string): Promise<number> {
+    async getSum(guild: string, userid: string): Promise<number> {
       const meditations = await prisma.groupBy({
         by: ['guild'],
         where: {
-          guild: guild
+          AND: [
+            { guild: guild },
+            { usr: userid }
+          ]
         },
         _sum: {
           time: true

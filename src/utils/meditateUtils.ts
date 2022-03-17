@@ -25,7 +25,7 @@ export async function getUserData(userid, guildid) {
     }
   });
 
-  const meditation_time: number = await meditations.getSum(guildid);
+  const meditation_time: number = await meditations.getSum(guildid, userid);
 
   var streak = await getStreak(userid);
 
