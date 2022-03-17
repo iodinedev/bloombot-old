@@ -54,6 +54,7 @@ async function transition() {
   }
   const inserted = await prisma.meditations.createMany({data: meditations, skipDuplicates: true});
   console.log(inserted)
+  return;
   /*const data7: any = await ServerSetup.find().toArray();
   await prisma.tags.createMany({data: data7});
   const data8: any = await Stars.find().toArray();
