@@ -1,4 +1,3 @@
-import { MongoBulkWriteError } from 'mongodb';
 import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message, args) => {
@@ -41,21 +40,11 @@ export const execute = async (client, message, args) => {
           });
         });
 
-        const initLength = await prisma.steamKeys.count();
-
         try {
-          await prisma.steamKeys.createMany({data: documents});
+          await prisma.steamKeys.createMany({data: documents, skipDuplicates: true});
 
           return await message.channel.send('✅ Success!');
         } catch (err: any) {
-          if (err instanceof MongoBulkWriteError) {
-            return await message.channel.send(
-              `:warning: Some documents not added, already in database. ${
-                (await prisma.steamKeys.count()) - initLength
-              } documents added.`
-            );
-          }
-
           return await message.channel.send(
             `:x: An unknown error occured. Try again later.`
           );

@@ -1,5 +1,4 @@
 import { prisma } from '../databaseFiles/connect';
-import { ObjectId } from 'mongodb';
 
 export const execute = async (client, message, args) => {
   let prefix;

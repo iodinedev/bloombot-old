@@ -26,7 +26,6 @@
     "discord.js": "^13.1.0",
     "fastest-levenshtein": "^1.0.12",
     "libsodium-wrappers": "^0.7.9",
-    "mongodb": "^4.2.1",
     "prisma": "^3.11.0"
   },
   "devDependencies": {
