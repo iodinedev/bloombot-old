@@ -36,24 +36,21 @@ async function transition() {
     .collection('PickMessages');
 
   var finaldata: {
-    msg: string,
-    guild: string,
+    text: string,
+    valid: boolean,
   }[] = [];
     
-  const data5 = await PickMessages.find({}, { projection: { _id:0 }}).toArray();
-  console.log(data5)
-  /*for await (const data of data5) {
+  const data5 = await Keys.find({}, { projection: { _id:0 }}).toArray();
+  for await (const data of data5) {
     finaldata.push({
-      msg: data.msg,
-      guild: data.guild,
+      text: data.text,
+      valid: data.valid,
     })
   }
-  const inserted = await prisma.pickMessages.createMany({data: finaldata, skipDuplicates: true});
+  const inserted = await prisma.steamKeys.createMany({data: finaldata, skipDuplicates: true});
   console.log(inserted)
-  return;*/
+  return;
   /*
-  const data9: any = await PickMessages.find().toArray();
-  await prisma.tags.createMany({data: data9});
   const data0: any = await Keys.find().toArray();
   await prisma.tags.createMany({data: data0});*/
 }
