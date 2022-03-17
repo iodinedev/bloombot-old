@@ -36,7 +36,8 @@ async function transition() {
     .collection('PickMessages');
     
   const data2: any = await Tags.find().toArray();
-  await prisma.tags.createMany({data: data2});
+  console.log(data2[0])
+  /*await prisma.tags.createMany({data: data2});
   const data5: any = await Meditations.find().toArray();
   await prisma.meditations.createMany({data: data5});
   const data7: any = await ServerSetup.find().toArray();
@@ -46,7 +47,7 @@ async function transition() {
   const data9: any = await PickMessages.find().toArray();
   await prisma.tags.createMany({data: data9});
   const data0: any = await Keys.find().toArray();
-  await prisma.tags.createMany({data: data0});
+  await prisma.tags.createMany({data: data0});*/
 }
 
 transition()
