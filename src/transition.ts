@@ -41,7 +41,8 @@ async function transition() {
   }[] = [];
     
   const data5 = await PickMessages.find({}, { projection: { _id:0 }}).toArray();
-  for await (const data of data5) {
+  console.log(data5)
+  /*for await (const data of data5) {
     finaldata.push({
       msg: data.msg,
       guild: data.guild,
@@ -49,7 +50,7 @@ async function transition() {
   }
   const inserted = await prisma.pickMessages.createMany({data: finaldata, skipDuplicates: true});
   console.log(inserted)
-  return;
+  return;*/
   /*
   const data9: any = await PickMessages.find().toArray();
   await prisma.tags.createMany({data: data9});
