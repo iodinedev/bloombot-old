@@ -42,16 +42,9 @@ async function transition() {
     guild: string,
   }[] = [];
     
-  const data5 = await Meditations.find().toArray();
-  for await (const meditatation of data5) {
-    meditations.push({
-      usr: meditatation.usr,
-      date: `${meditatation.date}`,
-      time: meditatation.time,
-      guild: meditatation.guild
-    })
-  }
-  await prisma.meditations.createMany({data: meditations});
+  const data5 = await Meditations.find({}, { projection: { _id:0 }}).toArray();
+  console.log(data5)
+  //await prisma.meditations.createMany({data: meditations});
   /*const data7: any = await ServerSetup.find().toArray();
   await prisma.tags.createMany({data: data7});
   const data8: any = await Stars.find().toArray();
