@@ -13,7 +13,7 @@ export const execute = async (client, message) => {
   const currentDate = new Date().getTime();
 
   let difference;
-  difference = usr.whenToStop - currentDate;
+  difference = parseInt(usr.whenToStop) - currentDate;
   difference = new Date(difference).getMinutes();
 
   return await message.channel.send(

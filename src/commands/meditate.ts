@@ -2,6 +2,7 @@ import { prisma } from '../databaseFiles/connect';
 import * as meditateUtils from '../utils/meditateUtils';
 import config from '../config';
 import Discord from 'discord.js';
+import { createAudioPlayer, createAudioResource, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 
 export const execute = async (client, message, args) => {
   var voiceChannel = message.member.voice;
@@ -50,21 +51,17 @@ export const execute = async (client, message, args) => {
       console.error('Meditate MongoDB error: ', err);
     }
 
-    if (time > 180)
-      return await message.channel.send(
-        ':x: You cannot meditate for longer than three hours at once.'
-      );
     if (usr)
       return await message.channel.send(':x: You are already meditating!');
 
     try {
-      begin(client, voiceChannel.channel);
+      begin(client, message);
 
       const meditators: {
         usr: string,
         time: number,
-        whenToStop: number,
-        started: number,
+        whenToStop: string,
+        started: string,
         guild: string,
         channel: string
       }[] = [];
@@ -77,8 +74,8 @@ export const execute = async (client, message, args) => {
           meditators.push({
             usr: memberID,
             time: time,
-            whenToStop: stop,
-            started: curr,
+            whenToStop: `${stop}`,
+            started: `${curr}`,
             guild: message.guild.id,
             channel: voiceChannel.channel.id,
           });
@@ -106,7 +103,7 @@ export const execute = async (client, message, args) => {
         );
       }
 
-      prisma.current.createMany({ data: meditators });
+      await prisma.current.createMany({ data: meditators });
 
       var humans = 0;
 
@@ -123,16 +120,28 @@ export const execute = async (client, message, args) => {
   }
 };
 
-export async function begin(client, voiceChannel, voiceupdate = false) {
+export async function begin(client, message, voiceupdate = false) {
   var link = config.meditation_sound;
 
   if (!voiceupdate) {
-    voiceChannel
-      .join()
-      .then((connection) => {
-        if (link) connection.play(link);
-      })
-      .catch((err) => console.error(err));
+    try {
+      const connection = joinVoiceChannel(
+        {
+          channelId: message.member.voice.channel.id,
+          guildId: message.guild.id,
+          adapterCreator: message.guild.voiceAdapterCreator
+        });
+
+      const resource = createAudioResource(link);
+      const player = createAudioPlayer();
+
+      if (link) {
+        player.play(resource);
+        connection.subscribe(player);
+      }
+    } catch(err) {
+      console.error(err);
+    }
   }
 }
 
@@ -165,7 +174,10 @@ export async function stop(
       for (const [memberID, vc_member] of voice.members) {
         if (memberID === client.user.id) {
           try {
-            voice.leave();
+            const connection = getVoiceConnection(guild.id);
+
+            if (connection)
+              connection.destroy();
           } catch (err) {
             console.error(err);
           }
@@ -175,15 +187,30 @@ export async function stop(
       var link = config.meditation_sound;
 
       if (!voiceupdate) {
-        voice
-          .join()
-          .then((connection) => {
-            if (link) connection.play(link);
-          })
-          .catch((err) => console.error(err));
+        try {
+          const connection = joinVoiceChannel(
+            {
+              channelId: voice.channel.id,
+              guildId: guild.id,
+              adapterCreator: guild.voiceAdapterCreator
+            });
+    
+          const resource = createAudioResource(link);
+          const player = createAudioPlayer();
+    
+          if (link) {
+            player.play(resource);
+            connection.subscribe(player);
+          }
+        } catch(err) {
+          console.error(err);
+        }
 
         setTimeout(function () {
-          voice.leave();
+          const connection = getVoiceConnection(guild.id);
+
+          if (connection)
+            connection.destroy();
         }, 20000);
       }
     }
@@ -316,7 +343,7 @@ export async function scanForMeditations(client) {
       let difference;
       meditations.forEach(async (meditation) => {
         if (meditation.whenToStop !== null) {
-          difference = currentDate - meditation.whenToStop;
+          difference = currentDate - parseInt(meditation.whenToStop);
           if (difference > -1 * config.meditationScanInterval) {
             stop(client, meditation, difference);
           }
@@ -338,7 +365,7 @@ export async function catchUp(client) {
       let difference: number;
       meditations.forEach(async (meditation) => {
         if (meditation.whenToStop !== null) {
-          difference = currentDate - meditation.whenToStop;
+          difference = currentDate - parseInt(meditation.whenToStop);
           if (difference > 0) {
             stop(client, meditation, difference, true);
           }

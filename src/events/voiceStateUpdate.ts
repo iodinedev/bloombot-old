@@ -1,6 +1,7 @@
 import * as meditate_functions from '../commands/meditate.js';
 import { prisma } from '../databaseFiles/connect';
 import config from '../config';
+import { getVoiceConnection } from '@discordjs/voice';
 
 export = async (client, oldState, newState) => {
   const currentDate = new Date().getTime();
@@ -8,7 +9,7 @@ export = async (client, oldState, newState) => {
   const member = guild.members.cache.get(oldState.id);
 
   // Left a voice channel
-  if (!newState.channelID || oldState.channelID) {
+  if (!newState.channelId && oldState.channelId) {
     await guild.channels.fetch();
     const voiceChannel = await guild.channels.cache.get(oldState.id);
     var humans = 0;
@@ -21,7 +22,10 @@ export = async (client, oldState, newState) => {
 
     if (humans === 0) {
       try {
-        await voiceChannel.leave();
+        const connection = getVoiceConnection(guild.id);
+
+        if (connection)
+          connection.destroy();
       } catch (err) {
         console.error(err);
       }
@@ -37,9 +41,9 @@ export = async (client, oldState, newState) => {
       if (meditation) {
         let difference;
         if (meditation.whenToStop !== null) {
-          difference = meditation.whenToStop - currentDate;
+          difference = parseInt(meditation.whenToStop) - currentDate;
         } else {
-          difference = currentDate - meditation.started;
+          difference = currentDate - parseInt(meditation.started);
         }
 
         difference = new Date(difference).getMinutes();
@@ -95,7 +99,7 @@ export = async (client, oldState, newState) => {
         return;
 
       let difference;
-      difference = latest.whenToStop - currentDate;
+      difference = parseInt(latest.whenToStop) - currentDate;
 
       var time = new Date(difference).getMinutes();
       if (time === 0) time = 1;
@@ -128,8 +132,8 @@ export = async (client, oldState, newState) => {
           data: {
             usr: member.id,
             time: time,
-            started: Date.now(),
-            whenToStop: stop,
+            started: `${Date.now()}`,
+            whenToStop: `${stop}`,
             guild: guild.id,
             channel: voiceChannel.id,
           }

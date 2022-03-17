@@ -4,8 +4,6 @@ import { Meditations } from '../databaseFiles/streaks';
 export async function addToDatabase(userid, guildid, time) {
   var now = `${(new Date()).getTime()}`;
 
-  console.log(now)
-
   await prisma.meditations.create({
     data: {
       usr: userid,

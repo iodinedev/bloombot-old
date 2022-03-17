@@ -63,8 +63,6 @@ export const execute = async (client, message, args) => {
     var meditations: string[] = [];
 
     result.forEach((meditation) => {
-      console.log(meditation.date)
-
       var date = new Date(parseInt(meditation.date));
       var month = date.getUTCMonth() + 1;
       var day = date.getUTCDate();

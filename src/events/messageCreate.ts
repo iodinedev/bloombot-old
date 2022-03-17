@@ -64,7 +64,7 @@ export = async (client, message) => {
       } else {
         await commandfile.execute(client, message, args); // Execute found command
       }
-    } else if (commandfile.architecture.module === "Hidden" && message.channel.type === "DM") {
+    } else if (commandfile && commandfile.architecture.module === "Hidden" && message.channel.type === "DM") {
       message.channel.sendTyping();
 
       await commandfile.execute(client, message, args); // Execute found command
