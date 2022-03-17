@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import config from '../config';
-import { Stars } from '../databaseFiles/connect.js';
+import { prisma } from '../databaseFiles/connect.js';
 
 export class starboardActions {
   static async addStar(client, user, reaction) {
@@ -17,7 +17,7 @@ export class starboardActions {
 
       var att = reaction.message.attachments;
 
-      let result = await Stars.findOne({ messageID: reaction.message.id });
+      let result = await prisma.stars.findUnique({ where: { messageID: reaction.message.id} });
 
       if (result === null) {
         if (reaction.count >= config.min_stars) {
@@ -45,7 +45,7 @@ export class starboardActions {
               messageChannelID: reaction.message.channel.id,
             };
 
-            Stars.insertOne(starObject).then(() => {
+            prisma.stars.create({data: starObject}).then(() => {
               return;
             });
           });
@@ -67,7 +67,7 @@ export class starboardActions {
 
   static async removeStar(client, user, reaction) {
     if (reaction._emoji && reaction._emoji.name === config.emotes.star) {
-      let result = await Stars.findOne({ messageID: reaction.message.id });
+      let result = await prisma.stars.findUnique({ where: { messageID: reaction.message.id }});
 
       if (result !== null) {
         client.channels.cache
@@ -86,7 +86,7 @@ export class starboardActions {
               );
               return starmessage.edit(starmessageEmbed);
             } else {
-              Stars.deleteOne({ messageID: reaction.message.id }).then(() => {
+              prisma.stars.delete({ where: { messageID: reaction.message.id }}).then(() => {
                 return starmessage.delete();
               });
             }
@@ -96,23 +96,23 @@ export class starboardActions {
   }
 
   static async removeMessage(client, message) {
-    let result = await Stars.findOne({ messageID: message.id });
+    let result = await prisma.stars.findUnique({ where: { messageID: message.id }});
 
     if (result !== null) {
       client.channels.cache
         .get(config.channels.starchannel)
         .messages.fetch(result.embedID)
         .then((starmessage) => {
-          Stars.deleteOne({ messageID: message.id }).then((_) => {
+          prisma.stars.delete({ where: { messageID: message.id} }).then((_) => {
             return starmessage.delete();
           });
         });
     }
 
-    result = await Stars.findOne({ embedID: message.id });
+    result = await prisma.stars.findUnique({ where: { embedID: message.id }});
 
     if (result !== null) {
-      Stars.deleteOne({ embedID: message.id }).then(
+      prisma.stars.delete({where: { embedID: message.id} }).then(
         client.channels.cache
           .get(result.messageChannelID)
           .messages.fetch(result.messageID)

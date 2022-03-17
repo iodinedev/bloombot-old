@@ -1,5 +1,5 @@
 import * as meditateUtils from '../utils/meditateUtils';
-import { Meditations } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import Discord from 'discord.js';
 import config from '../config';
 
@@ -21,75 +21,89 @@ export const execute = async (client, message, args) => {
       get_usr = get_usr.join('');
     }
 
-    Meditations.find({
-      $and: [{ usr: get_usr }, { guild: message.guild.id }],
-    })
-      .sort({ _id: -1 })
-      .limit(3)
-      .toArray(async function (err, result) {
-        if (!result)
-          return await message.channel.send(
-            ":x: Looks like you don't have any meditation times! Use `.add` to add some time."
-          );
-        var data = await meditateUtils.getUserData(get_usr, message.guild.id);
-        var user_count = 0;
-        var user_time = 0;
-        var streak = 0;
-
-        if (data) {
-          user_count = data.meditation_count;
-          user_time = data.meditation_time;
-          streak = data.streak;
+    const result = await prisma.meditations.findMany({
+      where: {
+        AND: [
+          {
+            usr: get_usr
+          },
+          {
+            guild: message.guild.id
+          }
+        ]
+      },
+      orderBy: [
+        {
+          id: 'desc'
         }
+      ],
+      take: 3
+    });
 
-        await message.guild.members.fetch();
-        const user = client.users.cache.get(get_usr);
+    if (!result) {
+      return await message.channel.send(
+        ":x: Looks like you don't have any meditation times! Use `.add` to add some time."
+      );
+    }
 
-        var meditations: string[] = [];
+    var data = await meditateUtils.getUserData(get_usr, message.guild.id);
+    var user_count = 0;
+    var user_time = 0;
+    var streak = 0;
 
-        result.forEach((meditation) => {
-          var date = new Date(meditation.date);
-          var month = date.getUTCMonth() + 1;
-          var day = date.getUTCDate();
-          var year = date.getUTCFullYear();
+    if (data) {
+      user_count = data.meditation_count;
+      user_time = data.meditation_time;
+      streak = data.streak;
+    }
 
-          meditations.push(
-            `**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation._id}\``
-          );
-        });
+    await message.guild.members.fetch();
+    const user = client.users.cache.get(get_usr);
 
-        const fields = [
-          {
-            name: 'Meditation Minutes',
-            value: `${user_time}`,
-            inline: false,
-          },
-          {
-            name: 'Meditation Count',
-            value: `${user_count}`,
-            inline: false,
-          },
-          {
-            name: 'Recent Meditations',
-            value:
-              meditations.length === 0 ? 'None' : `${meditations.join('\n')}`,
-            inline: false,
-          },
-          {
-            name: 'Current Streak',
-            value: `${streak} days`,
-            inline: false,
-          },
-        ];
+    var meditations: string[] = [];
 
-        let rankEmbed = new Discord.MessageEmbed();
-        rankEmbed.color = config.colors.embedColor;
-        rankEmbed.title = 'Meditation Stats';
-        rankEmbed.thumbnail = user.avatarURL();
-        rankEmbed.fields.push(...fields);
+    result.forEach((meditation) => {
+      var date = new Date(parseInt(meditation.date));
+      var month = date.getUTCMonth() + 1;
+      var day = date.getUTCDate();
+      var year = date.getUTCFullYear();
 
-        return message.channel.send({ embeds: [rankEmbed] });
-      });
+      meditations.push(
+        `**${meditation.time}m** on ${day}/${month}/${year}\nID: \`${meditation.id}\``
+      );
+    });
+
+    const fields = [
+      {
+        name: 'Meditation Minutes',
+        value: `${user_time}`,
+        inline: false,
+      },
+      {
+        name: 'Meditation Count',
+        value: `${user_count}`,
+        inline: false,
+      },
+      {
+        name: 'Recent Meditations',
+        value:
+          meditations.length === 0 ? 'None' : `${meditations.join('\n')}`,
+        inline: false,
+      },
+      {
+        name: 'Current Streak',
+        value: `${streak} days`,
+        inline: false,
+      },
+    ];
+
+    let rankEmbed = new Discord.MessageEmbed();
+    rankEmbed.color = config.colors.embedColor;
+    rankEmbed.title = 'Meditation Stats';
+    rankEmbed.thumbnail = user.avatarURL();
+    rankEmbed.fields.push(...fields);
+
+    return message.channel.send({ embeds: [rankEmbed] });
   } else {
     return await message.channel.send(
       `:x: You can execute this only in <#${config.channels.meditation}> or <#${config.channels.commands}>.`

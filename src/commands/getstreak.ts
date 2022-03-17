@@ -1,61 +1,12 @@
-import { Meditations } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
+import { Meditations } from '../databaseFiles/streaks';
 
 export const execute = async (client, message) => {
-  var streaks = await Meditations.aggregate([
-    {
-      $match: {
-        usr: message.author.id,
-      },
-    },
-    {
-      $project: {
-        usr: '$usr',
-        day: {
-          $trunc: [
-            {
-              $add: [
-                {
-                  $divide: [
-                    {
-                      $subtract: [Date.now(), '$date'],
-                    },
-                    86400000,
-                  ],
-                },
-                0.5,
-              ],
-            },
-          ],
-        },
-      },
-    },
-    {
-      $sort: {
-        day: 1,
-      },
-    },
-    {
-      $group: {
-        _id: '$usr',
-        days: {
-          $push: '$day',
-        },
-      },
-    },
-  ]).toArray();
+  const meditations = Meditations(prisma.meditations);
 
-  var i = 0;
+  var streaks = await meditations.getStreak(message.user.id);
 
-  if (streaks && streaks[0]) {
-    streaks[0]['days'].every(async (day) => {
-      if (day !== i) return false;
-
-      i++;
-      return true;
-    });
-  }
-
-  return await message.channel.send(i);
+  return await message.channel.send(streaks);
 };
 
 export const architecture = {

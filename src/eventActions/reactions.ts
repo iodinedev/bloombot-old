@@ -1,7 +1,6 @@
 import config from '../config';
 const reactions = config.channelReacts;
-import { PickMessages, Keys } from '../databaseFiles/connect';
-import { ObjectId } from 'mongodb';
+import { prisma } from '../databaseFiles/connect';
 import { DiscordAPIError } from 'discord.js';
 
 export class reactionCheckAction {
@@ -23,8 +22,10 @@ export class reactionCheckAction {
   static async checkDMReaction(client, user, reaction) {
     if (user.bot) return;
 
-    const pickMessage = await PickMessages.findOne({
-      msg: reaction.message.id,
+    const pickMessage = await prisma.pickMessages.findUnique({
+      where: {
+        msg: reaction.message.id,
+      }
     });
 
     const channel = await user.createDM();
@@ -35,8 +36,10 @@ export class reactionCheckAction {
       if (pickMessage) {
         const guild = client.guilds.cache.get(pickMessage.guild);
 
-        await PickMessages.deleteOne({
-          msg: reaction.message.id,
+        await prisma.pickMessages.delete({
+          where: {
+            msg: reaction.message.id,
+          }
         });
 
         if (reaction._emoji.name === '❌') {
@@ -56,12 +59,12 @@ export class reactionCheckAction {
             ':white_check_mark: Your message has been removed from the database.\nChange your mind? Reach out to a staff member.'
           );
         } else if (reaction._emoji.name === '✅') {
-          const amount = await Keys.find({ valid: true }).count();
-          const key = await Keys.find({
-            valid: true,
-          })
-            .limit(1)
-            .toArray();
+          const amount = await prisma.steamKeys.count({ where: { valid: true } });
+          const key = await prisma.steamKeys.findMany({
+            where: {
+              valid: true,
+            }
+          });
 
           if (amount <= 3) {
             await message.guild.channels.cache
@@ -73,16 +76,14 @@ export class reactionCheckAction {
 
           if (key.length > 0) {
             try {
-              await Keys.updateOne(
-                {
+              await prisma.steamKeys.update({
+                where: {
                   text: key[0].text,
                 },
-                {
-                  $set: {
-                    valid: false,
-                  },
+                data: {
+                  valid: false,
                 }
-              );
+              });
 
               return await message.channel.send(
                 `Here is the Steam key to *PLAYNE: The Meditation Game*, enjoy!\n\`${key[0].text}\``

@@ -1,52 +1,45 @@
-import { Meditations } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
+import { Meditations } from '../databaseFiles/streaks';
 
 export async function addToDatabase(userid, guildid, time) {
-  var now = Date.now();
+  var now = `${(new Date()).getTime()}`;
 
-  await Meditations.insertOne({
-    usr: userid,
-    date: now,
-    time: time,
-    guild: guildid,
+  await prisma.meditations.create({
+    data: {
+      usr: userid,
+      date: now,
+      time: time,
+      guild: guildid,
+    }
   });
 
   return true;
 }
 
 export async function getUserData(userid, guildid) {
-  var meditation_count = await Meditations.countDocuments({
-    $and: [{ usr: userid }, { guild: guildid }],
+  const meditations = Meditations(prisma.meditations);
+
+  var meditation_count = await meditations.count({
+    where: {
+      AND: [{ usr: userid }, { guild: guildid }],
+    }
   });
 
-  var meditation_sum = await Meditations.aggregate([
-    {
-      $match: {
-        $and: [{ usr: userid }, { guild: guildid }],
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        sum: {
-          $sum: '$time',
-        },
-      },
-    },
-  ]).toArray();
-
-  var meditation_time = 0;
-  if (meditation_sum.length > 0) meditation_time = meditation_sum[0].sum;
+  const meditation_time: number = await meditations.getSum(guildid);
 
   var streak = await getStreak(userid);
 
-  const latest = await Meditations.find({
-    $and: [{ usr: userid }, { guild: guildid }],
-  })
-    .sort({
-      date: -1,
-    })
-    .limit(2)
-    .toArray();
+  const latest = await meditations.findMany({
+    where: {
+      AND: [{ usr: userid }, { guild: guildid }],
+    },
+    orderBy: [
+      {
+        date: 'desc'
+      }
+    ],
+    take: 2
+  });
 
   return {
     meditation_count,
@@ -57,48 +50,8 @@ export async function getUserData(userid, guildid) {
 }
 
 export async function getStreak(userid) {
-  var streaks = await Meditations.aggregate([
-    {
-      $match: {
-        usr: userid,
-      },
-    },
-    {
-      $project: {
-        usr: '$usr',
-        day: {
-          $trunc: [
-            {
-              $add: [
-                {
-                  $divide: [
-                    {
-                      $subtract: [Date.now(), '$date'],
-                    },
-                    86400000,
-                  ],
-                },
-                0.5,
-              ],
-            },
-          ],
-        },
-      },
-    },
-    {
-      $sort: {
-        day: 1,
-      },
-    },
-    {
-      $group: {
-        _id: '$usr',
-        days: {
-          $push: '$day',
-        },
-      },
-    },
-  ]).toArray();
+  const meditations = Meditations(prisma.meditations);
+  var streaks = await meditations.getStreak(userid);
 
   var streak = 0;
 
@@ -115,28 +68,14 @@ export async function getStreak(userid) {
 }
 
 export async function getGuildData(guildid) {
-  var meditation_count = await Meditations.countDocuments({
-    guild: guildid,
+  const meditations = Meditations(prisma.meditations);
+  var meditation_count = await meditations.count({
+    where: {
+      guild: guildid,
+    }
   });
 
-  var meditation_sum = await Meditations.aggregate([
-    {
-      $match: {
-        guild: guildid,
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        sum: {
-          $sum: '$time',
-        },
-      },
-    },
-  ]).toArray();
-
-  var meditation_time = 0;
-  if (meditation_sum.length > 0) meditation_time = meditation_sum[0].sum;
+  const meditation_time = await meditations.getSum(guildid);
 
   return {
     meditation_count,

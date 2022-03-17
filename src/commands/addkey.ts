@@ -1,5 +1,5 @@
 import { MongoBulkWriteError } from 'mongodb';
-import { Keys } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message, args) => {
   if (!(args.length > 0))
@@ -30,8 +30,8 @@ export const execute = async (client, message, args) => {
 
       if (resp === 'yes') {
         var documents: {
-          text: String;
-          valid: Boolean;
+          text: string;
+          valid: boolean;
         }[] = [];
 
         args.forEach((element: any) => {
@@ -41,17 +41,17 @@ export const execute = async (client, message, args) => {
           });
         });
 
-        const initLength = await Keys.countDocuments();
+        const initLength = await prisma.steamKeys.count();
 
         try {
-          await Keys.insertMany(documents);
+          await prisma.steamKeys.createMany({data: documents});
 
           return await message.channel.send('✅ Success!');
         } catch (err: any) {
           if (err instanceof MongoBulkWriteError) {
             return await message.channel.send(
               `:warning: Some documents not added, already in database. ${
-                (await Keys.countDocuments()) - initLength
+                (await prisma.steamKeys.count()) - initLength
               } documents added.`
             );
           }

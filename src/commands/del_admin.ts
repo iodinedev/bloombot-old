@@ -1,11 +1,13 @@
-import { ServerSetup } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 
 export const execute = async (client, message, args) => {
   if (!args)
     return await message.channel.send(':x: Must include a user ID to remove.');
 
-  var db_admins = await ServerSetup.findOne({
-    guild: message.guild.id,
+  var db_admins = await prisma.serverSetup.findUnique({
+    where: {
+      guild: message.guild.id,
+    }
   });
 
   if (!db_admins || !db_admins.admins)
@@ -22,11 +24,18 @@ export const execute = async (client, message, args) => {
 
   admins.splice(admins.indexOf(args[0]), 1);
 
-  await ServerSetup.updateOne(
-    { guild: message.guild.id },
-    { $set: { admins: admins } },
-    { upsert: true }
-  );
+  await prisma.serverSetup.upsert({
+    where: {
+      guild: message.guild.id
+    },
+    update: {
+      admins: admins
+    },
+    create: {
+      guild: message.guild.id,
+      admins: admins
+    }
+  });
 
   return await message.channel.send(
     `:white_check_mark: User has been removed from admin permissions.`

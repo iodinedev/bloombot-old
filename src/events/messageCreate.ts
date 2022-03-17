@@ -1,4 +1,4 @@
-import { BotStats, Prefixes, ServerSetup } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import { reactionCheckAction } from '../eventActions/reactions';
 import { Permissions } from 'discord.js';
 import config from '../config';
@@ -11,7 +11,7 @@ export = async (client, message) => {
   var prefix;
 
   try {
-    prefix = await Prefixes.findOne({ guild: message.guild.id });
+    prefix = await prisma.serverSetup.findUnique({ where: { guild: message.guild.id }});
     prefix = prefix.prefix; // Get the 'prefix' string from the JSON object if found. If not will return error for trying to get null
   } catch {
     prefix = '.';
@@ -39,8 +39,10 @@ export = async (client, message) => {
     if (commandfile && commandfile.architecture.module !== "Hidden") {
       message.channel.sendTyping();
 
-      var global_admins = await ServerSetup.findOne({
-        guild: message.guild.id,
+      var global_admins = await prisma.serverSetup.findUnique({
+        where: {
+          guild: message.guild.id,
+        }
       });
 
       const adminCommand: boolean = !!(commandfile.architecture.admin && commandfile.architecture.admin === true);
@@ -60,34 +62,9 @@ export = async (client, message) => {
           ":x: You don't have permission to run this command."
         );
       } else {
-        var total = 0;
-
-        var stats = await BotStats.findOne({
-          guild: message.guild.id,
-        });
-
-        if (stats && parseInt(stats.total) !== NaN) {
-          total = parseInt(stats.total);
-        }
-
-        total = total + 1;
-
-        await BotStats.updateOne(
-          { guild: message.guild.id },
-          {
-            $set: {
-              guild: message.guild.id,
-              total: total,
-            },
-          },
-          {
-            upsert: true,
-          }
-        );
-
         await commandfile.execute(client, message, args); // Execute found command
       }
-    } else if (commandfile.architecture.module === "Hidden" && message.channel.type === "DM") {
+    } else if (commandfile && commandfile.architecture.module === "Hidden" && message.channel.type === "DM") {
       message.channel.sendTyping();
 
       await commandfile.execute(client, message, args); // Execute found command

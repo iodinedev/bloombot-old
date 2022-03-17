@@ -1,6 +1,7 @@
 import * as meditate_functions from '../commands/meditate.js';
-import { Current } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import config from '../config';
+import { getVoiceConnection } from '@discordjs/voice';
 
 export = async (client, oldState, newState) => {
   const currentDate = new Date().getTime();
@@ -8,7 +9,7 @@ export = async (client, oldState, newState) => {
   const member = guild.members.cache.get(oldState.id);
 
   // Left a voice channel
-  if (!newState.channelID || oldState.channelID) {
+  if (!newState.channelId && oldState.channelId) {
     await guild.channels.fetch();
     const voiceChannel = await guild.channels.cache.get(oldState.id);
     var humans = 0;
@@ -21,40 +22,45 @@ export = async (client, oldState, newState) => {
 
     if (humans === 0) {
       try {
-        await voiceChannel.leave();
+        const connection = getVoiceConnection(guild.id);
+
+        if (connection)
+          connection.destroy();
       } catch (err) {
         console.error(err);
       }
     }
 
     try {
-      const meditation = await Current.findOne({
-        usr: member.id,
+      const meditation = await prisma.current.findUnique({
+        where: {
+          usr: member.id,
+        }
       });
 
       if (meditation) {
         let difference;
         if (meditation.whenToStop !== null) {
-          difference = meditation.whenToStop - currentDate;
+          difference = parseInt(meditation.whenToStop) - currentDate;
         } else {
-          difference = currentDate - meditation.started;
+          difference = currentDate - parseInt(meditation.started);
         }
 
         difference = new Date(difference).getMinutes();
 
         if (meditation.time) difference = meditation.time - difference;
 
-        await Current.updateOne(
-          { usr: member.id },
-          {
-            $set: {
-              time: difference,
-            },
+        await prisma.current.update({
+          where: { usr: member.id },
+          data: {
+            time: difference,
           }
-        );
+        });
 
-        const new_meditation = await Current.findOne({
-          usr: member.id,
+        const new_meditation = await prisma.current.findUnique({
+          where: {
+            usr: member.id,
+          }
         });
 
         meditate_functions.stop(
@@ -77,11 +83,13 @@ export = async (client, oldState, newState) => {
 
     if (member.user.bot) return;
 
-    if ((await Current.countDocuments()) > 0) {
-      const latest_docs = await Current.find()
-        .sort({ _id: -1 })
-        .limit(1)
-        .toArray();
+    if ((await prisma.current.count()) > 0) {
+      const latest_docs = await prisma.current.findMany({
+        orderBy: [
+          { id: 'desc' }
+        ],
+        take: 1
+      });
 
       const latest = latest_docs[0];
 
@@ -91,7 +99,7 @@ export = async (client, oldState, newState) => {
         return;
 
       let difference;
-      difference = latest.whenToStop - currentDate;
+      difference = parseInt(latest.whenToStop) - currentDate;
 
       var time = new Date(difference).getMinutes();
       if (time === 0) time = 1;
@@ -120,12 +128,15 @@ export = async (client, oldState, newState) => {
           `:white_check_mark: You have joined the group meditation session with ${time} minutes remaining <@${member.id}>!\n**Note**: You can end your time at any point by simply leaving the voice channel.`
         );
 
-        Current.insertOne({
-          usr: member.id,
-          time: time,
-          whenToStop: stop,
-          guild: guild.id,
-          channel: voiceChannel.id,
+        prisma.current.create({
+          data: {
+            usr: member.id,
+            time: time,
+            started: `${Date.now()}`,
+            whenToStop: `${stop}`,
+            guild: guild.id,
+            channel: voiceChannel.id,
+          }
         });
 
         var humans = 0;

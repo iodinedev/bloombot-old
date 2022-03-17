@@ -1,4 +1,4 @@
-import { Tags } from '../databaseFiles/connect';
+import { prisma } from '../databaseFiles/connect';
 import config from '../config';
 import Discord from 'discord.js';
 
@@ -6,13 +6,10 @@ export const execute = async (client, message, args) => {
   if (!args[0])
     return await message.channel.send(':x: You must include a tag!');
 
-  const timeout = async (messages) => {
-    if (messages.size === 0)
-      return await message.channel.send(':x: Command timed out.');
-  };
-
-  const tag = await Tags.findOne({
-    search: args.join('').toLowerCase(),
+  const tag = await prisma.tags.findUnique({
+    where: {
+      search: args.join('').toLowerCase()
+    }
   });
 
   if (!tag)
@@ -33,8 +30,10 @@ export const execute = async (client, message, args) => {
 
     tag_collector.on('collect', async (t) => {
       if (t.content.toLowerCase() === 'yes') {
-        const deletetag = await Tags.deleteOne({
-          tag: tag.tag,
+        const deletetag = await prisma.tags.delete({
+          where: {
+            tag: tag.tag,
+          }
         });
 
         if (deletetag) {
