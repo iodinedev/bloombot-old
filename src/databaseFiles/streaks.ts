@@ -21,7 +21,7 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
         const dayDifference = difference / 86400000;
         const rounded = Math.floor(dayDifference + 0.5);
         
-        days.push(rounded);
+        if (days.lastIndexOf(rounded) === -1) days.push(rounded);
       }
 
       console.log(days)

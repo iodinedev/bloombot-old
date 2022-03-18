@@ -240,76 +240,86 @@ export async function stop(
     var streak = userdata.streak;
     var user_time = userdata.meditation_time;
 
-    var lvl_role;
+    // Level tests
+    if (user_time >= 50) {
+      var lvl_role = 'I_Star';
 
-    if (user_time >= 50) lvl_role = 'I_Star';
-    if (user_time >= 100) lvl_role = 'II_Star';
-    if (user_time >= 150) lvl_role = 'III_Star';
-    if (user_time >= 250) lvl_role = 'I_S_Star';
-    if (user_time >= 500) lvl_role = 'II_S_Star';
-    if (user_time >= 1000) lvl_role = 'III_S_Star';
-    if (user_time >= 2000) lvl_role = 'I_M_Star';
-    if (user_time >= 5000) lvl_role = 'II_M_Star';
-    if (user_time >= 10000) lvl_role = 'III_M_Star';
-    if (user_time >= 20000) lvl_role = 'I_Star_S';
-    if (user_time >= 50000) lvl_role = 'II_Star_S';
-    if (user_time >= 100000) lvl_role = 'III_Star_S';
+      if (user_time >= 100) lvl_role = 'II_Star';
+      if (user_time >= 150) lvl_role = 'III_Star';
+      if (user_time >= 250) lvl_role = 'I_S_Star';
+      if (user_time >= 500) lvl_role = 'II_S_Star';
+      if (user_time >= 1000) lvl_role = 'III_S_Star';
+      if (user_time >= 2000) lvl_role = 'I_M_Star';
+      if (user_time >= 5000) lvl_role = 'II_M_Star';
+      if (user_time >= 10000) lvl_role = 'III_M_Star';
+      if (user_time >= 20000) lvl_role = 'I_Star_S';
+      if (user_time >= 50000) lvl_role = 'II_Star_S';
+      if (user_time >= 100000) lvl_role = 'III_Star_S';
 
-    var add_lvl_role = await user.guild.roles.cache.find(
-      (role) => role.id === config.roles.lvl_roles[lvl_role]
-    );
+      var add_lvl_role = await guild.roles.cache.find(
+        (role) => role.id === config.roles.lvl_roles[lvl_role]
+      );
 
-    const levelRoles = Object.values(config.roles.lvl_roles);
-    var shouldAdd = false;
+      const levelRoles = Object.values(config.roles.lvl_roles);
+      var shouldAdd = true;
 
-    levelRoles.every(async (roleid) => {
-      if (user.roles.cache.has(roleid)) {
-        var check_role = await user.guild.roles.cache.find(
-          (role) => role.id === roleid
-        );
+      await levelRoles.every(async (roleid) => {
+        if (user.roles.cache.has(roleid)) {
+          var check_role = await guild.roles.cache.find(
+            (role) => role.id === roleid
+          );
 
-        if (check_role.position < add_lvl_role.position) {
-          user.roles.remove(check_role);
-          shouldAdd = true;
+          if (check_role.position < add_lvl_role.position) {
+            user.roles.remove(check_role);
+          } else {
+            shouldAdd = false;
+          }
         }
-      }
-    });
+      });
 
-    if (shouldAdd) await user.roles.add(add_lvl_role);
+      if (shouldAdd && add_lvl_role) await user.roles.add(add_lvl_role);
+    }
 
-    var streak_role: string;
+    // Streak tests
+    if (streak >= 7) {
+      var streak_role = 'egg';
 
-    if (streak >= 7) streak_role = 'egg';
-    if (streak >= 14) streak_role = 'hatching_chick';
-    if (streak >= 28) streak_role = 'baby_chick';
-    if (streak >= 35) streak_role = 'chicken';
-    if (streak >= 56) streak_role = 'dove';
-    if (streak >= 70) streak_role = 'owl';
-    if (streak >= 140) streak_role = 'eagle';
-    if (streak >= 365) streak_role = 'dragon';
-    if (streak >= 730) streak_role = 'alien';
+      console.log(streak)
 
-    var add_streak_role = await user.guild.roles.cache.find(
-      (role) => role.id === config.roles.streak_roles[streak_role]
-    );
+      if (streak >= 14) streak_role = 'hatching_chick';
+      if (streak >= 28) streak_role = 'baby_chick';
+      if (streak >= 35) streak_role = 'chicken';
+      if (streak >= 56) streak_role = 'dove';
+      if (streak >= 70) streak_role = 'owl';
+      if (streak >= 140) streak_role = 'eagle';
+      if (streak >= 365) streak_role = 'dragon';
+      if (streak >= 730) streak_role = 'alien';
 
-    const streakRoles = Object.values(config.roles.streak_roles);
-    var shouldAdd = false;
+      console.log(streak_role)
 
-    streakRoles.every(async (roleid) => {
-      if (user.roles.cache.has(roleid)) {
-        var check_role = await user.guild.roles.cache.find(
-          (role) => role.id === roleid
-        );
+      var add_streak_role = await guild.roles.cache.find(
+        (role) => role.id === config.roles.streak_roles[streak_role]
+      );
 
-        if (check_role.position < add_streak_role.position) {
-          shouldAdd = true;
-          user.roles.remove(check_role);
+      const streakRoles = Object.values(config.roles.streak_roles);
+      var shouldAdd = true;
+
+      await streakRoles.every(async (roleid) => {
+        if (user.roles.cache.has(roleid)) {
+          var check_role = await guild.roles.cache.find(
+            (role) => role.id === roleid
+          );
+
+          if (check_role && check_role.position < add_streak_role.position) {
+            user.roles.remove(check_role);
+          } else {
+            shouldAdd = false;
+          }
         }
-      }
-    });
+      });
 
-    if (shouldAdd) await user.roles.add(add_streak_role);
+      if (shouldAdd && add_streak_role) await user.roles.add(add_streak_role);
+    }
   } catch (err) {
     console.error(err);
   }

@@ -50,58 +50,47 @@ export const execute = async (client, message, args) => {
       );
 
       try {
-        var lvl_role;
-        const ranks = {
-          I_Star: 0,
-          II_Star: 1,
-          III_Star: 2,
-          I_S_Star: 3,
-          II_S_Star: 4,
-          III_S_Star: 5,
-          I_M_Star: 6,
-          II_M_Star: 7,
-          III_M_Star: 8,
-          I_Star_S: 9,
-          II_Star_S: 10,
-          III_Star_S: 11,
-        };
+        // Level tests
+        if (user_time >= 50) {
+          var lvl_role = 'I_Star';
 
-        if (user_time >= 50) lvl_role = 'I_Star';
-        if (user_time >= 100) lvl_role = 'II_Star';
-        if (user_time >= 150) lvl_role = 'III_Star';
-        if (user_time >= 250) lvl_role = 'I_S_Star';
-        if (user_time >= 500) lvl_role = 'II_S_Star';
-        if (user_time >= 1000) lvl_role = 'III_S_Star';
-        if (user_time >= 2000) lvl_role = 'I_M_Star';
-        if (user_time >= 5000) lvl_role = 'II_M_Star';
-        if (user_time >= 10000) lvl_role = 'III_M_Star';
-        if (user_time >= 20000) lvl_role = 'I_Star_S';
-        if (user_time >= 50000) lvl_role = 'II_Star_S';
-        if (user_time >= 100000) lvl_role = 'III_Star_S';
+          if (user_time >= 100) lvl_role = 'II_Star';
+          if (user_time >= 150) lvl_role = 'III_Star';
+          if (user_time >= 250) lvl_role = 'I_S_Star';
+          if (user_time >= 500) lvl_role = 'II_S_Star';
+          if (user_time >= 1000) lvl_role = 'III_S_Star';
+          if (user_time >= 2000) lvl_role = 'I_M_Star';
+          if (user_time >= 5000) lvl_role = 'II_M_Star';
+          if (user_time >= 10000) lvl_role = 'III_M_Star';
+          if (user_time >= 20000) lvl_role = 'I_Star_S';
+          if (user_time >= 50000) lvl_role = 'II_Star_S';
+          if (user_time >= 100000) lvl_role = 'III_Star_S';
 
-        var add_lvl_role = await member.guild.roles.cache.find(
-          (role) => role.id === config.roles.lvl_roles[lvl_role]
-        );
+          var add_lvl_role = await member.guild.roles.cache.find(
+            (role) => role.id === config.roles.lvl_roles[lvl_role]
+          );
 
-        const levelRoles = Object.values(config.roles.lvl_roles);
-        var shouldAdd = true;
+          const levelRoles = Object.values(config.roles.lvl_roles);
+          var shouldAdd = true;
 
-        await levelRoles.every(async (roleid) => {
-          if (member.roles.cache.has(roleid)) {
-            var check_role = await member.guild.roles.cache.find(
-              (role) => role.id === roleid
-            );
+          await levelRoles.every(async (roleid) => {
+            if (member.roles.cache.has(roleid)) {
+              var check_role = await member.guild.roles.cache.find(
+                (role) => role.id === roleid
+              );
 
-            if (check_role.position < add_lvl_role.position) {
-              member.roles.remove(check_role);
-            } else {
-              shouldAdd = false;
+              if (check_role.position < add_lvl_role.position) {
+                member.roles.remove(check_role);
+              } else {
+                shouldAdd = false;
+              }
             }
-          }
-        });
+          });
 
-        if (shouldAdd && add_lvl_role) await member.roles.add(add_lvl_role);
+          if (shouldAdd && add_lvl_role) await member.roles.add(add_lvl_role);
+        }
 
+        // Streak tests
         if (streak >= 7) {
           var streak_role = 'egg';
 
