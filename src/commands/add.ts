@@ -127,7 +127,7 @@ export const execute = async (client, message, args) => {
               (role) => role.id === roleid
             );
 
-            if (check_role.position < add_streak_role.position) {
+            if (check_role && check_role.position < add_streak_role.position) {
               member.roles.remove(check_role);
             } else {
               shouldAdd = false;

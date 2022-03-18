@@ -39,11 +39,15 @@ export = async (client, message) => {
     if (commandfile && commandfile.architecture.module !== "Hidden") {
       message.channel.sendTyping();
 
-      var global_admins = await prisma.serverSetup.findUnique({
-        where: {
-          guild: message.guild.id,
-        }
-      });
+      var global_admins;
+      
+      if (message.guild) {
+        global_admins = await prisma.serverSetup.findUnique({
+          where: {
+            guild: message.guild.id,
+          }
+        });
+      }
 
       const adminCommand: boolean = !!(commandfile.architecture.admin && commandfile.architecture.admin === true);
       const modCommand: boolean = !!(commandfile.architecture.moderator && commandfile.architecture.moderator === true);
@@ -57,9 +61,13 @@ export = async (client, message) => {
       const isPrivilegedUser = isGlobalAdmin || isNormalAdmin || isMod;
 
       // Check if user has Discord admin permissions or is in global admin database
-      if (isPrivilegedCommand && !isPrivilegedUser) {
+      if (message.guild && isPrivilegedCommand && !isPrivilegedUser) {
         await message.channel.send(
           ":x: You don't have permission to run this command."
+        );
+      } else if (isPrivilegedCommand) {
+        await message.channel.send(
+          ":x: You can't run privileged commands in DMs."
         );
       } else {
         await commandfile.execute(client, message, args); // Execute found command
