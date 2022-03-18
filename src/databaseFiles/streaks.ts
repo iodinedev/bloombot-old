@@ -24,8 +24,6 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
         if (days.lastIndexOf(rounded) === -1) days.push(rounded);
       }
 
-      console.log(days)
-
       var i = 0;
       for await (const day of days) {
         if (day !== i) break;
