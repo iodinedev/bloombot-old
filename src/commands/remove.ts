@@ -41,6 +41,8 @@ export const execute = async (client, message, args) => {
       ':white_check_mark: Meditation entry has been removed.'
     );
   } catch (err) {
+    console.log(err)
+    
     return await message.channel.send(
       ':x: ID could not be parsed. Make sure you use a valid meditation session ID.'
     );
