@@ -2,8 +2,18 @@ import { PrismaClient } from '@prisma/client'
 
 export const Meditations = (prisma: PrismaClient['meditations']) => {
   return Object.assign(prisma, {
-    async getStreak(user: string): Promise<any> {
-      const meditations = await prisma.findMany({where: {usr: user}});
+    async getStreak(user: string, guildid: string): Promise<any> {
+      const meditations = await prisma.findMany({
+        where: {
+          AND: [
+            { usr: user },
+            { guild: guildid }
+          ]
+        },
+        orderBy: [
+          { id: 'desc' }
+        ]
+      });
       var days: number[] = [];
 
       for await (const meditation of meditations) {
@@ -16,10 +26,9 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
 
       var i = 0;
       for await (const day of days) {
-        if (day !== i) return false;
+        if (day !== i) break;
 
         i++;
-        return true;
       }
 
       return i;

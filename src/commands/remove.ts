@@ -17,7 +17,7 @@ export const execute = async (client, message, args) => {
   try {
     var meditation = await prisma.meditations.findUnique({
       where: {
-        id: args[0]
+        id: parseInt(args[0])
       }
     });
 
@@ -33,7 +33,7 @@ export const execute = async (client, message, args) => {
 
     await prisma.meditations.delete({
       where: {
-        id: args[0],
+        id: parseInt(args[0]),
       }
     });
 
@@ -42,7 +42,7 @@ export const execute = async (client, message, args) => {
     );
   } catch (err) {
     console.log(err)
-    
+
     return await message.channel.send(
       ':x: ID could not be parsed. Make sure you use a valid meditation session ID.'
     );

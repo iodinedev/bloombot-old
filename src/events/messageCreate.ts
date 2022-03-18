@@ -65,7 +65,7 @@ export = async (client, message) => {
         await message.channel.send(
           ":x: You don't have permission to run this command."
         );
-      } else if (isPrivilegedCommand) {
+      } else if (isPrivilegedCommand && !message.guild) {
         await message.channel.send(
           ":x: You can't run privileged commands in DMs."
         );
