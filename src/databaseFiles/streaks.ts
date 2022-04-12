@@ -15,17 +15,16 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
         ]
       });
 
-      console.log(meditations.length === (await prisma.findMany({where: { usr: user }})).length)
       var days: number[] = [];
 
       for await (const meditation of meditations) {
-        //console.log(meditation)
+        console.log(meditation)
         const difference = Date.now() - parseInt(meditation.date);
         const dayDifference = difference / 86400000;
-        //console.log(dayDifference)
+        console.log(dayDifference)
         const rounded = Math.floor(dayDifference + 0.5);
-        //console.log(rounded);
-        //console.log("------")
+        console.log(rounded);
+        console.log("------")
         
         if (days.lastIndexOf(rounded) === -1) days.push(rounded);
       }
