@@ -24,11 +24,13 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
         const rounded = Math.floor(dayDifference + 0.5);
         console.log(rounded);
         
-        if (last + 2 >= rounded && rounded !== last) {
-          i++;
-          last = rounded;
-        } else {
-          break;
+        if (rounded !== last) {
+          if (last + 2 >= rounded) {
+            i++;
+            last = rounded;
+          } else {
+            break;
+          }
         }
       }
 
