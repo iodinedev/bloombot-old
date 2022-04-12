@@ -16,7 +16,7 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
       });
 
       var i = 0;
-      var last: number = NaN;
+      var last: number = -1;
 
       for await (const meditation of meditations) {
         const difference = Date.now() - parseInt(meditation.date);
