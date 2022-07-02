@@ -36,6 +36,8 @@ export const execute = async (client, message) => {
       guild;
     }[] = userdata.latest;
 
+    console.log(latest)
+
     if (
       latest.length > 1 &&
       new Date(latest[0].date) >= now &&
@@ -107,5 +109,5 @@ export const architecture = {
   description:
     'Selects a random user from the meditation challengers role and posts an announcement with their meditation time.',
   usage: ['pick'],
-  admin: true,
+  //admin: true,
 };
