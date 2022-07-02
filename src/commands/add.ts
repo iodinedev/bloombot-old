@@ -10,7 +10,7 @@ export const execute = async (client, message, args) => {
         ':x: Your meditation time must be greater than zero.'
       );
 
-    if (time !== NaN && time <= 600) {
+    if (!isNaN(time) && time <= 600) {
       var member = message.member;
       await meditateUtils.addToDatabase(
         message.author.id,
@@ -132,6 +132,8 @@ export const execute = async (client, message, args) => {
 
       return;
     } else {
+      if (isNaN(time)) return await message.channel.send(':x: Please make sure to use numbers, rather than symbols. (I.E. "30" rather than "thirty")');
+
       return await message.channel.send(
         ':x: Whoa, easy there tiger... You can only add up to 600 minutes at once!'
       );
