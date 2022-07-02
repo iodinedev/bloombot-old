@@ -107,5 +107,5 @@ export const architecture = {
   description:
     'Selects a random user from the meditation challengers role and posts an announcement with their meditation time.',
   usage: ['pick'],
-  //admin: true,
+  admin: true,
 };
