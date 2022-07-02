@@ -37,6 +37,8 @@ export const execute = async (client, message) => {
     }[] = userdata.latest;
 
     console.log(latest)
+    console.log(new Date(latest[0].date))
+    console.log(new Date(latest[1].date))
 
     if (
       latest.length > 1 &&
