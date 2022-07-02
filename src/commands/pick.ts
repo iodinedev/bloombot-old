@@ -13,7 +13,7 @@ export const execute = async (client, message) => {
   if (role.members.size === 0)
     return await message.channel.send(":x: There's nobody in that role!");
 
-  var limit = 1;
+  var limit = 5;
   var valid = false;
 
   var user;
