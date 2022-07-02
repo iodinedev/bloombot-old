@@ -94,8 +94,6 @@ export const execute = async (client, message, args) => {
         if (streak >= 7) {
           var streak_role = 'egg';
 
-          console.log(streak)
-
           if (streak >= 14) streak_role = 'hatching_chick';
           if (streak >= 28) streak_role = 'baby_chick';
           if (streak >= 35) streak_role = 'chicken';
@@ -104,8 +102,6 @@ export const execute = async (client, message, args) => {
           if (streak >= 140) streak_role = 'eagle';
           if (streak >= 365) streak_role = 'dragon';
           if (streak >= 730) streak_role = 'alien';
-
-          console.log(streak_role)
 
           var add_streak_role = await member.guild.roles.cache.find(
             (role) => role.id === config.roles.streak_roles[streak_role]

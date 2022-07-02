@@ -36,10 +36,6 @@ export const execute = async (client, message) => {
       guild;
     }[] = userdata.latest;
 
-    console.log(latest)
-    console.log(new Date(parseInt(latest[0].date)) >= now)
-    console.log(new Date(parseInt(latest[1].date)) >= now)
-
     if (
       latest.length > 1 &&
       new Date(parseInt(latest[0].date)) >= now &&
