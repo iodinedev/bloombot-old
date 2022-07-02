@@ -42,8 +42,8 @@ export const execute = async (client, message) => {
 
     if (
       latest.length > 1 &&
-      new Date(latest[0].date) >= now &&
-      new Date(latest[1].date) >= now
+      new Date(parseInt(latest[0].date)) >= now &&
+      new Date(parseInt(latest[1].date)) >= now
     ) {
       valid = true;
     }
