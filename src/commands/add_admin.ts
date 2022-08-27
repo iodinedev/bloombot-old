@@ -4,13 +4,14 @@ import guildMemberAdd from '../events/guildMemberAdd';
 export const execute = async (client, message, args) => {
   try {
     var user = await client.users.fetch(args[0]);
+    var role = await message.guild.roles.fetch(args[0]);
 
-    if (!user || !user.id)
-      return await message.channel.send(':x: Must include a valid user ID.');
+    if (!user || !user.id || !role || !role.id)
+      return await message.channel.send(':x: Must include a valid user or role ID.');
   } catch (err) {
     console.error(err);
     return await message.channel.send(
-      ':x: Something went wrong. Did you include a user ID?'
+      ':x: Something went wrong. Did you include a user or role ID?'
     );
   }
 
@@ -29,7 +30,7 @@ export const execute = async (client, message, args) => {
 
   if (admins.indexOf(user.id) !== -1)
     return await message.channel.send(
-      ':x: That user already exists in the admin database.'
+      ':x: That user or role already exists in the admin database.'
     );
 
   admins.push(user.id);
@@ -47,9 +48,15 @@ export const execute = async (client, message, args) => {
     }
   });
 
-  return await message.channel.send(
-    `:white_check_mark: ${user.username} has been added as an admin!`
-  );
+  if (user.id) {
+    return await message.channel.send(
+      `:white_check_mark: ${user.username} has been added as an admin!`
+    );
+  } else if (role.id) {
+    return await message.channel.send(
+      `:white_check_mark: ${role.name} has been added as an admin!`
+    );
+  }
 };
 
 export const architecture = {
