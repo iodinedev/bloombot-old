@@ -6,8 +6,8 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
       const meditations = await prisma.findMany({
         where: {
           AND: [
-            { usr: '899405587400495114' },
-            { guild: '244917432383176705' }
+            { usr: user },
+            { guild: guildid }
           ]
         },
         orderBy: [
