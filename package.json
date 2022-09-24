@@ -22,11 +22,11 @@
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.11.0",
+    "@prisma/client": "^4.3.1",
     "discord.js": "^13.1.0",
-    "@prisma/client": "^3.11.0",
     "fastest-levenshtein": "^1.0.12",
     "libsodium-wrappers": "^0.7.9",
-    "prisma": "^3.11.0"
+    "prisma": "^4.3.1"
   },
   "devDependencies": {
     "prettier": "^2.4.1",
