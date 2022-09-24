@@ -16,7 +16,9 @@ export = {
     "reportchannel": "855894610001395743",
     "starchannel": "856865368098078720",
     "logs": "791366170611679275",
-    "suggestions": "857247584338575370"
+    "suggestions": "857247584338575370",
+    "patreon": "551895169532952578",
+    "admin": "441207765357035541"
   },
   "meditation_sound": "https://www.youtube.com/watch?v=kZ70uUp9eWo",
   "wait_time": 172800,
@@ -32,6 +34,10 @@ export = {
   "roles": {
     "meditation_challenger": "796821826369617970",
     "currently_meditating": "713817876695482449",
+    "patreon": "543900027928444935",
+    "courseEnrolled": "935537334005411901",
+    "courseCompleted": "941344204876042251",
+    "moderator": "788760128010059786",
     "lvl_roles": {
       "I_Star": "504641899890475018",
       "II_Star": "504641945596067851",
