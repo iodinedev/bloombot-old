@@ -9,6 +9,7 @@ COPY . .
 # Install package dependencies
 RUN yarn install
 RUN yarn prisma db pull
+RUN yarn prisma generate
 
 RUN rm -rf dist
 RUN yarn tsc
