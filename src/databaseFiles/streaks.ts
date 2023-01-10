@@ -18,8 +18,10 @@ export const Meditations = (prisma: PrismaClient['meditations']) => {
       var i = 0;
       var last: number = -1;
 
+      const now = new Date().setHours(0, 0, 0, 0);
+
       for await (const meditation of meditations) {
-        const difference = Date.now() - parseInt(meditation.date);
+        const difference = now - parseInt(meditation.date);
         const dayDifference = difference / 86400000;
         const rounded = Math.floor(dayDifference + 0.5);
         

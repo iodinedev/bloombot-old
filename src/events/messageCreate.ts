@@ -48,8 +48,6 @@ export = async (client, message) => {
       const admin: boolean = !!(message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR));
       const staff: boolean = !!(await isStaff(message, message.author.id));
 
-      console.log(isPrivilegedCommand, admin, staff)
-
       // Check if user has Discord admin permissions or is in global admin database
       if (isPrivilegedCommand) {
         if (message.guild && !admin && !staff) {
