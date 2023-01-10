@@ -191,5 +191,5 @@ export const architecture = {
   module: 'Admin',
   description: "Sets a term's definition with an interactive walkthrough.",
   usage: ['addterm'],
-  admin: true,
+  staff: true,
 };

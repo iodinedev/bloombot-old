@@ -1,6 +1,7 @@
 import { prisma } from '../databaseFiles/connect';
 import { reactionCheckAction } from '../eventActions/reactions';
 import { Permissions } from 'discord.js';
+import { isStaff } from '../utils/staffUtil';
 import config from '../config';
 
 export = async (client, message) => {
@@ -39,36 +40,37 @@ export = async (client, message) => {
     if (commandfile && commandfile.architecture.module !== "Hidden") {
       message.channel.sendTyping();
 
-      var global_admins;
-      
-      if (message.guild) {
-        global_admins = await prisma.serverSetup.findUnique({
-          where: {
-            guild: message.guild.id,
-          }
-        });
-      }
-
       const adminCommand: boolean = !!(commandfile.architecture.admin && commandfile.architecture.admin === true);
-      const modCommand: boolean = !!(commandfile.architecture.moderator && commandfile.architecture.moderator === true);
+      const staffCommand: boolean = !!(commandfile.architecture.staff && commandfile.architecture.staff === true);
 
-      const isPrivilegedCommand = adminCommand || modCommand;
+      const isPrivilegedCommand = adminCommand || staffCommand;
 
-      const isGlobalAdmin: boolean = !!(global_admins && global_admins.admins && global_admins.admins.indexOf(message.author.id) !== -1);
-      const isNormalAdmin: boolean = !!(message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR));
-      const isMod: boolean = !!(message.member.roles.cache.has(config.roles.moderator));
+      const admin: boolean = !!(message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR));
+      const staff: boolean = !!(await isStaff(message, message.author.id));
 
-      const isPrivilegedUser = isGlobalAdmin || isNormalAdmin || isMod;
+      console.log(isPrivilegedCommand, admin, staff)
 
       // Check if user has Discord admin permissions or is in global admin database
-      if (message.guild && isPrivilegedCommand && !isPrivilegedUser) {
-        await message.channel.send(
-          ":x: You don't have permission to run this command."
-        );
-      } else if (isPrivilegedCommand && !message.guild) {
-        await message.channel.send(
-          ":x: You can't run privileged commands in DMs."
-        );
+      if (isPrivilegedCommand) {
+        if (message.guild && !admin && !staff) {
+          await message.channel.send(
+            ":x: You don't have permission to run this command."
+          );
+        } else if (isPrivilegedCommand && !message.guild) {
+          await message.channel.send(
+            ":x: You can't run privileged commands in DMs."
+          );
+        } else {
+          if (adminCommand && admin) {
+            await commandfile.execute(client, message, args); // Execute found command
+          } else if (staffCommand && ( staff || admin )) {
+            await commandfile.execute(client, message, args); // Execute found command
+          } else {
+            await message.channel.send(
+              ":x: You can't run privileged commands in DMs."
+            );
+          }
+        }
       } else {
         await commandfile.execute(client, message, args); // Execute found command
       }

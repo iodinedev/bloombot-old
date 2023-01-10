@@ -43,10 +43,10 @@ export const execute = async (client, message, args) => {
 };
 
 export const architecture = {
-  name: 'deladmin',
-  aliases: ['rmadmin'],
+  name: 'delstaff',
+  aliases: ['rmstaff'],
   module: 'Admin',
-  description: 'Removes a user from the bot admin list.',
-  usage: ['deladmin <user ID>'],
+  description: 'Removes a user from the bot staff list.',
+  usage: ['delstaff <user ID>'],
   admin: true,
 };

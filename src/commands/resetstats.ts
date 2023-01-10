@@ -55,8 +55,8 @@ export const execute = async (client, message, args) => {
 export const architecture = {
   name: 'resetstats',
   aliases: ['reset'],
-  module: 'Admin',
+  module: 'Staff',
   description: "Resets a user's meditation stats.",
   usage: ['resetstats <user ID>'],
-  admin: true,
+  staff: true,
 };

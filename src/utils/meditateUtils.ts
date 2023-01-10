@@ -62,3 +62,17 @@ export async function getGuildData(guildid) {
     meditation_time,
   };
 }
+
+export async function mendToDatabase(guild, time, date, user) {
+  console.log(date.getTime())
+  await prisma.meditations.create({
+    data: {
+      usr: user,
+      date: `${date.getTime()}`,
+      time: time,
+      guild: guild,
+    }
+  });
+
+  return true;
+}

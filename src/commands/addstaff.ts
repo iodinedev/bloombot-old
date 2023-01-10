@@ -1,5 +1,4 @@
 import { prisma } from '../databaseFiles/connect';
-import guildMemberAdd from '../events/guildMemberAdd';
 
 export const execute = async (client, message, args) => {
   try {
@@ -60,10 +59,10 @@ export const execute = async (client, message, args) => {
 };
 
 export const architecture = {
-  name: 'addadmin',
+  name: 'addstaff',
   aliases: [],
   module: 'Admin',
-  description: 'Adds a user to the bot admin list.',
-  usage: ['addadmin <user ID>'],
+  description: 'Adds a user to the bot staff list.',
+  usage: ['addstaff <user ID>'],
   admin: true,
 };

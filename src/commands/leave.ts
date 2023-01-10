@@ -23,9 +23,9 @@ export const execute = async (client, message, args) => {
 export const architecture = {
   name: 'leave',
   aliases: [],
-  module: 'Admin',
+  module: 'Staff',
   description:
     'Manually disconnect the bot from a voice channel in the server.',
   usage: ['leave'],
-  admin: true,
+  staff: true,
 };

@@ -51,8 +51,8 @@ export const execute = async (client, message, args) => {
 export const architecture = {
   name: 'removeterm',
   aliases: ['destroyitcastitintothefire', 'deleteterm'],
-  module: 'Admin',
+  module: 'Staff',
   description: 'Removes a term from the glossary.',
   usage: ['removeterm <term>'],
-  admin: true,
+  staff: true,
 };

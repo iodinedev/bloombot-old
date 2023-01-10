@@ -27,10 +27,10 @@ export const execute = async (client, message) => {
 };
 
 export const architecture = {
-  name: 'listadmins',
-  aliases: ['listadmin', 'admins'],
+  name: 'liststaff',
+  aliases: [],
   module: 'Admin',
-  description: 'Lists global admins in the database.',
-  usage: ['listadmins'],
+  description: 'Lists staff in the database.',
+  usage: ['liststaff'],
   admin: true,
 };
